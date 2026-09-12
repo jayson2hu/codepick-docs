@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>产品定义文档（最终确认稿）— 垂直 AI 策展阅读 + Agent API</title>
+<style>
+  :root{
+    --bg:#f5f7fa; --card:#ffffff; --ink:#1a2230; --muted:#5b6776; --dim:#8a96a6; --line:#e4e9f0;
+    --acc:#2563eb; --acc2:#4f46e5; --green:#0d9488; --amber:#d97706; --rose:#e11d48; --violet:#7c3aed;
+    --soft:#eef3fb;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif; line-height:1.72; font-size:15px}
+  a{color:var(--acc); text-decoration:none} a:hover{text-decoration:underline}
+  .wrap{display:grid; grid-template-columns:256px 1fr; max-width:1280px; margin:0 auto}
+  nav{position:sticky; top:0; height:100vh; overflow-y:auto; padding:26px 16px; border-right:1px solid var(--line); background:#fff}
+  nav .brand{font-weight:800; font-size:15.5px; color:var(--acc2)}
+  nav .sub{color:var(--dim); font-size:11.5px; margin-bottom:16px}
+  nav a{display:block; color:var(--muted); padding:6px 11px; border-radius:8px; font-size:12.8px; margin:1px 0}
+  nav a:hover{background:var(--soft); color:var(--acc); text-decoration:none}
+  nav .grp{color:var(--dim); font-size:10.5px; text-transform:uppercase; letter-spacing:1px; margin:14px 0 3px 11px}
+  main{padding:42px 56px 120px; min-width:0; background:var(--bg)}
+  .doc-meta{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px}
+  .dm{background:#fff; border:1px solid var(--line); border-radius:8px; padding:5px 12px; font-size:12px; color:var(--muted)}
+  .dm b{color:var(--ink)}
+  .tag{display:inline-block; background:var(--soft); color:var(--acc); border:1px solid #cfe0fb; padding:4px 12px; border-radius:999px; font-size:12.5px; font-weight:700; margin-bottom:14px}
+  h1{font-size:31px; line-height:1.25; margin:0 0 12px; font-weight:800; letter-spacing:-.4px}
+  .lede{color:var(--muted); font-size:16px; max-width:840px}
+  section{margin:42px 0; scroll-margin-top:16px}
+  h2{font-size:21px; margin:0 0 6px; font-weight:800; display:flex; align-items:center; gap:10px; padding-bottom:8px; border-bottom:2px solid var(--line)}
+  h2 .x{background:var(--acc); color:#fff; width:26px; height:26px; border-radius:7px; display:inline-flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0}
+  h3{font-size:16px; margin:22px 0 8px; color:var(--ink)}
+  .note{color:var(--dim); font-size:12.8px; margin-bottom:14px}
+  p{margin:9px 0}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:20px 22px; margin:14px 0; box-shadow:0 1px 2px rgba(16,24,40,.04)}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+  .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+  .mini{background:#fff; border:1px solid var(--line); border-radius:11px; padding:16px}
+  .mini h4{margin:0 0 5px; font-size:14px} .mini p{margin:0; color:var(--muted); font-size:12.7px}
+  .mini .ic{font-size:19px; margin-bottom:6px; display:block}
+  table{width:100%; border-collapse:collapse; margin:14px 0; font-size:12.8px; background:#fff; border:1px solid var(--line); border-radius:10px; overflow:hidden}
+  th,td{padding:10px 12px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top}
+  th{background:#f0f4fa; color:var(--ink); font-weight:700} td{color:var(--muted)}
+  tr:last-child td{border-bottom:none} td strong{color:var(--ink)}
+  .hl{color:var(--acc); font-weight:700}
+  .badge{display:inline-block; font-size:10.5px; padding:2px 8px; border-radius:6px; font-weight:700}
+  .b-mvp{background:#dcfce7; color:#15803d} .b-v1{background:#dbeafe; color:#1d4ed8} .b-v2{background:#f3e8ff; color:#7c2d92}
+  .b-conf{background:#fef3c7; color:#b45309} .b-share{background:#ccfbf1; color:#0f766e} .b-own{background:#e0e7ff; color:#4338ca}
+  .b-free{background:#f1f5f9; color:#475569} .b-pro{background:#fef9c3; color:#a16207}
+  ul.clean{margin:9px 0; padding-left:19px} ul.clean li{margin:5px 0; color:var(--muted)} ul.clean li strong{color:var(--ink)}
+  .callout{border-left:4px solid var(--acc); background:var(--soft); padding:13px 17px; border-radius:0 10px 10px 0; margin:14px 0; color:var(--muted)}
+  .callout.green{border-color:var(--green); background:#effbf8}
+  .callout.amber{border-color:var(--amber); background:#fff8ec}
+  .callout.rose{border-color:var(--rose); background:#fff1f4}
+  .callout b{color:var(--ink)}
+  /* decision block */
+  .dec{border:1px solid #f0d999; background:#fffdf6; border-radius:12px; padding:16px 18px; margin:12px 0}
+  .dec .h{display:flex; align-items:center; gap:9px; margin-bottom:6px}
+  .dec .h .id{background:var(--amber); color:#fff; font-weight:800; font-size:12px; padding:2px 9px; border-radius:6px}
+  .dec .h .q{font-weight:700; font-size:14.5px; color:var(--ink)}
+  .dec .rec{color:var(--ink)} .dec .rec b{color:var(--green)}
+  .dec .alt{color:var(--dim); font-size:12.5px; margin-top:4px}
+  code{background:#eef1f6; padding:1.5px 6px; border-radius:5px; font-size:12.5px; color:var(--violet); font-family:"SF Mono",Consolas,monospace}
+  pre{background:#0f172a; color:#cbd5e1; border-radius:11px; padding:15px 17px; overflow-x:auto; font-size:12.3px; line-height:1.55; margin:13px 0}
+  pre .c{color:#64748b} pre .g{color:#5eead4} pre .b{color:#93c5fd}
+  .stack{display:flex; flex-direction:column; gap:8px; margin:13px 0}
+  .layer{border-radius:10px; padding:13px 17px; border:1px solid var(--line); position:relative; background:#fff}
+  .layer .lt{font-weight:700; font-size:14px} .layer .ld{color:var(--muted); font-size:12.5px}
+  .layer .lb{position:absolute; right:13px; top:12px}
+  .ls{background:#f0fdfa; border-color:#99f6e4} .lo1{background:#eef2ff; border-color:#c7d2fe} .lo2{background:#f0fdf4; border-color:#bbf7d0}
+  .pipe{display:flex; flex-wrap:wrap; margin:13px 0}
+  .step{flex:1; min-width:104px; background:#fff; border:1px solid var(--line); padding:11px 9px; text-align:center; position:relative}
+  .step:first-child{border-radius:9px 0 0 9px} .step:last-child{border-radius:0 9px 9px 0}
+  .step .t{font-size:12.4px; font-weight:700} .step .d{font-size:10.5px; color:var(--dim)}
+  .step:not(:last-child)::after{content:"›"; position:absolute; right:-7px; top:50%; transform:translateY(-50%); color:var(--acc); font-size:17px; z-index:2}
+  .roadmap{position:relative; margin:16px 0 0; padding-left:26px}
+  .roadmap::before{content:""; position:absolute; left:6px; top:6px; bottom:6px; width:2px; background:var(--line)}
+  .ms{position:relative; margin-bottom:16px}
+  .ms::before{content:""; position:absolute; left:-24px; top:5px; width:12px; height:12px; border-radius:50%; background:var(--acc); box-shadow:0 0 0 4px #dbeafe}
+  .ms h4{margin:0 0 3px; font-size:14.5px} .ms .wk{font-size:11px; color:var(--dim); font-weight:700; text-transform:uppercase}
+  .ms p{margin:3px 0 0; color:var(--muted); font-size:12.8px}
+  .chk{list-style:none; padding:0; margin:10px 0}
+  .chk li{padding:8px 0 8px 30px; position:relative; border-bottom:1px solid var(--line); font-size:13.2px; color:var(--muted)}
+  .chk li::before{content:"☐"; position:absolute; left:4px; top:7px; color:var(--acc); font-size:16px}
+  .foot{margin-top:50px; padding-top:18px; border-top:1px solid var(--line); color:var(--dim); font-size:12px}
+  @media(max-width:980px){.wrap{grid-template-columns:1fr} nav{display:none} main{padding:24px 16px 70px} .grid2,.grid3{grid-template-columns:1fr} h1{font-size:24px}}
+  @media print{nav{display:none} .wrap{grid-template-columns:1fr} body{background:#fff} main{padding:0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <div class="brand">产品定义 · 确认稿</div>
+    <div class="sub">PRD v0.1 · 待审核</div>
+    <div class="grp">确认核心</div>
+    <a href="#how">如何审核本文档</a>
+    <a href="#decisions">★ 关键决策清单（待确认）</a>
+    <a href="#positioning">① 最终定位</a>
+    <div class="grp">产品</div>
+    <a href="#users">② 用户与问题</a>
+    <a href="#shape">③ 产品形态（双产品+共享核心）</a>
+    <a href="#flywheel">④ 三层飞轮</a>
+    <a href="#scope">⑤ 功能范围 (MVP/V1/V2)</a>
+    <a href="#workflow">⑥ 核心工作流</a>
+    <a href="#moat">⑦ 差异化与护城河</a>
+    <div class="grp">运营</div>
+    <a href="#metrics">⑧ 北极星与指标</a>
+    <a href="#biz">⑨ 商业模式与定价</a>
+    <div class="grp">工程</div>
+    <a href="#arch">⑩ 技术架构总览</a>
+    <a href="#milestones">⑪ 里程碑总览</a>
+    <a href="#risk">⑫ 风险与红线</a>
+    <a href="#signoff">✅ 审核确认清单</a>
+  </nav>
+
+  <main>
+    <span class="tag">最终产品定义文档 · 供审核确认</span>
+    <h1>垂直 AI 策展阅读 + Agent API<br>—— 产品定义文档（确认稿）</h1>
+    <p class="lede">本文档整合了 BestBlogs 产品拆解、市场/竞品分析、两份开发架构、共享数据核心结论与 Gemini 产品总结，形成<b>你要做的产品</b>的最终定义。它是一份<b>待你审核确认</b>的 PRD：关键决策已显式列出并给出推荐，确认后即可据此规划开发 plan。</p>
+    <div class="doc-meta">
+      <span class="dm">文档类型：<b>产品定义 / PRD</b></span>
+      <span class="dm">状态：<b style="color:var(--amber)">待确认</b></span>
+      <span class="dm">产品代号：<b>「码间精选」(暂定)</b></span>
+      <span class="dm">下一步：<b>据此规划开发 Plan</b></span>
+    </div>
+
+    <section id="how">
+      <h2><span class="x">i</span>如何审核本文档</h2>
+      <div class="card">
+        <p style="margin-top:0">本文档不是"已定方案"，而是"<b>带推荐的待确认方案</b>"。请按以下方式审核：</p>
+        <ul class="clean">
+          <li>① 先看 <a href="#decisions"><b>关键决策清单</b></a>——这是全文的"地基"，10 个决策决定了后面所有内容。每条都有<span class="badge b-conf">待确认</span>标记和我的推荐。</li>
+          <li>② 对每个决策：<b>认可推荐</b>就打勾，<b>想改</b>就标注你的选择（尤其"垂直领域"和"定价"两项最关键）。</li>
+          <li>③ 正文中凡涉及具体垂直，均以推荐的 <b>「AI Coding」</b>为示例展开；若你改垂直，正文示例随之替换，结构不变。</li>
+          <li>④ 看完在 <a href="#signoff"><b>审核确认清单</b></a>逐项签字，确认后我据此产出详细开发 Plan（任务拆解、排期、人力、成本）。</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="decisions">
+      <h2><span class="x">★</span>关键决策清单（待确认）</h2>
+      <p class="note">这 10 个决策是产品的地基。括号内为我的推荐与理由；请逐条确认或修改。</p>
+
+      <div class="dec"><div class="h"><span class="id">D1</span><span class="q">垂直领域选哪个？（最关键）</span></div>
+        <div class="rec">推荐：<b>AI Coding（AI 辅助编程 / Agent 开发）</b></div>
+        <div class="alt">理由：① 你是开发者，<b>有判断力</b>（质量池的根）；② 英文源多、中文优质少 → "判断+翻译"价值大；③ 受众是开发者，<b>最易接受 Agent/MCP 形态</b>（直接喂产品二）；④ 信息过载严重、迭代快、付费力强。备选：出海电商 / 量化投资 / 企业 AI 落地。<b>← 此项决定全文示例，请优先确认。</b></div>
+      </div>
+
+      <div class="dec"><div class="h"><span class="id">D2</span><span class="q">先做哪个产品？</span></div>
+        <div class="rec">推荐：<b>先做产品一 Reader 到留存验证，再低成本上产品二 Agent API</b></div>
+        <div class="alt">理由：A 建立现金流与判断力地基；B 是 A 的"顺手延伸"（同一份结构化数据加一层读接口），几乎零额外成本，作差异化卡位。详见架构文档。</div>
+      </div>
+
+      <div class="dec"><div class="h"><span class="id">D3</span><span class="q">语言策略？</span></div>
+        <div class="rec">推荐：<b>抓英文源为主 + 中文输出分析结果（翻译摘要/观点/金句，不做全文翻译）</b></div>
+        <div class="alt">理由：AI Coding 一手内容多为英文；只翻译"分析结果"而非全文，成本低、价值高，正中"帮中文开发者省时间"。后续再考虑沉浸式全文翻译（Pro）。</div>
+      </div>
+
+      <div class="dec"><div class="h"><span class="id">D4</span><span class="q">定价模型？</span></div>
+        <div class="rec">推荐：<b>Free + Pro；Pro 主推年费 ¥199/年（早鸟 ¥99），月费 ¥19</b></div>
+        <div class="alt">理由：BestBlogs 把 $20→$9.9 砍半说明中文月费敏感；年费降低决策频率、提高 LTV。一次性"早鸟买断/赞助"可作冷启动。</div>
+      </div>
+
+      <div class="dec"><div class="h"><span class="id">D5</span><span class="q">技术栈？</span></div>
+        <div class="rec">推荐：<b>TypeScript 全栈</b>（Next.js + Node Worker）</div>
+        <div class="alt">理由：单人/小团队一套语言效率最高；社区与 AI 辅助成熟。BestBlogs 用 Java/Spring 亦可，但对你不是最优。</div>
+      </div>
+
+      <div class="dec"><div class="h"><span class="id">D6</span><span class="q">主存储？</span></div>
+        <div class="rec">推荐：<b>PostgreSQL + pgvector</b>（关系+jsonb+向量一体）</div>
+        <div class="alt">理由：少一个组件、运维简单、事务清晰。BestBlogs 用 MongoDB+ES，规模化后可引入 ES 作搜索读模型。</div>
+      </div>
+
+      <div class="dec"><div class="h"><span class="id">D7</span><span class="q">LLM 分析编排？</span></div>
+        <div class="rec">推荐：<b>MVP 直连 SDK + 轻量编排；prompt 难调时再上 Dify</b></div>
+        <div class="alt">理由：BestBlogs 用 Dify 自部署便于调 prompt；但起步直连更轻。分级调用：小模型初评 + 中端模型分析。</div>
+      </div>
+
+      <div class="dec"><div class="h"><span class="id">D8</span><span class="q">精审机制？</span></div>
+        <div class="rec">推荐：<b>MVP 由你本人精审高曝光/低置信内容</b>，后续半自动→社区化</div>
+        <div class="alt">理由：精审是判断力来源，初期必须亲自做；这也是你"评分标准"的训练过程。</div>
+      </div>
+
+      <div class="dec"><div class="h"><span class="id">D9</span><span class="q">多垂直如何演进？</span></div>
+        <div class="rec">推荐：<b>架构按"共享核心 + 垂直 lens"预留，业务先做穿 1 个垂直再扩</b></div>
+        <div class="alt">理由：数据层共通（采集/实体/基础分析算一次），判断层按垂直分开。先专注一个建判断力与信任，再低边际成本加垂直 + 做跨垂直综合。</div>
+      </div>
+
+      <div class="dec"><div class="h"><span class="id">D10</span><span class="q">北极星指标？</span></div>
+        <div class="rec">推荐：<b>深度阅读闭环率</b>（点入详情且读完/触发 AI 伴读的周活占比）</div>
+        <div class="alt">反指标：不优化阅读时长、内容数量、无深度 DAU。继承 BestBlogs"让你读得更少"的哲学。</div>
+      </div>
+    </section>
+
+    <section id="positioning">
+      <h2><span class="x">1</span>最终定位</h2>
+      <div class="callout"><b>一句话定位：</b>「码间精选」是面向中文开发者的 <b>AI Coding 领域高质量阅读工作流</b>——每天替你判断"这个领域值得读什么"，生成个性化早报，并让人和 AI Agent 都能调用这份判断。</div>
+      <div class="grid3">
+        <div class="mini"><span class="ic">🧭</span><h4>母句（信念）</h4><p>让高质量内容找到对的人——在 AI Coding 这个最快变化的领域里。</p></div>
+        <div class="mini"><span class="ic">🎯</span><h4>用户主张</h4><p>"AI Coding 每天值得读的，我已替你判断好。读得更少，但更对。"</p></div>
+        <div class="mini"><span class="ic">🏗️</span><h4>结构</h4><p>公共策展建信任 → 个性化工作流驱留存 → 可调用 API 打开天花板。</p></div>
+      </div>
+      <p class="note">定位继承 BestBlogs 的三层结构与产品哲学，但<b>收窄到一个垂直</b>做深，并把"Agent 可调用"从长期方向<b>提前为一等公民</b>（差异化）。</p>
+    </section>
+
+    <section id="users">
+      <h2><span class="x">2</span>目标用户与问题</h2>
+      <div class="grid2">
+        <div class="card"><h3 style="margin-top:0">目标用户</h3><ul class="clean">
+          <li><strong>核心</strong>：用 AI 写代码 / 做 Agent 的中文开发者、独立开发者、技术 leader</li>
+          <li><strong>扩展</strong>：关注 AI 工程化的产品/研究者；用 Claude/Cursor 的重度用户</li>
+          <li><strong>共性</strong>：英文源读不过来、信息过载严重、付费力强、最早采用 Agent 工具</li>
+        </ul></div>
+        <div class="card"><h3 style="margin-top:0">解决的问题（继承 BestBlogs 三问）</h3><ul class="clean">
+          <li><strong>发现与判断</strong>：AI Coding 日更爆炸，判断"值不值得读"成本高于获取</li>
+          <li><strong>吸收效率</strong>：长文/英文太多，需先压缩+排序再决定深读</li>
+          <li><strong>沉淀缺失</strong>：读过即忘，缺持续跟踪与复用机制</li>
+        </ul></div>
+      </div>
+    </section>
+
+    <section id="shape">
+      <h2><span class="x">3</span>产品形态：双产品 + 共享核心</h2>
+      <div class="stack">
+        <div class="layer lo2"><span class="lb"><span class="badge b-own">产品二</span></span><div class="lt">Agent 策展 API / MCP</div><div class="ld">把"今日精选/检索/深度分析"开放为稳定原语 + MCP 工具，供 Claude/Cursor/自建 Agent 调用。复用同一份数据。</div></div>
+        <div class="layer lo1"><span class="lb"><span class="badge b-own">产品一</span></span><div class="lt">垂直 AI 策展阅读 Reader（先做）</div><div class="ld">Web 端：公共精选 + 我的早报 + 为你推荐 + AI 伴读 + 账户/Pro。承接获客、留存与付费。</div></div>
+        <div class="layer ls"><span class="lb"><span class="badge b-share">共享核心</span></span><div class="lt">内容中台 + 垂直判断层</div><div class="ld">采集 → 内容实体（全局唯一、去重）→ 基础分析（算一次）→ 垂直评分（content×vertical，每垂直一份）。两产品共用。</div></div>
+      </div>
+      <div class="callout green"><b>核心原则（来自上一轮结论）：</b>一条内容<b>唯一</b>，基础分析<b>算一次</b>；"它对某垂直的价值"是 <code>content × vertical</code> 的<b>每垂直一份</b>。采集+实体+基础分析<b>共通</b>（成本优势与跨垂直综合能力来源），判断+分发<b>按垂直/产品分开</b>（护城河）。详见两份《开发架构》。</div>
+    </section>
+
+    <section id="flywheel">
+      <h2><span class="x">4</span>三层飞轮（适配本产品）</h2>
+      <div class="stack">
+        <div class="layer lo2"><span class="lb"><span class="badge b-v2">天花板</span></span><div class="lt">第三层 · 可调用基础设施</div><div class="ld">Agent API / MCP、结构化研究包、主题监控。扩大分发与复用，吃 Agent 增量。</div></div>
+        <div class="layer lo1"><span class="lb"><span class="badge b-v1">留存/付费</span></span><div class="lt">第二层 · 个人阅读工作流</div><div class="ld">我的早报、为你推荐、兴趣标签、AI 伴读、回顾沉淀。Pro 核心价值。</div></div>
+        <div class="layer ls"><span class="lb"><span class="badge b-mvp">获客/信任</span></span><div class="lt">第一层 · 公共策展质量池</div><div class="ld">AI 初评+本人精审、公共早报、精选内容、SEO。建立"我懂 AI Coding 什么是好内容"的品牌。</div></div>
+      </div>
+      <p class="note">飞轮：第一层建信任吸引用户 → 第二层留存付费产生行为数据 → 数据反哺第一层判断 → 第三层扩大分发带来更多场景。</p>
+    </section>
+
+    <section id="scope">
+      <h2><span class="x">5</span>功能范围（MVP / V1 / V2）</h2>
+      <table>
+        <thead><tr><th>能力</th><th>说明</th><th>阶段</th><th>Free/Pro</th></tr></thead>
+        <tbody>
+          <tr><td><strong>内容采集</strong></td><td>30-50 个 AI Coding 顶级源（含英文）+ 全文抓取</td><td><span class="badge b-mvp">MVP</span></td><td>—</td></tr>
+          <tr><td><strong>AI 分析管线</strong></td><td>初评过滤→摘要+观点+金句+实体→六维评分→检查反思</td><td><span class="badge b-mvp">MVP</span></td><td>—</td></tr>
+          <tr><td><strong>公共精选 + 公共早报</strong></td><td>内容广场 + 每日精选页/邮件（SEO 入口）</td><td><span class="badge b-mvp">MVP</span></td><td><span class="badge b-free">Free</span></td></tr>
+          <tr><td><strong>内容详情页</strong></td><td>结构化分析展示 + 原文链接 + 评分</td><td><span class="badge b-mvp">MVP</span></td><td><span class="badge b-free">Free</span></td></tr>
+          <tr><td><strong>兴趣标签 + 我的早报</strong></td><td>冷启动选 5-8 主题 → 个人化早报</td><td><span class="badge b-v1">V1</span></td><td><span class="badge b-pro">Pro</span></td></tr>
+          <tr><td><strong>为你推荐</strong></td><td>多路召回+重排（标签+向量+新鲜度+多样性）</td><td><span class="badge b-v1">V1</span></td><td><span class="badge b-pro">Pro</span></td></tr>
+          <tr><td><strong>AI 伴读</strong></td><td>总结/问答/章节跳转，SSE 流式；配额分级</td><td><span class="badge b-v1">V1</span></td><td>Free 限量 / <span class="badge b-pro">Pro</span> 全量</td></tr>
+          <tr><td><strong>关注 + 私有源</strong></td><td>关注源/主题；Pro 加私有订阅源</td><td><span class="badge b-v1">V1</span></td><td><span class="badge b-pro">Pro</span></td></tr>
+          <tr><td><strong>账户 + 订阅计费</strong></td><td>登录、门禁、支付</td><td><span class="badge b-v1">V1</span></td><td>—</td></tr>
+          <tr><td><strong>Agent API + MCP</strong></td><td>today/search/analyze 原语 + MCP Server（产品二）</td><td><span class="badge b-v2">V2</span></td><td>开发者分层</td></tr>
+          <tr><td><strong>回顾 + 深度笔记</strong></td><td>每日回顾、沉淀、复用</td><td><span class="badge b-v2">V2</span></td><td><span class="badge b-pro">Pro</span></td></tr>
+        </tbody>
+      </table>
+      <div class="callout amber"><b>MVP 最小闭环：</b>采集 → 分析 → 公共精选页 + 每日早报邮件。<b>先验证"你的判断有人愿意每天看"，再加个性化与付费。</b>（建议 MVP 前还有"纯人工日报"验证期，详见开发 Plan。）</div>
+    </section>
+
+    <section id="workflow">
+      <h2><span class="x">6</span>核心工作流：每日节奏</h2>
+      <div class="pipe">
+        <div class="step"><div class="t">发现</div><div class="d">公共/我的早报、推荐</div></div>
+        <div class="step"><div class="t">阅读</div><div class="d">详情 + AI 伴读</div></div>
+        <div class="step"><div class="t">回顾/沉淀</div><div class="d">复盘、笔记(V2)</div></div>
+        <div class="step"><div class="t">创作/分享</div><div class="d">复用(长期)</div></div>
+      </div>
+      <div class="card"><h3 style="margin-top:0">典型用户旅程（一天）</h3><ul class="clean">
+        <li><strong>早晨</strong>：收到「今日 AI Coding 早报」邮件，3 条值得读，扫摘要，标记 1 篇深读</li>
+        <li><strong>工作间隙</strong>：打开为你推荐，发现一篇 Agent 评测实战，开 AI 伴读快速理解，收藏</li>
+        <li><strong>午休</strong>：读标记的长文，AI 伴读跳到最相关章节，读完形成思路</li>
+        <li><strong>（开发者）</strong>：在 Cursor 里直接问"今天 AI Coding 有什么值得读" → 走产品二 MCP</li>
+      </ul></div>
+    </section>
+
+    <section id="moat">
+      <h2><span class="x">7</span>差异化与护城河</h2>
+      <div class="grid2">
+        <div class="card"><h3 style="margin-top:0">差异化（vs BestBlogs / 竞品）</h3><ul class="clean">
+          <li><strong>更垂直更深</strong>：只做 AI Coding，比泛技术策展更懂黑话与价值</li>
+          <li><strong>Agent-first</strong>：把 MCP/API 提前为一等公民（BestBlogs 第三层尚浅）</li>
+          <li><strong>判断前置</strong>：AI 判断"值不值得读"，而非只做"读得快"（vs Feedly/Readwise）</li>
+        </ul></div>
+        <div class="card"><h3 style="margin-top:0">护城河（随时间复利）</h3><ul class="clean">
+          <li><strong>领域评分标准 + 标签体系</strong>：沉淀在 rubric 与精审里，无法一次性抄走</li>
+          <li><strong>你本人的领域信誉</strong>：判断力的根</li>
+          <li><strong>个性化迁移壁垒</strong>：越用越准</li>
+          <li><strong>结构化数据 + Agent 生态卡位</strong></li>
+        </ul></div>
+      </div>
+    </section>
+
+    <section id="metrics">
+      <h2><span class="x">8</span>北极星与指标体系</h2>
+      <table>
+        <thead><tr><th>层级</th><th>指标</th></tr></thead>
+        <tbody>
+          <tr><td><strong>北极星</strong></td><td class="hl">深度阅读闭环率（发现→深读的周活占比）</td></tr>
+          <tr><td>第一层（获客/信任）</td><td>公共早报点击率、SEO 自然流量、注册转化、精选阅读完成率</td></tr>
+          <tr><td>第二层（留存/付费）</td><td>我的早报 vs 公共早报点击率差、7/30 日留存、AI 伴读使用率、Free→Pro 转化、续订率</td></tr>
+          <tr><td>第三层（可调用）</td><td>API 调用量、MCP 安装数、接入应用数</td></tr>
+          <tr><td><strong>反指标（拒绝优化）</strong></td><td>阅读时长 · 内容数量 · 无深度 DAU</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="biz">
+      <h2><span class="x">9</span>商业模式与定价</h2>
+      <div class="grid2">
+        <div class="card"><h3 style="margin-top:0"><span class="badge b-free">Free</span> 高质量公共入口</h3><ul class="clean">
+          <li>公共精选 + 公共早报</li><li>基础发现与详情</li><li>有限 AI 伴读（每日 N 次）</li>
+          <li>作用：建立"我懂 AI Coding"的信任</li>
+        </ul></div>
+        <div class="card"><h3 style="margin-top:0"><span class="badge b-pro">Pro</span> 个性化工作流（¥199/年）</h3><ul class="clean">
+          <li>我的早报 + 为你推荐</li><li>完整 AI 伴读 + 私有源</li><li>回顾沉淀（V2）</li>
+          <li>定价：早鸟 ¥99/年 · 月费 ¥19 · 待确认 D4</li>
+        </ul></div>
+      </div>
+      <p class="note">增长漏斗：公共策展获客 → 首次"我的早报"激活（感受"懂我"）→ 工作流留存 → Pro 付费 → 第三层扩展。开发者侧：产品二 API 用量/订阅作第二曲线。</p>
+    </section>
+
+    <section id="arch">
+      <h2><span class="x">10</span>技术架构总览</h2>
+      <p class="note">详见两份独立文档：《开发架构-产品一-垂直AI策展阅读》《开发架构-产品二-Agent策展API与MCP》。此处为摘要。</p>
+      <pre><span class="c">外部源 → [共享中台] 采集 → 内容实体(去重) → 基础分析(算一次)</span>
+                                   │
+                ┌──────────────────┴──────────────────┐
+   <span class="b">[产品一 Reader]</span>                          <span class="g">[产品二 Agent API]</span>
+   垂直评分→精审→COMPLETED                   复用 COMPLETED(只读)
+   个性化(标签/召回/重排)                      稳定原语 REST + MCP Server
+   AI 伴读(SSE) · 早报 Job                     API Key · 限流 · 配额
+   账户 · Pro 订阅 · Web(Next.js)              开发者门户 · OpenAPI
+                │                                      │
+       共享存储：PostgreSQL + pgvector · Redis(缓存/队列/限流) · 对象存储</pre>
+      <table>
+        <thead><tr><th>层</th><th>选型（待确认 D5-D7）</th></tr></thead>
+        <tbody>
+          <tr><td>前端/SSR</td><td>Next.js (App Router) + TypeScript + Tailwind</td></tr>
+          <tr><td>服务/Worker</td><td>Node (Hono/NestJS) + BullMQ</td></tr>
+          <tr><td>存储</td><td>PostgreSQL + pgvector；Redis；S3 兼容对象存储</td></tr>
+          <tr><td>采集</td><td>Playwright 无头浏览器 + RSS</td></tr>
+          <tr><td>LLM</td><td>分级调用（小模型初评 + 中端分析）；Dify 可选</td></tr>
+          <tr><td>MCP</td><td>@modelcontextprotocol/sdk（产品二）</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="milestones">
+      <h2><span class="x">11</span>里程碑总览</h2>
+      <p class="note">高层里程碑；详细任务拆解、排期与人力将在确认本文档后的<b>开发 Plan</b> 中展开。</p>
+      <div class="roadmap">
+        <div class="ms"><div class="wk">M0 · 验证（不写代码）</div><h4>纯人工跑 2 周 AI Coding 日报</h4><p>验证你的判断有人愿意每天看。产出种子读者 + 评分标准雏形。</p></div>
+        <div class="ms"><div class="wk">M1 · 中台地基</div><h4>采集 + 内容实体 + 基础分析</h4><p>跑通抓取→去重→初评→基础分析→入库。</p></div>
+        <div class="ms"><div class="wk">M2 · 判断层</div><h4>垂直评分 + 精审 → COMPLETED</h4><p>把人工标准翻译成 rubric prompt。</p></div>
+        <div class="ms"><div class="wk">M3 · 公共站 + 早报</div><h4>精选页 + 自动早报（MVP 上线）</h4><p>SEO 入口 + 邮件分发。</p></div>
+        <div class="ms"><div class="wk">M4 · 个性化 + 伴读</div><h4>我的早报 + AI 伴读 + 行为（V1）</h4><p>盯深度阅读闭环率与留存。</p></div>
+        <div class="ms"><div class="wk">M5 · 商业化</div><h4>账户 + Pro 订阅</h4><p>门禁、计费、配额；主推年费。</p></div>
+        <div class="ms"><div class="wk">M6 · Agent 化</div><h4>API + MCP（产品二，V2）</h4><p>低成本卡位 Agent 生态作差异化。</p></div>
+      </div>
+    </section>
+
+    <section id="risk">
+      <h2><span class="x">12</span>风险与红线</h2>
+      <table>
+        <thead><tr><th>风险</th><th>应对</th></tr></thead>
+        <tbody>
+          <tr><td>LLM 成本</td><td>小模型初评 + 缓存 + 只对高价值内容深分析；MVP 月成本控 $60-300</td></tr>
+          <tr><td>内容源封锁/版权</td><td>只存摘要+分析+链接（不全文转载），标注来源，多源冗余</td></tr>
+          <tr><td>通用 AI 替代</td><td>护城河是持续判断标准+追踪+源质量，非单次摘要</td></tr>
+          <tr><td>单人断档</td><td>自动化 + 早报/精审可委托流程化</td></tr>
+          <tr><td>合规（中文）</td><td>内容审核、ICP 备案、数据隐私</td></tr>
+        </tbody>
+      </table>
+      <div class="callout rose"><b>红线（继承 BestBlogs 的克制）：</b>不以时长为目标、不做泛化 AI 工具箱、不以内容数量取胜。产品价值 = 帮用户读得更少但更对，把时间还给他们。</div>
+    </section>
+
+    <section id="signoff">
+      <h2><span class="x">✓</span>审核确认清单</h2>
+      <p class="note">请逐项确认（认可 / 修改）。全部确认后，我据此产出详细开发 Plan。</p>
+      <ul class="chk">
+        <li><strong>D1 垂直领域</strong>：AI Coding —— 确认 / 改为：__________</li>
+        <li><strong>D2 产品顺序</strong>：先 Reader 后 Agent API —— 确认 / 修改：__________</li>
+        <li><strong>D3 语言策略</strong>：英文源 + 中文分析输出 —— 确认 / 修改：__________</li>
+        <li><strong>D4 定价</strong>：Free + Pro ¥199/年（早鸟 ¥99，月 ¥19）—— 确认 / 修改：__________</li>
+        <li><strong>D5 技术栈</strong>：TypeScript 全栈 —— 确认 / 修改：__________</li>
+        <li><strong>D6 存储</strong>：PostgreSQL + pgvector —— 确认 / 修改：__________</li>
+        <li><strong>D7 LLM 编排</strong>：直连起步，必要时 Dify —— 确认 / 修改：__________</li>
+        <li><strong>D8 精审</strong>：本人精审起步 —— 确认 / 修改：__________</li>
+        <li><strong>D9 多垂直演进</strong>：架构预留、业务先做穿 1 个 —— 确认 / 修改：__________</li>
+        <li><strong>D10 北极星</strong>：深度阅读闭环率 —— 确认 / 修改：__________</li>
+        <li><strong>产品代号</strong>：「码间精选」(暂定) —— 确认 / 改为：__________</li>
+        <li><strong>MVP 范围</strong>：采集+分析+公共精选+早报 —— 确认 / 修改：__________</li>
+      </ul>
+    </section>
+
+    <div class="foot">
+      产品定义文档（确认稿）v0.1 · 整合自：BestBlogs 仓库 docs/flows、《产品拆解》《市场分析与产品规划》《开发架构 产品一/二》、Gemini《产品总结》。
+      确认后下一步 → 详细开发 Plan（任务拆解 / 排期 / 人力 / 成本）· 2026-05-30
+    </div>
+  </main>
+</div>
+</body>
+</html>

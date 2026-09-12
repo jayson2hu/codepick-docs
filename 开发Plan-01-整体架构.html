@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CodePick · 整体架构文档（开发 Plan 01）</title>
+<style>
+  :root{
+    --bg:#0b0f17; --panel:#121826; --panel2:#1a2233; --line:#27314a;
+    --text:#e7edf6; --muted:#94a3b8; --dim:#64748b;
+    --cy:#22d3ee; --blue:#60a5fa; --green:#34d399; --amber:#fbbf24; --rose:#fb7185; --violet:#a78bfa; --pink:#f472b6;
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0; background:radial-gradient(1000px 520px at 82% -12%,rgba(34,211,238,.08),transparent),var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif; line-height:1.7; font-size:15px}
+  a{color:var(--cy); text-decoration:none} a:hover{text-decoration:underline}
+  .wrap{display:grid; grid-template-columns:264px 1fr; max-width:1360px; margin:0 auto}
+  nav{position:sticky; top:0; height:100vh; overflow-y:auto; padding:24px 15px; border-right:1px solid var(--line); background:rgba(11,15,23,.72)}
+  nav .brand{font-weight:800; font-size:16px} nav .brand span{color:var(--cy)}
+  nav .sub{color:var(--dim); font-size:11px; margin-bottom:15px}
+  nav a{display:block; color:var(--muted); padding:5.5px 11px; border-radius:8px; font-size:12.6px; margin:1px 0}
+  nav a:hover{background:var(--panel); color:var(--text); text-decoration:none}
+  nav .grp{color:var(--dim); font-size:10.5px; text-transform:uppercase; letter-spacing:1px; margin:13px 0 3px 11px}
+  main{padding:40px 54px 120px; min-width:0}
+  .tag{display:inline-block; background:rgba(34,211,238,.13); color:var(--cy); border:1px solid rgba(34,211,238,.32); padding:4px 12px; border-radius:999px; font-size:12.5px; font-weight:700; margin-bottom:13px}
+  h1{font-size:31px; line-height:1.24; margin:0 0 12px; font-weight:800; letter-spacing:-.4px}
+  h1 em{font-style:normal; background:linear-gradient(90deg,var(--cy),var(--blue)); -webkit-background-clip:text; background-clip:text; color:transparent}
+  .lede{color:var(--muted); font-size:16px; max-width:840px}
+  .meta{display:flex; gap:9px; flex-wrap:wrap; margin:16px 0}
+  .mt{background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:5px 12px; font-size:11.5px; color:var(--muted)} .mt b{color:var(--text)}
+  section{margin:44px 0; scroll-margin-top:16px}
+  h2{font-size:21px; margin:0 0 6px; font-weight:800; display:flex; align-items:center; gap:10px; padding-bottom:8px; border-bottom:1px solid var(--line)}
+  h2 .x{background:linear-gradient(135deg,var(--cy),var(--blue)); color:#06121a; width:27px; height:27px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; flex-shrink:0}
+  h3{font-size:16px; margin:20px 0 8px; color:#fff}
+  .note{color:var(--dim); font-size:12.6px; margin-bottom:13px}
+  p{margin:9px 0}
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:18px 20px; margin:13px 0}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:13px}
+  .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:13px}
+  .grid4{display:grid; grid-template-columns:repeat(4,1fr); gap:11px}
+  .mini{background:var(--panel); border:1px solid var(--line); border-radius:11px; padding:15px}
+  .mini h4{margin:0 0 5px; font-size:14px; color:#fff} .mini p{margin:0; color:var(--muted); font-size:12.4px} .mini .ic{font-size:18px; margin-bottom:5px; display:block}
+  table{width:100%; border-collapse:collapse; margin:13px 0; font-size:12.6px; border-radius:10px; overflow:hidden}
+  th,td{padding:9px 12px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top}
+  th{background:var(--panel2); color:#fff; font-weight:700} td{color:var(--muted)}
+  tr:last-child td{border-bottom:none} td strong{color:var(--text)}
+  .hl{color:var(--cy); font-weight:700}
+  .badge{display:inline-block; font-size:10px; padding:2px 7px; border-radius:5px; font-weight:700}
+  .l0{background:rgba(34,211,238,.16); color:var(--cy)} .l1{background:rgba(52,211,153,.16); color:var(--green)}
+  .l2{background:rgba(96,165,250,.16); color:var(--blue)} .l3{background:rgba(167,139,250,.16); color:var(--violet)}
+  pre{background:#0a0e16; border:1px solid var(--line); border-radius:12px; padding:15px 17px; overflow-x:auto; font-size:12px; line-height:1.55; color:#c6d2e2; margin:13px 0}
+  pre .c{color:#5a6b85} pre .cy{color:#67e8f9} pre .gr{color:#6ee7b7} pre .bl{color:#93c5fd} pre .vi{color:#c4b5fd} pre .ye{color:#fcd34d} pre .pk{color:#f9a8d4}
+  code{background:var(--panel2); padding:1.5px 6px; border-radius:5px; font-size:12.3px; color:var(--violet); font-family:"SF Mono",Consolas,monospace}
+  ul.clean{margin:8px 0; padding-left:19px} ul.clean li{margin:4px 0; color:var(--muted)} ul.clean li strong{color:var(--text)}
+  .callout{border-left:3px solid var(--cy); background:rgba(34,211,238,.07); padding:12px 16px; border-radius:0 10px 10px 0; margin:13px 0; color:var(--muted)}
+  .callout.green{border-color:var(--green); background:rgba(52,211,153,.07)} .callout.amber{border-color:var(--amber); background:rgba(251,191,36,.07)}
+  .callout.rose{border-color:var(--rose); background:rgba(251,113,133,.07)} .callout.violet{border-color:var(--violet); background:rgba(167,139,250,.07)}
+  .callout b{color:var(--text)}
+  /* platform stack */
+  .plat{display:flex; flex-direction:column; margin:14px 0; border:1px solid var(--line); border-radius:14px; overflow:hidden}
+  .pl{padding:14px 18px; position:relative; border-bottom:1px solid var(--line)}
+  .pl:last-child{border-bottom:none}
+  .pl .ln{font-size:10.5px; font-weight:800; letter-spacing:.5px; opacity:.85}
+  .pl .lt{font-weight:800; font-size:15px; margin:2px 0 4px}
+  .pl .ld{font-size:12.4px; line-height:1.55}
+  .pl .lb{position:absolute; right:16px; top:14px}
+  .pl3{background:linear-gradient(135deg,rgba(167,139,250,.13),rgba(167,139,250,.03))}
+  .pl2{background:linear-gradient(135deg,rgba(96,165,250,.13),rgba(96,165,250,.03))}
+  .pl1{background:linear-gradient(135deg,rgba(52,211,153,.13),rgba(52,211,153,.03))}
+  .pl0{background:linear-gradient(135deg,rgba(34,211,238,.13),rgba(34,211,238,.03))}
+  .seq{counter-reset:s; margin:13px 0}
+  .seq .r{display:flex; gap:12px; padding:8px 0; border-bottom:1px dashed var(--line)}
+  .seq .r:last-child{border-bottom:none}
+  .seq .r::before{counter-increment:s; content:counter(s); flex-shrink:0; width:22px; height:22px; border-radius:7px; background:var(--panel2); color:var(--cy); font-weight:700; font-size:11.5px; display:flex; align-items:center; justify-content:center}
+  .seq .r div{font-size:12.8px; color:var(--muted)} .seq .r b{color:var(--text)}
+  .adr{border:1px solid var(--line); border-radius:11px; padding:14px 17px; margin:11px 0; background:var(--panel)}
+  .adr .h{display:flex; gap:9px; align-items:center; margin-bottom:5px}
+  .adr .id{background:var(--panel2); color:var(--cy); font-weight:800; font-size:11px; padding:2px 9px; border-radius:6px}
+  .adr .t{font-weight:700; font-size:14px; color:#fff}
+  .adr .d{color:var(--muted); font-size:12.7px} .adr .d b{color:var(--text)}
+  .qa{display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid var(--line)}
+  .qa:last-child{border-bottom:none}
+  .qa .nm{width:120px; font-weight:700; color:#fff; font-size:13px; flex-shrink:0}
+  .qa .bar{flex:1; height:8px; background:var(--panel2); border-radius:5px; overflow:hidden}
+  .qa .fl{height:100%; border-radius:5px}
+  .qa .tx{font-size:12px; color:var(--muted); width:300px; flex-shrink:0}
+  .foot{margin-top:54px; padding-top:18px; border-top:1px solid var(--line); color:var(--dim); font-size:12px}
+  @media(max-width:980px){.wrap{grid-template-columns:1fr} nav{display:none} main{padding:24px 16px 70px} .grid2,.grid3,.grid4{grid-template-columns:1fr} h1{font-size:24px} .qa .tx{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <div class="brand">Code<span>Pick</span> · 架构</div>
+    <div class="sub">开发 Plan 01 · 整体架构</div>
+    <div class="grp">总览</div>
+    <a href="#about">文档说明</a>
+    <a href="#overview">① 架构全景</a>
+    <a href="#principles">② 架构原则</a>
+    <div class="grp">多视角解析</div>
+    <a href="#logical">③ 逻辑架构 (L0–L3)</a>
+    <a href="#service">④ 服务/应用架构</a>
+    <a href="#data">⑤ 数据架构</a>
+    <a href="#ai">⑥ AI / Agent 架构</a>
+    <a href="#api">⑦ API 与集成</a>
+    <a href="#deploy">⑧ 部署与基础设施</a>
+    <a href="#cross">⑨ 横切关注点</a>
+    <a href="#repo">⑩ 代码仓库结构</a>
+    <a href="#flows">⑪ 关键数据流</a>
+    <div class="grp">评估</div>
+    <a href="#quality">⑫ 质量属性</a>
+    <a href="#crosssite">⑬ 跨站可扩展性</a>
+    <a href="#adr">⑭ 架构决策 (ADR)</a>
+    <a href="#evolution">⑮ 演进路线</a>
+    <a href="#risk">⑯ 风险与权衡</a>
+  </nav>
+
+  <main>
+    <span class="tag">开发 Plan · 文档 01 / 整体架构</span>
+    <h1>CodePick — <em>分层数据平台 · 整体架构</em></h1>
+    <p class="lede">本文档从逻辑、服务、数据、AI/Agent、API、部署、横切、质量属性、跨站可扩展、架构决策等多个视角，解析 CodePick（AI Coding 高质量策展，面向海外、中英双语）的整体架构。它是后续模块级开发 Plan 的总纲与约束基准。</p>
+    <div class="meta">
+      <span class="mt">产品：<b>CodePick / 码间精选</b></span>
+      <span class="mt">后端：<b>Python · FastAPI · LangGraph</b></span>
+      <span class="mt">前端：<b>Next.js</b></span>
+      <span class="mt">存储：<b>PostgreSQL + pgvector · Redis</b></span>
+      <span class="mt">形态：<b>分层平台 + 跨站</b></span>
+    </div>
+
+    <section id="about">
+      <h2><span class="x">i</span>文档说明</h2>
+      <div class="card">
+        <p style="margin-top:0">这是"整体架构"——给出跨视角的全貌与边界约束，<b>不下沉到逐文件实现</b>。后续 Plan 将按本文档拆出：数据库 DDL、LangGraph 管线/Agent prompt、模块代码骨架、周级任务与排期、成本模型、验收标准。</p>
+        <p>解析采用类 <b>arc42 / 4+1 视图</b>的方式：逻辑视图（分层）、开发视图（仓库）、进程视图（服务/数据流）、物理视图（部署）、以及贯穿其中的场景与质量属性。</p>
+      </div>
+    </section>
+
+    <section id="overview">
+      <h2><span class="x">1</span>架构全景</h2>
+      <pre><span class="c">┌──────────────────────────────────────────────────────────────────────────────┐
+│ L3  PRODUCTS & SITES（消费层 · 可跨站）                                         </span><span class="vi">[产品/站点]</span><span class="c">  │
+│   Reader Web (Next.js)   Public API (/v1)   MCP Server   Brief/Newsletter      │
+└───────────────▲───────────────────▲────────────────▲──────────────────────────┘
+                │ HTTP/SSE           │ X-API-KEY      │ MCP(stdio/http)
+┌───────────────┴───────────────────┴────────────────┴──────────────────────────┐
+│ L2  JUDGMENT & AGENTS（智能层 · 按垂直/场景拆分）                              </span><span class="bl">[护城河]</span><span class="c">     │
+│   评分Agent  翻译Agent  推荐/重排  伴读QA  研究/监控   ── 由 LangGraph 编排     │
+└───────────────────────────────────▲────────────────────────────────────────────┘
+                                     │ 读取结构化内容知识
+┌────────────────────────────────────┴───────────────────────────────────────────┐
+│ L1  ENRICHMENT（加工层 · 算一次 · 全局复用）                                  </span><span class="gr">[共享]</span><span class="c">     │
+│   清洗/规范化  基础分析(摘要/观点/金句/实体)  embedding  基础打标  语言识别     │
+└────────────────────────────────────▲───────────────────────────────────────────┘
+                                     │ 读取干净原始数据
+┌────────────────────────────────────┴───────────────────────────────────────────┐
+│ L0  DATA FOUNDATION（数据底座 · 纯数据支撑 · 无业务判断）                      </span><span class="cy">[共享]</span><span class="c">  │
+│   采集(RSS+Playwright)  内容实体(全局唯一去重)  源注册表  原文/对象存储          │
+└──────────────────────────────────────────────────────────────────────────────┘
+        ▲ 抓取                                          ▼ 持久化
+   外部内容源(RSS/网页/播客/X)        PostgreSQL+pgvector · Redis · 对象存储(S3)</span></pre>
+      <div class="callout"><b>一句话读懂：</b>自下而上，数据被逐层"提纯—加工—判断—消费"。下层稳定通用、被复用；上层易变垂直、可拆分。<span class="hl">L0/L1 共享一份（省成本、能跨垂直综合），L2/L3 按垂直与产品分开（差异化与护城河）。</span></div>
+    </section>
+
+    <section id="principles">
+      <h2><span class="x">2</span>架构原则</h2>
+      <div class="grid2">
+        <div class="mini"><span class="ic">①</span><h4>分层单向依赖</h4><p>上层依赖下层，下层绝不反向依赖上层。L0 不知道垂直，L1 不知道产品。</p></div>
+        <div class="mini"><span class="ic">②</span><h4>数据唯一真相源</h4><p>一篇内容全局唯一；基础分析算一次；垂直评分按 content×vertical 派生。</p></div>
+        <div class="mini"><span class="ic">③</span><h4>判断与数据分离</h4><p>L0/L1 不含业务判断；判断集中在 L2，可调可审可回溯。</p></div>
+        <div class="mini"><span class="ic">④</span><h4>先单体后拆分</h4><p>MVP 单仓多模块 + 单机部署；按真实瓶颈再拆服务，不过早复杂化。</p></div>
+        <div class="mini"><span class="ic">⑤</span><h4>成本即一等约束</h4><p>LLM 分级调用 + 缓存 + 只深分析高价值内容，贯穿 L1/L2。</p></div>
+        <div class="mini"><span class="ic">⑥</span><h4>跨站预留，业务先穿一站</h4><p>平台能力按多垂直抽象，但先把 AI Coding 一站做穿。</p></div>
+      </div>
+    </section>
+
+    <section id="logical">
+      <h2><span class="x">3</span>逻辑架构（L0–L3 详解）</h2>
+      <div class="plat">
+        <div class="pl pl3"><span class="lb"><span class="badge l3">L3</span></span><div class="ln">PRODUCTS & SITES</div><div class="lt">产品与站点层</div>
+          <div class="ld"><b>组件</b>：Reader Web（公共精选/我的早报/推荐/AI伴读/账户）· Public API <code>/v1</code> · MCP Server · Brief/Newsletter。<b>职责</b>：体验、分发、商业化；只消费下层，不重算。</div></div>
+        <div class="pl pl2"><span class="lb"><span class="badge l2">L2</span></span><div class="ln">JUDGMENT & AGENTS</div><div class="lt">判断与智能体层</div>
+          <div class="ld"><b>组件</b>：垂直评分 Agent（六维分+相关性+垂直标签）· 翻译 Agent（中英）· 推荐/重排 · 伴读 QA · 研究/监控（后期）。<b>职责</b>：在结构化内容上做判断与智能处理，按垂直 lens 与场景拆分；LangGraph 编排。</div></div>
+        <div class="pl pl1"><span class="lb"><span class="badge l1">L1</span></span><div class="ln">ENRICHMENT</div><div class="lt">数据加工层</div>
+          <div class="ld"><b>组件</b>：清洗/规范化 · 初评过滤 · 基础分析（一句话/摘要/关键观点/金句/实体）· embedding · 基础打标 · 语言识别。<b>职责</b>：把原始数据加工为"结构化内容知识"，与垂直无关、算一次。</div></div>
+        <div class="pl pl0"><span class="lb"><span class="badge l0">L0</span></span><div class="ln">DATA FOUNDATION</div><div class="lt">数据底座</div>
+          <div class="ld"><b>组件</b>：源注册表 · RSS 轮询 · Playwright 全文抓取 · 正文提取 · 去重（url_hash+simhash）· ContentItem 实体 · 原文对象存储。<b>职责</b>：提供干净、统一、可信的数据真相源；无业务判断。</div></div>
+      </div>
+      <table>
+        <thead><tr><th>层</th><th>输入</th><th>输出</th><th>关键表/产物</th><th>共享性</th></tr></thead>
+        <tbody>
+          <tr><td><span class="badge l0">L0</span></td><td>外部源</td><td>规范化内容实体</td><td>sources, content_items, 对象存储</td><td>全局共享</td></tr>
+          <tr><td><span class="badge l1">L1</span></td><td>content_items</td><td>结构化内容知识</td><td>content_base_analysis (+embedding)</td><td>全局共享·算一次</td></tr>
+          <tr><td><span class="badge l2">L2</span></td><td>base_analysis</td><td>垂直判断 + 翻译</td><td>content_vertical_scores, translations</td><td>每垂直一份</td></tr>
+          <tr><td><span class="badge l3">L3</span></td><td>COMPLETED 内容</td><td>体验 + 分发 + 计费</td><td>users, briefs, api_keys ...</td><td>每产品/站</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="service">
+      <h2><span class="x">4</span>服务 / 应用架构</h2>
+      <pre><span class="c">                         ┌──────────────────┐
+   浏览器/Agent ─────────▶│  Reader Web      │  Next.js (SSR, i18n CN/EN)   </span><span class="vi">L3</span><span class="c">
+                         └────────┬─────────┘
+                                  │ HTTP/SSE
+        ┌──────────────┬──────────┴──────────┬──────────────────┐
+        ▼              ▼                     ▼                  ▼
+  ┌───────────┐  ┌───────────┐        ┌───────────┐     ┌────────────┐
+  │ reader-api│  │ public-api│        │ mcp-server│     │ (前端BFF聚合)│   </span><span class="vi">L3</span><span class="c">
+  │ FastAPI   │  │ FastAPI   │        │ Py MCP SDK│     └────────────┘
+  │ JWT/session│ │ /v1 +APIKey│       └─────┬─────┘
+  └─────┬─────┘  └─────┬─────┘              │ 调内部 /v1
+        │              │                     │
+        └──────────────┴─────────────────────┘
+                       │ 共享领域/仓储 (packages/common, core-data)
+   ┌───────────────────┼───────────────────────────────────────────┐
+   ▼                   ▼                   ▼                ▼
+ ┌─────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
+ │ingestion│  │ enrichment   │  │ scoring/     │  │ briefs       │   </span><span class="cy">L0</span><span class="gr"> L1</span><span class="bl"> L2</span><span class="vi"> L3</span><span class="c">
+ │ worker  │  │ worker(Lang  │  │ translate    │  │ worker(cron) │
+ │ (L0)    │  │ Graph, L1)   │  │ worker(L2)   │  │ (L3)         │
+ └─────────┘  └──────────────┘  └──────────────┘  └──────────────┘
+        └──────────── Redis 队列 (Arq/Celery) · 事件驱动 ───────────┘</span></pre>
+      <table>
+        <thead><tr><th>服务/进程</th><th>技术</th><th>职责</th><th>层</th></tr></thead>
+        <tbody>
+          <tr><td><strong>reader-web</strong></td><td>Next.js + TS</td><td>Reader 前端，SSR/SEO，中英 i18n</td><td><span class="badge l3">L3</span></td></tr>
+          <tr><td><strong>reader-api</strong></td><td>FastAPI</td><td>用户 API/BFF：feed/brief/read/companion/events，JWT</td><td><span class="badge l3">L3</span></td></tr>
+          <tr><td><strong>public-api</strong></td><td>FastAPI</td><td>对外 <code>/v1</code> 原语，API Key + 限流 + 配额</td><td><span class="badge l3">L3</span></td></tr>
+          <tr><td><strong>mcp-server</strong></td><td>MCP Python SDK</td><td>把 /v1 原语包装为 MCP 工具</td><td><span class="badge l3">L3</span></td></tr>
+          <tr><td><strong>ingestion-worker</strong></td><td>Playwright+feedparser</td><td>采集、抓取、提取、去重、建实体</td><td><span class="badge l0">L0</span></td></tr>
+          <tr><td><strong>enrichment-worker</strong></td><td>LangGraph</td><td>初评过滤 + 基础分析 + embedding</td><td><span class="badge l1">L1</span></td></tr>
+          <tr><td><strong>scoring-worker</strong></td><td>LangGraph</td><td>垂直评分 + 翻译 Agent</td><td><span class="badge l2">L2</span></td></tr>
+          <tr><td><strong>briefs-worker</strong></td><td>Arq/Celery cron</td><td>公共/我的早报生成、邮件</td><td><span class="badge l3">L3</span></td></tr>
+        </tbody>
+      </table>
+      <div class="callout amber"><b>MVP 收敛：</b>上述进程 MVP 阶段可合并为 <code>api</code> + <code>worker</code> 两个进程（worker 内按队列分 task），单 docker-compose 起步；规模化后按表拆分独立进程。</div>
+    </section>
+
+    <section id="data">
+      <h2><span class="x">5</span>数据架构</h2>
+      <h3>存储职责</h3>
+      <div class="grid4">
+        <div class="mini"><span class="ic">🐘</span><h4>PostgreSQL</h4><p>主存储与真相源：实体、分析、评分、用户、订阅</p></div>
+        <div class="mini"><span class="ic">🧲</span><h4>pgvector</h4><p>内容/用户兴趣 embedding，kNN 语义召回</p></div>
+        <div class="mini"><span class="ic">⚡</span><h4>Redis</h4><p>缓存、队列 broker、限流/配额计数</p></div>
+        <div class="mini"><span class="ic">🪣</span><h4>对象存储</h4><p>原文 HTML、早报音频（S3/R2）</p></div>
+      </div>
+      <h3>核心表（跨层）</h3>
+      <pre><span class="cy">-- L0 数据底座</span>
+<span class="vi">sources</span>(id, name, feed_url, type, crawl_config jsonb, is_public, owner_user_id?, vertical_codes[])
+<span class="vi">content_items</span>(id, canonical_url, url_hash <span class="ye">UNIQUE</span>, simhash, title, lang,
+              source_id, raw_ref, clean_text_ref, published_at, fetched_at,
+              status <span class="c">[WAIT_FILTER|WAIT_ANALYSIS|WAIT_SCORE|WAIT_REVIEW|COMPLETED|CANCELLED]</span>)
+
+<span class="gr">-- L1 加工（算一次，全局复用）</span>
+<span class="vi">content_base_analysis</span>(content_id <span class="ye">PK FK</span>, one_liner, summary, key_points jsonb,
+              quotes jsonb, entities jsonb, base_tags jsonb,
+              embedding <span class="ye">vector(1536)</span>, model, created_at)
+
+<span class="bl">-- L2 判断（content × vertical，每垂直一份）</span>
+<span class="vi">verticals</span>(code <span class="ye">PK</span>, name, rubric_prompt, tag_taxonomy jsonb, source_filter jsonb, enabled)
+<span class="vi">content_vertical_scores</span>(content_id, vertical_code, relevance,
+              dim_scores jsonb <span class="c">{topic,content,depth,practical,novelty,expression}</span>,
+              vertical_tags jsonb, quality_score, reviewed, <span class="ye">PK</span>(content_id, vertical_code))
+<span class="vi">content_translations</span>(content_id, lang, fields jsonb <span class="c">{summary,key_points,quotes,...}</span>)
+
+<span class="pk">-- L3 产品（每产品/站）</span>
+<span class="vi">users</span>, <span class="vi">subscriptions</span>, <span class="vi">user_interests</span>, <span class="vi">user_follows</span>, <span class="vi">reading_events</span>,
+<span class="vi">briefs</span>, <span class="vi">bookmarks</span>, <span class="vi">api_keys</span>, <span class="vi">api_usage_daily</span></pre>
+      <div class="callout green"><b>内容状态机即质量边界：</b><code>WAIT_FILTER → WAIT_ANALYSIS → WAIT_SCORE → WAIT_REVIEW → COMPLETED</code>。L3 仅消费 <code>COMPLETED</code>，未完成态不得进入任何公共/对外结果。</div>
+    </section>
+
+    <section id="ai">
+      <h2><span class="x">6</span>AI / Agent 架构（LangGraph）</h2>
+      <p class="note">AI 能力以 LangGraph 图（StateGraph）实现，按职责拆成独立图，可单独调试、换模型、观测、重试。模型分级：便宜模型做初评，中端模型做分析/评分。</p>
+      <h3>① 基础分析图（L1，与垂直无关）</h3>
+      <pre><span class="gr">enrichment_graph</span>:
+  filter <span class="c">(cheap LLM: 剔低质/营销, ignore→CANCELLED)</span>
+    └▶ branch by length
+         ├ short ─▶ analyze_full
+         └ long  ─▶ split ▶ map(analyze_chunk) ▶ aggregate
+              └▶ extract <span class="c">(one_liner, summary, key_points, quotes, entities)</span>
+                   └▶ embed <span class="c">(→ pgvector)</span> ▶ base_tag ▶ persist</pre>
+      <h3>② 垂直评分图（L2，注入垂直 rubric）</h3>
+      <pre><span class="bl">scoring_graph</span>(vertical):
+  relevance_gate <span class="c">(是否属于该垂直? 否→跳过)</span>
+    └▶ score_6dim <span class="c">(rubric_prompt 注入: topic/content/depth/practical/novelty/expression)</span>
+         └▶ vertical_tag <span class="c">(垂直标签体系)</span>
+              └▶ reflect/check <span class="c">(扮演领域评审专家，查全面/准确/一致)</span>
+                   └▶ refine ▶ persist(content_vertical_scores) ▶ review_queue?</pre>
+      <h3>③ 翻译图（L2，中英双向）</h3>
+      <pre><span class="bl">translate_graph</span>(target_lang):
+  identify_terms ▶ translate ▶ check ▶ refine(意译) ▶ persist(content_translations)</pre>
+      <h3>④ 伴读 / 研究（L2，请求时）</h3>
+      <pre><span class="bl">companion_graph</span>: load(base_analysis+text) ▶ retrieve(相关段落) ▶ answer(SSE 流式) ▶ log(quota)</pre>
+      <div class="grid3">
+        <div class="mini"><span class="ic">🎚️</span><h4>模型分级</h4><p>filter=小模型；analyze/score=中端；可按 ConfigKey 切换</p></div>
+        <div class="mini"><span class="ic">💾</span><h4>缓存与幂等</h4><p>按 content+graph 版本缓存；节点可重试，失败不阻塞发布链路</p></div>
+        <div class="mini"><span class="ic">🔭</span><h4>可观测</h4><p>LangSmith/自建 trace；每节点输入输出留痕，便于调 prompt</p></div>
+      </div>
+    </section>
+
+    <section id="api">
+      <h2><span class="x">7</span>API 与集成架构</h2>
+      <table>
+        <thead><tr><th>面</th><th>前缀</th><th>鉴权</th><th>消费者</th></tr></thead>
+        <tbody>
+          <tr><td>用户 API / BFF</td><td><code>/api/*</code></td><td>Session / JWT</td><td>Reader Web（内部）</td></tr>
+          <tr><td>对外开放 API</td><td><code>/v1/*</code></td><td>X-API-KEY + 限流 + 配额</td><td>开发者 / Agent / 第三方</td></tr>
+          <tr><td>MCP</td><td>—</td><td>API Key（env）</td><td>Claude / Cursor / 自建 Agent</td></tr>
+          <tr><td>回调</td><td><code>/webhooks/*</code></td><td>签名校验</td><td>支付(Paddle/Stripe)/OAuth</td></tr>
+        </tbody>
+      </table>
+      <div class="callout violet"><b>信任边界隔离：</b>内部 <code>/api</code> 与对外 <code>/v1</code> 走不同前缀、不同过滤器、不同鉴权，避免"同前缀不同信任边界"误伤。对外只暴露稳定原语（today/search/analyze/trending/sources），不透出推荐决策与隐私上下文。</div>
+    </section>
+
+    <section id="deploy">
+      <h2><span class="x">8</span>部署与基础设施</h2>
+      <div class="grid3">
+        <div class="mini"><span class="ic">①</span><h4>MVP（单 VPS）</h4><p>docker-compose：reader-web · api · worker · postgres(pgvector) · redis · playwright。月成本 $60–300。</p></div>
+        <div class="mini"><span class="ic">②</span><h4>成长期</h4><p>拆 worker（ingest/enrich/score/brief）独立进程；托管 Postgres；Web 上 CDN；对象存储独立。</p></div>
+        <div class="mini"><span class="ic">③</span><h4>规模化</h4><p>API 多实例水平扩展；任务锁去重；Redis 集群；可选 ES 作搜索读模型。</p></div>
+      </div>
+      <pre><span class="c"># MVP docker-compose 服务</span>
+reader-web   <span class="c"># Next.js</span>            api        <span class="c"># FastAPI (reader-api + public-api)</span>
+worker       <span class="c"># Arq: ingest/enrich/score/brief</span>   postgres   <span class="c"># 16 + pgvector</span>
+redis        <span class="c"># 缓存/队列/限流</span>       playwright <span class="c"># 抓取(或装进 worker 镜像)</span></pre>
+    </section>
+
+    <section id="cross">
+      <h2><span class="x">9</span>横切关注点</h2>
+      <table>
+        <thead><tr><th>关注点</th><th>方案</th></tr></thead>
+        <tbody>
+          <tr><td><strong>配置/开关</strong></td><td>ConfigKey 单一真相源（DB + 缓存）；Feature Flag 默认关→验证→放量；可瞬时关闭而不回滚部署</td></tr>
+          <tr><td><strong>缓存</strong></td><td>本地缓存 + Redis + 数据源三层；LLM 结果按 content+graph 版本缓存</td></tr>
+          <tr><td><strong>可观测</strong></td><td>结构化日志 + 指标 + 链路追踪；LangGraph 节点 trace；北极星埋点（深度阅读闭环率）</td></tr>
+          <tr><td><strong>鉴权/限流/配额</strong></td><td>Redis 共享计数；分层配额；429 带重置时间</td></tr>
+          <tr><td><strong>i18n</strong></td><td>UI 中英；内容分析双语（content_translations）；按用户/Accept-Language 切换</td></tr>
+          <tr><td><strong>安全/合规</strong></td><td>密钥管理、最小暴露、GDPR 友好；只存摘要+链接不全文转载</td></tr>
+          <tr><td><strong>成本治理</strong></td><td>模型分级 + 缓存 + 只深分析高价值内容；用量监控告警</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="repo">
+      <h2><span class="x">10</span>代码仓库结构（Monorepo）</h2>
+      <pre><span class="vi">codepick/</span>
+├── apps/
+│   └── <span class="cy">reader-web/</span>          <span class="c"># Next.js 前端 (L3)</span>
+├── services/
+│   ├── <span class="cy">reader-api/</span>          <span class="c"># FastAPI 用户API/BFF (L3)</span>
+│   ├── <span class="cy">public-api/</span>          <span class="c"># FastAPI /v1 对外API (L3)</span>
+│   └── <span class="cy">mcp-server/</span>          <span class="c"># MCP (L3)</span>
+├── workers/
+│   ├── <span class="cy">ingestion/</span>           <span class="c"># 采集 (L0)</span>
+│   ├── <span class="cy">enrichment/</span>          <span class="c"># 基础分析 LangGraph (L1)</span>
+│   ├── <span class="cy">scoring/</span>             <span class="c"># 垂直评分/翻译 (L2)</span>
+│   └── <span class="cy">briefs/</span>              <span class="c"># 早报 Job (L3)</span>
+├── packages/                <span class="c"># 可复用 Python 库</span>
+│   ├── <span class="gr">core_data/</span>           <span class="c"># L0: 实体/仓储/采集/去重</span>
+│   ├── <span class="gr">enrichment_graph/</span>    <span class="c"># L1: LangGraph 基础分析</span>
+│   ├── <span class="gr">judgment_graph/</span>      <span class="c"># L2: 评分/翻译/推荐 Agents</span>
+│   └── <span class="gr">common/</span>              <span class="c"># 配置/领域模型/DB/工具</span>
+├── db/                      <span class="c"># Alembic migrations, DDL</span>
+├── deploy/                  <span class="c"># docker-compose, env 模板</span>
+└── pyproject (uv workspace) + package.json (前端)</pre>
+      <div class="callout"><b>代码边界 = 架构边界：</b>目录直接对应 L0–L3，依赖方向由 lint/import 规则约束（上层可 import 下层，反之禁止），让分层在代码里"长出来"而非靠口头约定。</div>
+    </section>
+
+    <section id="flows">
+      <h2><span class="x">11</span>关键数据流（时序）</h2>
+      <h3>A. 内容生产（L0→L3 发布）</h3>
+      <div class="seq">
+        <div class="r"><div><b>L0</b> 源轮询发现新 URL → Playwright 抓全文 → 提取正文 → 去重 → 建 ContentItem(WAIT_FILTER)</div></div>
+        <div class="r"><div><b>L1</b> enrichment 图：初评过滤（小模型，低质→CANCELLED）→ 基础分析 → embedding → 写 base_analysis</div></div>
+        <div class="r"><div><b>L2</b> scoring 图：对匹配垂直算六维分+标签 → 翻译图产中英 → 写 vertical_scores/translations</div></div>
+        <div class="r"><div><b>L2</b> 低置信/高曝光进精审队列 → 通过 → status=COMPLETED</div></div>
+        <div class="r"><div><b>L3</b> 进入公共精选 / 早报候选 / 对外 API 可见</div></div>
+      </div>
+      <h3>B. 我的早报（Cron）/ C. 对外 API / D. MCP</h3>
+      <div class="grid3">
+        <div class="mini"><h4>B 我的早报</h4><p>取用户兴趣→召回(标签+向量)→去重→重排(质量×权重+新鲜度−多样性)→渲染→邮件</p></div>
+        <div class="mini"><h4>C /v1 请求</h4><p>API Key校验→限流→配额→查 COMPLETED+vertical_scores→裁剪字段→返回(含 quota)</p></div>
+        <div class="mini"><h4>D MCP 调用</h4><p>Agent 触发 tool→mcp-server 用 env key 调 /v1→结构化 JSON 回 LLM</p></div>
+      </div>
+    </section>
+
+    <section id="quality">
+      <h2><span class="x">12</span>质量属性（非功能性）</h2>
+      <p class="note">架构对各质量属性的优先级与达成手段（条长表示该架构对此属性的投入强度）。</p>
+      <div class="card">
+        <div class="qa"><div class="nm">成本效率</div><div class="bar"><div class="fl" style="width:95%;background:var(--green)"></div></div><div class="tx">模型分级+缓存+只深分析高价值，最高优先</div></div>
+        <div class="qa"><div class="nm">可扩展性</div><div class="bar"><div class="fl" style="width:85%;background:var(--cy)"></div></div><div class="tx">分层平台+跨站，新增垂直低边际成本</div></div>
+        <div class="qa"><div class="nm">可维护性</div><div class="bar"><div class="fl" style="width:88%;background:var(--blue)"></div></div><div class="tx">代码边界=架构边界；LangGraph 可调可观测</div></div>
+        <div class="qa"><div class="nm">可靠性</div><div class="bar"><div class="fl" style="width:75%;background:var(--violet)"></div></div><div class="tx">状态机+重试+幂等；失败不阻塞发布</div></div>
+        <div class="qa"><div class="nm">性能/延迟</div><div class="bar"><div class="fl" style="width:70%;background:var(--amber)"></div></div><div class="tx">详情秒开(读 base_analysis)；分析走异步</div></div>
+        <div class="qa"><div class="nm">安全/合规</div><div class="bar"><div class="fl" style="width:72%;background:var(--pink)"></div></div><div class="tx">信任边界隔离+GDPR+不全文转载</div></div>
+        <div class="qa"><div class="nm">高可用(HA)</div><div class="bar"><div class="fl" style="width:45%;background:var(--rose)"></div></div><div class="tx">MVP 单机可接受；规模化再做多实例</div></div>
+      </div>
+      <div class="callout amber"><b>权衡说明：</b>MVP 阶段刻意<b>牺牲 HA 与极致性能</b>，换取<b>成本、开发速度、可维护性</b>。这符合单人/小团队、内容产品（异步为主、非强实时）的特性。</div>
+    </section>
+
+    <section id="crosssite">
+      <h2><span class="x">13</span>跨站可扩展性</h2>
+      <pre><span class="c">          共享平台 (L0 + L1)  ← 只建一次</span>
+                 │
+   ┌─────────────┼─────────────────────┬──────────────┐
+   ▼             ▼                     ▼              ▼
+ <span class="bl">L2 lens</span>       <span class="bl">L2 lens</span>               <span class="bl">L2 lens</span>        <span class="bl">L2 通用 agents</span>
+ ai-coding     (future)data-eng       (future)devops  翻译/研究/监控
+   │             │                     │              │
+   ▼             ▼                     ▼              ▼
+ <span class="vi">L3 站点</span>       <span class="vi">L3 站点</span>               <span class="vi">L3 站点</span>        <span class="pk">L3 跨站 Agent API/MCP</span>
+ CodePick      (扩展)                (扩展)          (一个接口按 vertical 服务全部)</pre>
+      <ul class="clean">
+        <li><strong>加一个垂直</strong> = 新增 verticals 一行（rubric+标签+源过滤）+ 起一个 L3 站；L0/L1 不动。</li>
+        <li><strong>跨垂直综合</strong>：数据底座唯一 → 可做单垂直玩家做不到的交叉主题分析。</li>
+        <li><strong>统一 Agent 接口</strong>：<code>/v1?vertical=</code> 天然跨站。</li>
+      </ul>
+    </section>
+
+    <section id="adr">
+      <h2><span class="x">14</span>架构决策记录 (ADR)</h2>
+      <div class="adr"><div class="h"><span class="id">ADR-1</span><span class="t">采用分层数据平台（L0–L3），而非单体业务应用</span></div><div class="d">理由：支持<b>多垂直/跨站复用</b>与<b>判断/数据分离</b>；代价是早期抽象成本，用"先穿一站"对冲。</div></div>
+      <div class="adr"><div class="h"><span class="id">ADR-2</span><span class="t">后端用 Python，AI 编排用 LangGraph</span></div><div class="d">理由：AI/Agent 生态原生在 Python；LangGraph 提供<b>图式编排、状态、条件分支、可观测、重试</b>，契合多 Agent 分层。前端仍 Next.js（SEO+i18n）。</div></div>
+      <div class="adr"><div class="h"><span class="id">ADR-3</span><span class="t">PostgreSQL + pgvector 作单一主存储</span></div><div class="d">理由：关系+jsonb+向量<b>一体化</b>，少组件、运维简单、事务清晰；规模化后再引入 ES 作搜索读模型。</div></div>
+      <div class="adr"><div class="h"><span class="id">ADR-4</span><span class="t">基础分析算一次（L1），垂直评分按 content×vertical 派生（L2）</span></div><div class="d">理由：内容唯一、成本只付一次；垂直价值各算一份。这是<b>成本优势</b>与<b>跨垂直综合</b>能力的来源。</div></div>
+      <div class="adr"><div class="h"><span class="id">ADR-5</span><span class="t">先单体多模块 + 单机部署，按瓶颈再拆</span></div><div class="d">理由：单人/小团队优先开发速度与低运维；避免过早微服务化。代码已按层划分，拆分时低成本。</div></div>
+      <div class="adr"><div class="h"><span class="id">ADR-6</span><span class="t">对外 API 只暴露稳定原语，信任边界与内部 API 隔离</span></div><div class="d">理由：受控暴露，保护推荐决策与隐私；前缀/过滤器/鉴权分离避免误伤。</div></div>
+    </section>
+
+    <section id="evolution">
+      <h2><span class="x">15</span>架构演进路线</h2>
+      <table>
+        <thead><tr><th>阶段</th><th>架构形态</th><th>触发信号</th></tr></thead>
+        <tbody>
+          <tr><td>MVP</td><td>单仓多模块；api+worker 两进程；单机 compose</td><td>验证判断力与 MVP 闭环</td></tr>
+          <tr><td>V1</td><td>worker 按层拆进程；托管 PG；CDN；缓存完善</td><td>有留存与付费信号</td></tr>
+          <tr><td>V2</td><td>public-api/mcp 独立扩展；ES 搜索读模型；向量召回增强</td><td>API/Agent 调用上量</td></tr>
+          <tr><td>跨站</td><td>新增 L2 lens + L3 站；跨垂直综合服务</td><td>第一站 PMF 后</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="risk">
+      <h2><span class="x">16</span>架构风险与权衡</h2>
+      <table>
+        <thead><tr><th>风险/权衡</th><th>应对</th></tr></thead>
+        <tbody>
+          <tr><td>分层抽象的早期成本</td><td>"先穿一站"，平台能力随真实需求逐步固化，不一次性全建</td></tr>
+          <tr><td>LLM 成本与延迟</td><td>模型分级 + 缓存 + 异步；只对高价值内容深分析</td></tr>
+          <tr><td>pgvector 在大规模召回的性能</td><td>初期够用；上量后引入 ES/专用向量库作读模型</td></tr>
+          <tr><td>单机部署的可用性</td><td>MVP 可接受（内容产品异步为主）；V1 起做多实例与备份</td></tr>
+          <tr><td>跨境合规/版权</td><td>只存摘要+链接、标注来源、Paddle 处理税务、GDPR 设计</td></tr>
+        </tbody>
+      </table>
+      <div class="callout green"><b>下一份开发 Plan（文档 02）将下沉到：</b>① 可执行 DDL（建表+索引+pgvector）；② LangGraph 各图的节点代码骨架与 prompt；③ 模块 API 契约；④ M0–M6 周级任务与排期；⑤ USD 成本模型；⑥ 每里程碑验收标准（DoD）。</div>
+    </section>
+
+    <div class="foot">
+      CodePick 整体架构文档 · 开发 Plan 01 · 基准定稿 v0.2 · Python/FastAPI/LangGraph · PostgreSQL+pgvector · 分层数据平台(L0–L3)+跨站 · 2026-05-30
+    </div>
+  </main>
+</div>
+</body>
+</html>

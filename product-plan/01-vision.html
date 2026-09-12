@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InsightFlow 产品规划 - 第一部分：产品愿景与定位</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+            line-height: 1.8;
+            color: #1a1a2e;
+            background: #f8f9fa;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+            padding: 60px;
+        }
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        h1 {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            font-size: 18px;
+            color: #6c757d;
+            margin-bottom: 40px;
+        }
+        h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2d3436;
+            margin-top: 48px;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #667eea;
+            display: inline-block;
+        }
+        h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d3436;
+            margin-top: 32px;
+            margin-bottom: 12px;
+        }
+        p {
+            margin-bottom: 16px;
+            color: #4a4a4a;
+        }
+        .highlight-box {
+            background: linear-gradient(135deg, #f5f3ff, #ede9fe);
+            border-left: 4px solid #667eea;
+            padding: 24px 28px;
+            border-radius: 0 12px 12px 0;
+            margin: 24px 0;
+        }
+        .highlight-box p {
+            margin-bottom: 0;
+            font-size: 16px;
+            font-weight: 500;
+            color: #4c1d95;
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+        }
+        .comparison-table th {
+            background: #667eea;
+            color: #fff;
+            padding: 14px 18px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .comparison-table td {
+            padding: 14px 18px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+            color: #4a4a4a;
+        }
+        .comparison-table tr:nth-child(even) {
+            background: #f8f9ff;
+        }
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 16px 0;
+        }
+        .tag {
+            background: #ede9fe;
+            color: #5b21b6;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .section-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: #667eea;
+            color: #fff;
+            border-radius: 50%;
+            font-size: 14px;
+            font-weight: 700;
+            margin-right: 12px;
+        }
+        .footer {
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e9ecef;
+            text-align: center;
+            color: #adb5bd;
+            font-size: 13px;
+        }
+        .nav-hint {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-top: 40px;
+            font-size: 14px;
+            color: #166534;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <span class="badge">Part 1 of 5</span>
+        <h1>InsightFlow</h1>
+        <p class="subtitle">AI 驱动的知识发现与深度阅读平台 — 产品愿景与定位</p>
+
+        <h2><span class="section-number">1</span>产品名称与 Slogan</h2>
+        <p><strong>产品名称：</strong>InsightFlow（洞见流）</p>
+        <p><strong>英文 Slogan：</strong>Read Less, Know More.</p>
+        <p><strong>中文 Slogan：</strong>让每一次阅读都值得</p>
+
+        <div class="highlight-box">
+            <p>💡 核心理念：在信息过载的时代，问题不是"读什么"，而是"不读什么"。InsightFlow 用 AI 帮你做减法，只留下真正值得你花时间的内容。</p>
+        </div>
+
+        <h2><span class="section-number">2</span>产品愿景</h2>
+        <p>成为知识工作者的<strong>第二大脑入口</strong>——不是另一个 RSS 阅读器，不是另一个稍后读工具，而是一个能理解你、帮你筛选、帮你消化、帮你记住的<strong>智能阅读伙伴</strong>。</p>
+
+        <h3>三层愿景</h3>
+        <table class="comparison-table">
+            <tr>
+                <th>阶段</th>
+                <th>目标</th>
+                <th>时间线</th>
+            </tr>
+            <tr>
+                <td><strong>V1 — 智能筛选</strong></td>
+                <td>从海量信息中精准筛选高质量内容，节省用户 80% 的信息筛选时间</td>
+                <td>0-6 个月</td>
+            </tr>
+            <tr>
+                <td><strong>V2 — 深度理解</strong></td>
+                <td>AI 辅助阅读、知识图谱构建、个人知识库自动沉淀</td>
+                <td>6-12 个月</td>
+            </tr>
+            <tr>
+                <td><strong>V3 — 知识网络</strong></td>
+                <td>连接人与知识、人与人，形成高质量知识社区与协作网络</td>
+                <td>12-24 个月</td>
+            </tr>
+        </table>
+
+        <h2><span class="section-number">3</span>目标用户</h2>
+
+        <h3>核心用户画像</h3>
+        <table class="comparison-table">
+            <tr>
+                <th>用户类型</th>
+                <th>痛点</th>
+                <th>期望价值</th>
+            </tr>
+            <tr>
+                <td><strong>技术从业者</strong><br>开发者、架构师、AI 工程师</td>
+                <td>技术博客/论文太多，无法跟踪前沿；英文内容阅读效率低</td>
+                <td>每天 15 分钟掌握领域动态，AI 翻译+摘要降低阅读门槛</td>
+            </tr>
+            <tr>
+                <td><strong>产品经理</strong><br>产品设计、增长、运营</td>
+                <td>需要跨领域信息输入，但时间碎片化严重</td>
+                <td>个性化日报 + 结构化摘要，碎片时间高效吸收</td>
+            </tr>
+            <tr>
+                <td><strong>创业者/管理者</strong><br>CEO、VP、总监</td>
+                <td>需要行业洞察但没时间深度阅读</td>
+                <td>高密度信息简报 + 趋势分析，辅助决策</td>
+            </tr>
+            <tr>
+                <td><strong>研究者/学者</strong><br>学术研究、行业分析师</td>
+                <td>需要系统性追踪特定领域的最新进展</td>
+                <td>领域追踪 + 知识图谱 + 文献关联</td>
+            </tr>
+            <tr>
+                <td><strong>终身学习者</strong><br>自我提升、跨界学习</td>
+                <td>想学但不知道学什么，缺乏系统性</td>
+                <td>学习路径推荐 + 渐进式内容推送</td>
+            </tr>
+        </table>
+
+        <h3>用户兴趣标签体系</h3>
+        <div class="tag-list">
+            <span class="tag">🖥️ 技术工程</span>
+            <span class="tag">🤖 人工智能</span>
+            <span class="tag">📦 产品设计</span>
+            <span class="tag">📈 商业创投</span>
+            <span class="tag">🧠 认知科学</span>
+            <span class="tag">🌍 行业洞察</span>
+            <span class="tag">📚 人文社科</span>
+            <span class="tag">🎨 创意设计</span>
+        </div>
+
+        <h2><span class="section-number">4</span>竞品差异化定位</h2>
+        <table class="comparison-table">
+            <tr>
+                <th>维度</th>
+                <th>Feedly / Inoreader</th>
+                <th>Readwise Reader</th>
+                <th>BestBlogs</th>
+                <th>InsightFlow（我们）</th>
+            </tr>
+            <tr>
+                <td><strong>核心价值</strong></td>
+                <td>RSS 聚合</td>
+                <td>阅读 + 记忆</td>
+                <td>AI 筛选 + 个性化推荐</td>
+                <td>AI 筛选 + 深度理解 + 知识沉淀</td>
+            </tr>
+            <tr>
+                <td><strong>内容发现</strong></td>
+                <td>用户自选源</td>
+                <td>用户自选源</td>
+                <td>平台筛选 + 个性化</td>
+                <td>平台筛选 + 个性化 + 社区推荐</td>
+            </tr>
+            <tr>
+                <td><strong>AI 能力</strong></td>
+                <td>基础摘要</td>
+                <td>高亮 + GPT 问答</td>
+                <td>6 维评分 + 摘要 + 翻译</td>
+                <td>多维评分 + 知识图谱 + 对话式阅读</td>
+            </tr>
+            <tr>
+                <td><strong>知识管理</strong></td>
+                <td>无</td>
+                <td>间隔重复</td>
+                <td>书签/笔记</td>
+                <td>自动知识图谱 + 关联发现 + 导出</td>
+            </tr>
+            <tr>
+                <td><strong>社区属性</strong></td>
+                <td>无</td>
+                <td>无</td>
+                <td>弱（公共简报）</td>
+                <td>知识圈子 + 协作批注 + 专家推荐</td>
+            </tr>
+            <tr>
+                <td><strong>开放性</strong></td>
+                <td>API</td>
+                <td>API</td>
+                <td>OpenAPI + CLI + Agent Skills</td>
+                <td>OpenAPI + Plugin + Agent + MCP</td>
+            </tr>
+        </table>
+
+        <h2><span class="section-number">5</span>核心差异化优势</h2>
+
+        <div class="highlight-box">
+            <p>🎯 <strong>差异化一：知识图谱驱动的内容理解</strong><br>
+            不只是推荐"你可能感兴趣的文章"，而是构建你的个人知识图谱，发现知识盲区，推荐能填补认知缺口的内容。</p>
+        </div>
+
+        <div class="highlight-box">
+            <p>🎯 <strong>差异化二：对话式深度阅读</strong><br>
+            每篇文章都可以"对话"——提问、追问、关联、延伸。不是简单的 Q&A，而是基于全文理解的苏格拉底式引导。</p>
+        </div>
+
+        <div class="highlight-box">
+            <p>🎯 <strong>差异化三：知识社区与协作</strong><br>
+            引入"知识圈子"概念——同领域的人共同筛选、批注、讨论，形成高质量的垂直知识社区。</p>
+        </div>
+
+        <div class="highlight-box">
+            <p>🎯 <strong>差异化四：渐进式学习引擎</strong><br>
+            根据用户当前知识水平，推荐从入门到进阶的内容路径，像一个懂你的导师而非算法。</p>
+        </div>
+
+        <div class="nav-hint">
+            📄 <strong>下一部分：</strong>02-features.html — 核心功能设计与用户旅程
+        </div>
+
+        <div class="footer">
+            InsightFlow 产品规划文档 · Part 1/5 · 产品愿景与定位
+        </div>
+    </div>
+</body>
+</html>

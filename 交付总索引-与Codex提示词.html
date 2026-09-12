@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CodePick · 交付总索引 + Codex 提示词</title>
+<style>
+  :root{--bg:#0f1320;--card:#171c2e;--card2:#1d2438;--line:#2a3247;--ink:#eef2fb;--muted:#9aa6be;--dim:#6b7690;
+    --l0:#22d3ee;--l1:#34d399;--l2:#60a5fa;--l3:#a78bfa;--amber:#fbbf24;--green:#34d399;--rose:#fb7185}
+  *{box-sizing:border-box}html{scroll-behavior:smooth}
+  body{margin:0;background:radial-gradient(1000px 500px at 80% -10%,rgba(96,165,250,.08),transparent),var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.7;font-size:14.5px}
+  a{color:var(--l2)}.wrap{display:grid;grid-template-columns:240px 1fr;max-width:1320px;margin:0 auto}
+  nav{position:sticky;top:0;height:100vh;overflow-y:auto;padding:24px 14px;border-right:1px solid var(--line);background:rgba(15,19,32,.72)}
+  nav .brand{font-weight:800;font-size:16px}nav .brand span{color:var(--l2)}
+  nav .sub{color:var(--dim);font-size:11px;margin-bottom:14px}
+  nav a{display:block;color:var(--muted);padding:5.5px 11px;border-radius:8px;font-size:12.5px}nav a:hover{background:var(--card);color:var(--ink);text-decoration:none}
+  nav .grp{color:var(--dim);font-size:10px;text-transform:uppercase;letter-spacing:1px;margin:13px 0 3px 11px}
+  main{padding:40px 52px 110px;min-width:0}
+  .tag{display:inline-block;background:rgba(96,165,250,.13);color:var(--l2);border:1px solid rgba(96,165,250,.32);padding:4px 12px;border-radius:999px;font-size:12.5px;font-weight:700;margin-bottom:13px}
+  h1{font-size:30px;line-height:1.24;margin:0 0 11px;font-weight:800}h1 em{font-style:normal;background:linear-gradient(90deg,var(--l0),var(--l3));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lede{color:var(--muted);font-size:16px;max-width:840px}
+  section{margin:40px 0;scroll-margin-top:14px}
+  h2{font-size:21px;margin:0 0 6px;font-weight:800;display:flex;align-items:center;gap:10px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+  h2 .x{background:linear-gradient(135deg,var(--l2),var(--l3));color:#0b1020;width:27px;height:27px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0}
+  h3{font-size:16px;margin:18px 0 8px}.note{color:var(--dim);font-size:12.5px;margin-bottom:12px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:17px 19px;margin:12px 0}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:12.6px;border-radius:10px;overflow:hidden}
+  th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}th{background:var(--card2);color:#fff;font-weight:700}td{color:var(--muted)}tr:last-child td{border-bottom:none}td strong{color:var(--ink)}
+  code{background:var(--card2);padding:1.5px 6px;border-radius:5px;font-size:12px;color:#c4b5fd;font-family:Consolas,monospace}
+  pre{background:#0a0e1a;border:1px solid var(--line);border-radius:11px;padding:14px 16px;overflow-x:auto;font-size:12px;line-height:1.55;color:#c6d2e6;margin:12px 0}
+  pre .c{color:#5d6b88}pre .l0{color:#67e8f9}pre .l1{color:#6ee7b7}pre .l2{color:#93c5fd}pre .l3{color:#c4b5fd}
+  ul.clean{margin:8px 0;padding-left:19px}ul.clean li{margin:4px 0;color:var(--muted)}ul.clean li strong{color:var(--ink)}
+  .callout{border-left:3px solid var(--l2);background:rgba(96,165,250,.07);padding:12px 16px;border-radius:0 10px 10px 0;margin:12px 0;color:var(--muted)}.callout.amber{border-color:var(--amber);background:rgba(251,191,36,.07)}.callout.green{border-color:var(--green);background:rgba(52,211,153,.07)}.callout b{color:var(--ink)}
+  .lbadge{display:inline-block;font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:5px;color:#0b1020}
+  .bl0{background:var(--l0)}.bl1{background:var(--l1)}.bl2{background:var(--l2)}.bl3{background:var(--l3)}
+  .folder{border:1px solid var(--line);border-radius:12px;margin:12px 0;overflow:hidden}
+  .folder .fh{padding:11px 16px;display:flex;align-items:center;gap:10px;font-weight:700;border-bottom:1px solid var(--line)}
+  .folder.f0 .fh{background:rgba(34,211,238,.1)}.folder.f1 .fh{background:rgba(52,211,153,.1)}.folder.f2 .fh{background:rgba(96,165,250,.1)}.folder.f3 .fh{background:rgba(167,139,250,.1)}
+  .folder .fb{padding:12px 16px}
+  .folder ul{margin:0;padding-left:18px}.folder li{font-size:12.6px;color:var(--muted);margin:3px 0}.folder li b{color:var(--ink)}
+  .prompt{background:#0a0e1a;border:1px solid var(--line);border-radius:12px;padding:15px 17px;margin:10px 0;color:#d4def0;font-size:12.3px;line-height:1.6;white-space:pre-wrap;font-family:Consolas,monospace}
+  .prompt .h{font-weight:800}.p0 .h{color:var(--l0)}.p1 .h{color:var(--l1)}.p2 .h{color:var(--l2)}.p3 .h{color:var(--l3)}
+  .deps{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:10px 0;font-size:12.5px;color:var(--muted)}
+  .deps .n{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:6px 11px}
+  .foot{margin-top:50px;padding-top:18px;border-top:1px solid var(--line);color:var(--dim);font-size:12px}
+  @media(max-width:980px){.wrap{grid-template-columns:1fr}nav{display:none}main{padding:24px 16px 70px}h1{font-size:23px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <div class="brand">Code<span>Pick</span> · 交付索引</div>
+    <div class="sub">4 产品并行 → 统一</div>
+    <a href="#overview">总览</a>
+    <a href="#folders">① 文件夹与文件映射</a>
+    <a href="#order">② 并行顺序与依赖</a>
+    <a href="#prompts">③ Codex 提示词 ×4</a>
+    <a href="#p0" style="padding-left:22px">· L0 提示词</a>
+    <a href="#p1" style="padding-left:22px">· L1 提示词</a>
+    <a href="#p2" style="padding-left:22px">· L2 提示词</a>
+    <a href="#p3" style="padding-left:22px">· L3 提示词</a>
+    <a href="#contracts">④ 冻结契约（统一接缝）</a>
+    <a href="#unify">⑤ 统一集成步骤</a>
+    <a href="#how">⑥ 怎么用</a>
+  </nav>
+  <main>
+    <span class="tag">交付总索引 · 标注清楚 · 含全部提示词</span>
+    <h1>CodePick — <em>4 个产品并行交付 + 统一</em></h1>
+    <p class="lede">四层各自是一个独立产品，每个有 <b>4 份文档</b>（产品 / 架构 / 详尽开发Plan / 实施手册）。本索引把<b>文件夹归属、并行顺序、每个产品的 Codex 提示词、统一接缝与集成步骤</b>全部标注清楚。每个产品可<b>对下层 stub 独立开发</b>，最后按冻结契约统一。</p>
+
+    <section id="overview">
+      <h2><span class="x">▦</span>总览：4 产品 × 4 文档 = 16 份</h2>
+      <table>
+        <thead><tr><th>产品</th><th>文件夹</th><th>独立开发依赖</th><th>文档数</th></tr></thead>
+        <tbody>
+          <tr><td><span class="lbadge bl0">L0</span> 数据底座</td><td><code>L0-数据底座/</code></td><td>无（最底层，真实采集）</td><td>4 ✓</td></tr>
+          <tr><td><span class="lbadge bl1">L1</span> 数据加工</td><td><code>L1-数据加工/</code></td><td>L0 stub + FakeLLM</td><td>4 ✓</td></tr>
+          <tr><td><span class="lbadge bl2">L2</span> 判断与智能体</td><td><code>L2-判断与智能体/</code></td><td>L1 stub + FakeLLM</td><td>4 ✓</td></tr>
+          <tr><td><span class="lbadge bl3">L3</span> 应用与分发</td><td><code>L3-应用与分发/</code></td><td>L2 stub + 支付沙箱</td><td>4 ✓</td></tr>
+        </tbody>
+      </table>
+      <div class="callout green"><b>核心机制：</b>每个产品取下层数据只经一个 <b>Provider 接口</b>（注入 stub 即可独立开发）；产出遵守<b>冻结契约</b>（下层一旦定死，上层照常开发）。这让 4 个产品能真正并行，最后无缝统一。</div>
+    </section>
+
+    <section id="folders">
+      <h2><span class="x">①</span>文件夹与文件映射</h2>
+      <p class="note">新建 4 个文件夹，把对应的 4 份 html 各自拖进去（文件名见下）。</p>
+      <div class="folder f0"><div class="fh"><span class="lbadge bl0">L0</span> L0-数据底座/</div><div class="fb"><ul>
+        <li><b>L0-数据底座-产品文档.html</b></li>
+        <li><b>L0-数据底座-架构设计.html</b></li>
+        <li><b>L0-开发Plan-详尽版.html</b></li>
+        <li><b>L0-实施手册-交付包.html</b></li>
+      </ul></div></div>
+      <div class="folder f1"><div class="fh"><span class="lbadge bl1">L1</span> L1-数据加工/</div><div class="fb"><ul>
+        <li><b>L1-数据加工-产品文档.html</b></li>
+        <li><b>L1-数据加工-架构设计.html</b></li>
+        <li><b>L1-开发Plan-详尽版.html</b></li>
+        <li><b>L1-实施手册-交付包.html</b></li>
+      </ul></div></div>
+      <div class="folder f2"><div class="fh"><span class="lbadge bl2">L2</span> L2-判断与智能体/</div><div class="fb"><ul>
+        <li><b>L2-判断与智能体-产品文档.html</b></li>
+        <li><b>L2-判断与智能体-架构设计.html</b></li>
+        <li><b>L2-开发Plan-详尽版.html</b></li>
+        <li><b>L2-实施手册-交付包.html</b></li>
+      </ul></div></div>
+      <div class="folder f3"><div class="fh"><span class="lbadge bl3">L3</span> L3-应用与分发/</div><div class="fb"><ul>
+        <li><b>L3-应用与分发-产品文档.html</b></li>
+        <li><b>L3-应用与分发-架构设计.html</b></li>
+        <li><b>L3-开发Plan-详尽版.html</b></li>
+        <li><b>L3-实施手册-交付包.html</b></li>
+      </ul></div></div>
+      <div class="callout amber"><b>额外参考（可放根目录）：</b><code>CodePick-架构总览-审核稿.html</code>（全局架构）、<code>产品定义-定稿v0.2.html</code>（产品决策）。给某个产品的 Codex 时不必带这两份，但你自己对齐全局时有用。</div>
+    </section>
+
+    <section id="order">
+      <h2><span class="x">②</span>并行顺序与依赖</h2>
+      <p class="note">4 个产品可<b>同时开工</b>（各用 stub），但"集成验证"按依赖自下而上。</p>
+      <div class="deps">
+        <span class="n"><span class="lbadge bl0">L0</span> 真实采集</span> →
+        <span class="n"><span class="lbadge bl1">L1</span> 对 L0 stub</span> →
+        <span class="n"><span class="lbadge bl2">L2</span> 对 L1 stub</span> →
+        <span class="n"><span class="lbadge bl3">L3</span> 对 L2 stub</span>
+      </div>
+      <ul class="clean">
+        <li><strong>开发期</strong>：4 条线并行，互不阻塞（stub 解耦）。</li>
+        <li><strong>集成期</strong>：自下而上替换 stub —— L1 接真 L0 → L2 接真 L1 → L3 接真 L2。每替换一层跑该层 smoke + 联调。</li>
+        <li><strong>建议优先级</strong>：先确保 L0 真实可用（它无法 stub 自己），其余三层 stub 开发可与之并行。</li>
+      </ul>
+    </section>
+
+    <section id="prompts">
+      <h2><span class="x">③</span>Codex 提示词 ×4（复制即用）</h2>
+      <p class="note">每段提示词与对应产品的 4 份文档一起交给 Codex。L2/L3 的提示词也已内嵌在各自《实施手册》末尾，这里集中汇总。</p>
+
+      <h3 id="p0"><span class="lbadge bl0">L0</span> 数据底座 · 提示词</h3>
+      <div class="prompt p0"><span class="h"># 角色</span>
+你是资深 Python 数据工程师，独立实现 CodePick 平台的 L0「数据底座」（采集+完整保存+规范化+去重+事件）。
+
+<span class="h"># 输入材料（同目录 4 份 HTML，先读完）</span>
+L0-数据底座-产品文档 / 架构设计 / 开发Plan-详尽版 / 实施手册-交付包
+
+<span class="h"># 任务</span>
+按《开发Plan》EPIC E0→E8、Feature 顺序实现，逐个用其「验收」+「自测」收口；按《实施手册》脚手架、DDL、接口契约、docker-compose 落地。
+
+<span class="h"># 硬约束</span>
+1. 信条：尽可能保存所有信息，原始层不可变、只追加、永不删除；RawStore 仓储不得有 update/delete。
+2. 三段存储：原始层(raw_documents+对象存储) / 规范层(content_items) / 索引层；强血缘可溯源。
+3. 可重放：能从原始层重建规范层，无需重抓外部源。
+4. 去重保留变体：去重只选代表，原始抓取各自留痕。
+5. 事件用事务性 outbox，content.ingested 不丢不重。
+6. 对上层只暴露稳定查询契约(list_contents/get_content) 与事件；core_data 不得 import 上层。
+7. 栈：Python3.12 / Playwright / feedparser / PostgreSQL+pgvector / SQLAlchemy+Alembic / Redis+Arq / S3兼容。
+
+<span class="h"># 交付标准（DoD）</span>
+每 Feature 过自测；`make smoke` 输出 "L0 PIPELINE: PASS"；覆盖率≥80%，CI 全绿；满足《实施手册》L0 DoD。产出：可运行代码+测试+迁移+docker-compose+README。
+
+<span class="h"># 工作方式</span>
+每 Sprint 提交一次（附已实现 Feature/自测/覆盖率/遗留）。契约歧义先提问，不擅改冻结契约。</div>
+
+      <h3 id="p1"><span class="lbadge bl1">L1</span> 数据加工 · 提示词</h3>
+      <div class="prompt p1"><span class="h"># 角色</span>
+你是资深 Python/LangGraph 工程师，独立实现 CodePick 平台的 L1「数据加工」（清洗+初评+基础分析+向量）。
+
+<span class="h"># 输入材料（同目录 4 份 HTML，先读完）</span>
+L1-数据加工-产品文档 / 架构设计 / 开发Plan-详尽版 / 实施手册-交付包
+
+<span class="h"># 任务</span>
+按《开发Plan》EPIC E0→E9、Feature 顺序实现，逐个用「验收」+「自测」收口；按《实施手册》脚手架、接口契约、LangGraph 图规格、配置落地。
+
+<span class="h"># 硬约束</span>
+1. 独立开发：取内容只经 ContentProvider，注入 StubContentProvider + fixtures；LLM 用 FakeLLM。不依赖真 L0、不真调模型。
+2. 与垂直无关：L1 只做通用理解（摘要/观点/金句/实体/向量/基础标签），绝不含"对某垂直好不好"的判断。
+3. 冻结契约：BaseAnalysis schema + 事件 content.analyzed + 表归属（只写 content_base_analysis/enrichment_cache，只读 content_items）。
+4. 成本：小模型初评短路 + 缓存 + 并发限流；模型档位走 ConfigKey。
+5. 所有 LLM 节点可用 FakeLLM 确定性测试，CI 不真调模型。
+6. 栈：Python3.12 / LangGraph / PostgreSQL+pgvector / SQLAlchemy+Alembic / Arq。
+
+<span class="h"># 交付标准（DoD）</span>
+每 Feature 过自测；`make l1-smoke` 输出 "L1 PIPELINE: PASS"；覆盖率≥80%，CI 全绿；满足《实施手册》L1 DoD。产出：代码+测试+迁移+README。
+
+<span class="h"># 工作方式</span>
+每 Sprint 提交一次。契约歧义先提问，不擅改冻结契约。</div>
+
+      <h3 id="p2"><span class="lbadge bl2">L2</span> 判断与智能体 · 提示词</h3>
+      <div class="prompt p2"><span class="h"># 角色</span>
+你是资深 Python/LangGraph 工程师，独立实现 CodePick 平台的 L2「判断与智能体」（评分+翻译+推荐+伴读）。
+
+<span class="h"># 输入材料（同目录 4 份 HTML，先读完）</span>
+L2-判断与智能体-产品文档 / 架构设计 / 开发Plan-详尽版 / 实施手册-交付包
+
+<span class="h"># 任务</span>
+按《开发Plan》EPIC E0→E9、Feature 顺序实现，逐个用「验收」+「自测」收口；按《实施手册》脚手架、接口契约、图规格、配置落地。
+
+<span class="h"># 硬约束</span>
+1. 独立开发：取 base_analysis 只经 AnalysisProvider，注入 StubAnalysisProvider + fixtures；LLM 用 FakeLLM。不依赖真 L1、不真调模型。
+2. 判断标准走 verticals.lens 配置（rubric/taxonomy/source_filter），不硬编码进代码。
+3. 冻结契约：VerticalScore schema + content_translations + 事件 content.completed + 表归属（只写 vertical_scores/translations/review_queue，只读 content_items/content_base_analysis）。
+4. 评分用"评分→反思→优化"模式；所有 LLM 节点可 FakeLLM 确定性测试。
+5. 栈：Python3.12 / LangGraph / PostgreSQL+pgvector / Arq。依赖方向：不得 import L3，对 L1 仅经 provider。
+
+<span class="h"># 交付标准（DoD）</span>
+每 Feature 过自测；`make l2-smoke` 输出 "L2 PIPELINE: PASS"；覆盖率≥80%，CI 全绿；满足《实施手册》L2 DoD。产出：代码+测试+迁移+README。
+
+<span class="h"># 工作方式</span>
+每 Sprint 提交一次。契约歧义先提问，不擅改冻结契约。</div>
+
+      <h3 id="p3"><span class="lbadge bl3">L3</span> 应用与分发 · 提示词</h3>
+      <div class="prompt p3"><span class="h"># 角色</span>
+你是资深全栈工程师（Next.js + Python/FastAPI），独立实现 CodePick 平台的 L3「应用与分发」（Reader Web + Public API/MCP + Brief + 计费）。
+
+<span class="h"># 输入材料（同目录 4 份 HTML，先读完）</span>
+L3-应用与分发-产品文档 / 架构设计 / 开发Plan-详尽版 / 实施手册-交付包
+
+<span class="h"># 任务</span>
+按《开发Plan》EPIC E0→E9、Feature 顺序实现，逐个用「验收」+「自测」收口；按《实施手册》脚手架、接口契约、配置落地。
+
+<span class="h"># 硬约束</span>
+1. 独立开发：读内容/评分/翻译只经 ContentReadProvider，注入 Stub + fixtures；推荐/伴读用 stub；支付用沙箱。不依赖真 L2、不接真实支付账户。
+2. 信任边界隔离：内部 /api(JWT) 与对外 /v1(API Key+限流+配额) 分服务/前缀/过滤器；/v1 不泄漏推荐决策与隐私上下文。
+3. 门禁集中：Free/Pro 用单点 require_plan，禁止散落。
+4. 表归属：只拥有 users/subscriptions/interests/follows/reading_events/briefs/bookmarks/api_keys/usage；只读 L0–L2。
+5. 收款 USD（Paddle 作 MoR）；$8/月·$79/年（早鸟 $4.9）。北极星=深度阅读闭环率，不优化时长/DAU。
+6. 栈：Next.js(App Router,TS,Tailwind,i18n) + FastAPI + SQLAlchemy/Alembic + PostgreSQL + Arq + Resend/SES。
+
+<span class="h"># 交付标准（DoD）</span>
+每 Feature 过自测；`make l3-smoke` 输出 "L3 PIPELINE: PASS"；前端 Playwright E2E + 后端 pytest（webhook 验签/配额/门禁）CI 全绿；满足《实施手册》L3 DoD。产出：代码+测试+迁移+README。
+
+<span class="h"># 工作方式</span>
+每 Sprint 提交一次。契约歧义先提问，不擅改冻结契约或绕过门禁/信任边界。</div>
+    </section>
+
+    <section id="contracts">
+      <h2><span class="x">④</span>冻结契约（统一接缝 — 必须对齐）</h2>
+      <p class="note">这是 4 个产品最后能拼起来的关键。<b>各产品的 Codex 都被要求不得擅改这些契约。</b></p>
+      <pre><span class="l0">L0 → L1</span>  事件 content.ingested {content_id,lang} · 查询 get_content/list_contents
+          表归属: L0 拥有 sources/raw_documents/content_items/content_versions
+<span class="l1">L1 → L2</span>  事件 content.analyzed {content_id} · 产物 BaseAnalysis(schema)
+          表归属: L1 拥有 content_base_analysis/enrichment_cache（只读 content_items）
+<span class="l2">L2 → L3</span>  事件 content.completed {content_id} · 产物 VerticalScore + content_translations
+          请求时 recommend()/companion() · 表归属: L2 拥有 verticals/vertical_scores/translations/review_queue
+<span class="l3">L3</span>      拥有 users/subscriptions/interests/follows/reading_events/briefs/bookmarks/api_keys/usage（只读 L0–L2）
+<span class="c">状态机（全局共享）: WAIT_FILTER→WAIT_ANALYSIS→WAIT_SCORE→WAIT_REVIEW→COMPLETED | CANCELLED</span></pre>
+      <div class="callout"><b>表归属互不重叠</b>→集成时迁移自然合并，无冲突；<b>事件主题统一</b>→接同一总线即通；<b>Provider 接口</b>→把 stub 换真实现即对接。</div>
+    </section>
+
+    <section id="unify">
+      <h2><span class="x">⑤</span>统一集成步骤</h2>
+      <p class="note">4 个产品各自交付（代码+测试通过各自 DoD）后，按此统一。</p>
+      <ul class="clean">
+        <li><strong>1. 合库</strong>：4 个工程并入一个 monorepo（或保持多仓 + 共享 <code>common</code> + 统一迁移目录）。</li>
+        <li><strong>2. 合并迁移</strong>：各层 Alembic 迁移按归属合并；因表互不重叠，无冲突。</li>
+        <li><strong>3. 接事件总线</strong>：把各层的 outbox/consume 接到同一 Redis/事件总线（content.ingested→analyzed→completed 串起）。</li>
+        <li><strong>4. 替换 Provider</strong>：L1 的 ContentProvider→真 L0；L2 的 AnalysisProvider→真 L1；L3 的 ContentReadProvider→真 L2。</li>
+        <li><strong>5. 逐层联调</strong>：自下而上每接一层跑该层 smoke + 全链 smoke。</li>
+        <li><strong>6. 全链冒烟</strong>：一条真实内容从采集→加工→评分→在 Reader 展示，端到端 PASS。</li>
+        <li><strong>7. 接真实外部</strong>：真实 LLM、真实支付（沙箱→生产）、真实邮件。</li>
+      </ul>
+      <div class="callout green"><b>因为契约从第一天就冻结，统一集成主要是"换注入 + 合迁移 + 接总线"，不是重写。</b>这正是分层 + stub 并行开发的回报。</div>
+    </section>
+
+    <section id="how">
+      <h2><span class="x">⑥</span>怎么用（操作清单）</h2>
+      <div class="card"><ul class="clean">
+        <li>① 新建 4 个文件夹（见 §1），各拖入对应 4 份 html。</li>
+        <li>② 想先做哪个就开哪个 Codex 会话：把该文件夹的 4 份 html + §3 对应提示词一起给它。</li>
+        <li>③ 4 个产品可并行（各用 stub）；优先保证 L0 真实可用。</li>
+        <li>④ 每个产品按其《开发Plan》逐 Feature 实现 + 自测，Sprint 末跑该层 smoke。</li>
+        <li>⑤ 各自通过 DoD 验收后，按 §5 统一集成。</li>
+        <li>⑥ 全程不改 §4 冻结契约——这是能拼起来的保证。</li>
+      </ul></div>
+    </section>
+
+    <div class="foot">CodePick · 交付总索引 + Codex 提示词 · 4 产品 × 4 文档 = 16 份 · 并行开发 + 契约冻结 + 统一集成 · 2026-05-30</div>
+  </main>
+</div>
+</body>
+</html>

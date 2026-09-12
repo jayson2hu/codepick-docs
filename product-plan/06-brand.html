@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InsightFlow 产品规划 - 第六部分：品牌与设计</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+            line-height: 1.8;
+            color: #1a1a2e;
+            background: #f8f9fa;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+            padding: 60px;
+        }
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        h1 { font-size: 36px; font-weight: 700; margin-bottom: 8px; }
+        .subtitle { font-size: 18px; color: #6c757d; margin-bottom: 40px; }
+        h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-top: 48px;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #667eea;
+            display: inline-block;
+        }
+        h3 { font-size: 18px; font-weight: 600; margin-top: 32px; margin-bottom: 12px; }
+        p { margin-bottom: 16px; color: #4a4a4a; }
+        ul { padding-left: 20px; margin-bottom: 16px; }
+        li { margin-bottom: 8px; color: #4a4a4a; }
+        .logo-showcase {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 16px;
+            padding: 60px 40px;
+            text-align: center;
+            margin: 24px 0;
+            color: #fff;
+        }
+        .logo-mark {
+            display: inline-flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #a78bfa, #f0abfc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
+        }
+        .logo-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 32px;
+            font-weight: 800;
+            -webkit-text-fill-color: #fff;
+        }
+        .logo-tagline {
+            font-size: 16px;
+            color: #a1a1aa;
+            margin-top: 16px;
+            font-weight: 400;
+        }
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin: 24px 0;
+        }
+        .color-card {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .color-swatch {
+            height: 100px;
+        }
+        .color-info {
+            background: #fff;
+            padding: 12px 14px;
+        }
+        .color-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1a1a2e;
+        }
+        .color-hex {
+            font-size: 11px;
+            color: #6c757d;
+            font-family: 'SF Mono', Monaco, monospace;
+            margin-top: 2px;
+        }
+        .font-showcase {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 28px;
+            margin: 16px 0;
+        }
+        .font-name {
+            font-size: 12px;
+            color: #667eea;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        .font-display { font-size: 36px; font-weight: 700; }
+        .font-meta {
+            font-size: 13px;
+            color: #6c757d;
+            margin-top: 4px;
+            font-family: 'SF Mono', Monaco, monospace;
+        }
+        .voice-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 24px 0;
+        }
+        .voice-card {
+            background: #fff;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .voice-card.do { border-top: 4px solid #10b981; }
+        .voice-card.dont { border-top: 4px solid #ef4444; }
+        .voice-card h4 {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .voice-card.do h4 { color: #047857; }
+        .voice-card.dont h4 { color: #b91c1c; }
+        .voice-card p {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        .voice-example {
+            background: #f8f9fa;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #4a4a4a;
+            font-style: italic;
+            margin-top: 8px;
+        }
+        .ui-preview {
+            background: linear-gradient(135deg, #f8f9fa, #fff);
+            border: 1px solid #e9ecef;
+            border-radius: 16px;
+            padding: 28px;
+            margin: 24px 0;
+        }
+        .ui-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            margin: 12px 0;
+        }
+        .ui-card-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 8px;
+        }
+        .ui-score {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 12px;
+        }
+        .ui-card-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        .ui-card-summary {
+            font-size: 14px;
+            color: #6c757d;
+            line-height: 1.6;
+        }
+        .ui-tag {
+            display: inline-block;
+            background: #f5f3ff;
+            color: #4c1d95;
+            padding: 2px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 4px;
+            margin-top: 8px;
+        }
+        .principle-list {
+            background: linear-gradient(135deg, #f5f3ff, #ede9fe);
+            border-radius: 12px;
+            padding: 28px;
+            margin: 24px 0;
+        }
+        .principle-item {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            align-items: flex-start;
+        }
+        .principle-num {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        .principle-body strong {
+            color: #4c1d95;
+            font-size: 15px;
+        }
+        .principle-body p {
+            font-size: 14px;
+            margin: 4px 0 0;
+            color: #4a4a4a;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            font-size: 14px;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px 16px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        th {
+            background: #f5f3ff;
+            font-weight: 600;
+            color: #4c1d95;
+        }
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e9ecef;
+        }
+        .nav a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s;
+        }
+        .nav a:hover { background: #f5f3ff; border-color: #667eea; }
+        .conclusion {
+            background: linear-gradient(135deg, #1a1a2e, #4c1d95);
+            color: #fff;
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            margin-top: 48px;
+        }
+        .conclusion h2 {
+            color: #fff;
+            border-color: #a78bfa;
+            margin-top: 0;
+        }
+        .conclusion p { color: #e5e7eb; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="badge">PART 06 / 06</div>
+        <h1>品牌与设计</h1>
+        <p class="subtitle">InsightFlow · 品牌识别、视觉系统与设计语言</p>
+
+        <h2>品牌定位</h2>
+        <p>InsightFlow 的品牌站在<strong>"信息消费的进化"</strong>这一长期叙事上。它不是"另一个 RSS 工具"，也不是"AI 摘要器"，而是<strong>新一代知识工作者的阅读伙伴</strong>——帮你在信息洪流中保持深度思考。</p>
+
+        <div class="logo-showcase">
+            <div class="logo-mark">
+                <span class="logo-icon">i</span>
+                <span>InsightFlow</span>
+            </div>
+            <div class="logo-tagline">Read deeper. Think clearer.</div>
+        </div>
+
+        <h3>命名解读</h3>
+        <ul>
+            <li><strong>Insight</strong> — 洞察。强调内容价值与思考深度，而非信息量</li>
+            <li><strong>Flow</strong> — 心流 / 流动。代表沉浸式阅读体验与持续的知识流</li>
+            <li><strong>中文名候选：</strong>「洞见流」「读心」「灼见」「思流」</li>
+        </ul>
+
+        <h3>品牌叙事</h3>
+        <p style="font-size:16px;font-style:italic;color:#4c1d95;padding:20px 24px;background:#f5f3ff;border-left:4px solid #667eea;border-radius:0 10px 10px 0;">
+            "在算法把内容变成爆米花的时代，我们相信深度阅读仍然是稀缺品。<br>
+            InsightFlow 不是让你读更多，而是让你读得更值。"
+        </p>
+
+        <h2>视觉识别系统</h2>
+
+        <h3>主色板（Primary Palette）</h3>
+        <div class="color-grid">
+            <div class="color-card">
+                <div class="color-swatch" style="background:#667eea"></div>
+                <div class="color-info">
+                    <div class="color-name">主品牌色 · Insight Purple</div>
+                    <div class="color-hex">#667EEA</div>
+                </div>
+            </div>
+            <div class="color-card">
+                <div class="color-swatch" style="background:#764ba2"></div>
+                <div class="color-info">
+                    <div class="color-name">深紫 · Deep Wisdom</div>
+                    <div class="color-hex">#764BA2</div>
+                </div>
+            </div>
+            <div class="color-card">
+                <div class="color-swatch" style="background:#1a1a2e"></div>
+                <div class="color-info">
+                    <div class="color-name">墨黑 · Reading Black</div>
+                    <div class="color-hex">#1A1A2E</div>
+                </div>
+            </div>
+            <div class="color-card">
+                <div class="color-swatch" style="background:#f5f3ff"></div>
+                <div class="color-info">
+                    <div class="color-name">浅紫底 · Soft Lavender</div>
+                    <div class="color-hex">#F5F3FF</div>
+                </div>
+            </div>
+        </div>
+
+        <h3>辅助色板（Semantic Palette）</h3>
+        <div class="color-grid">
+            <div class="color-card">
+                <div class="color-swatch" style="background:#10b981"></div>
+                <div class="color-info">
+                    <div class="color-name">推荐 · Recommend</div>
+                    <div class="color-hex">#10B981</div>
+                </div>
+            </div>
+            <div class="color-card">
+                <div class="color-swatch" style="background:#f59e0b"></div>
+                <div class="color-info">
+                    <div class="color-name">精选 · Featured</div>
+                    <div class="color-hex">#F59E0B</div>
+                </div>
+            </div>
+            <div class="color-card">
+                <div class="color-swatch" style="background:#ef4444"></div>
+                <div class="color-info">
+                    <div class="color-name">提醒 · Alert</div>
+                    <div class="color-hex">#EF4444</div>
+                </div>
+            </div>
+            <div class="color-card">
+                <div class="color-swatch" style="background:#6b7280"></div>
+                <div class="color-info">
+                    <div class="color-name">辅文 · Muted</div>
+                    <div class="color-hex">#6B7280</div>
+                </div>
+            </div>
+        </div>
+
+        <h3>字体系统（Typography）</h3>
+        <div class="font-showcase">
+            <div class="font-name">Display · 品牌与大标题</div>
+            <div class="font-display" style="font-family:'Inter',-apple-system,sans-serif;">Read deeper.</div>
+            <div class="font-meta">Inter / 700 · 36px-72px · Letter-spacing -1px</div>
+        </div>
+        <div class="font-showcase">
+            <div class="font-name">UI · 界面正文</div>
+            <div class="font-display" style="font-size:18px;font-weight:500;font-family:-apple-system,sans-serif;">高质量阅读，从理解一篇好文开始。</div>
+            <div class="font-meta">PingFang SC / Inter · 14px-18px · Line-height 1.6</div>
+        </div>
+        <div class="font-showcase">
+            <div class="font-name">Reading · 文章正文</div>
+            <div class="font-display" style="font-size:17px;font-weight:400;font-family:'Source Serif Pro',Georgia,serif;line-height:1.8;">深度阅读不是更慢的阅读，而是更专注的阅读。</div>
+            <div class="font-meta">Source Serif Pro / 思源宋体 · 16px-19px · Line-height 1.8</div>
+        </div>
+
+        <h2>组件设计语言</h2>
+
+        <h3>文章卡片（核心组件）</h3>
+        <div class="ui-preview">
+            <div class="ui-card">
+                <div class="ui-card-meta">
+                    <span class="ui-score">⭐ 92</span>
+                    <span>·</span>
+                    <span>The Information</span>
+                    <span>·</span>
+                    <span>8 min read</span>
+                    <span>·</span>
+                    <span>5 月 28 日</span>
+                </div>
+                <div class="ui-card-title">OpenAI 发布 GPT-5：从模型到平台的转变</div>
+                <div class="ui-card-summary">
+                    Alex Heath 独家：OpenAI 在内部 demo 展示了 GPT-5 的"操作系统"形态，能调用 50+ 工具完成多步骤任务。本文揭示了 Sam Altman 在产品方向上的最新思考……
+                </div>
+                <div>
+                    <span class="ui-tag">AI</span>
+                    <span class="ui-tag">编辑精选</span>
+                    <span class="ui-tag">深度</span>
+                </div>
+            </div>
+            <div class="ui-card">
+                <div class="ui-card-meta">
+                    <span class="ui-score" style="background:linear-gradient(135deg,#10b981,#059669);">⭐ 87</span>
+                    <span>·</span>
+                    <span>Stripe Blog</span>
+                    <span>·</span>
+                    <span>12 min</span>
+                </div>
+                <div class="ui-card-title">Stripe 如何用 AI 重构支付欺诈检测</div>
+                <div class="ui-card-summary">
+                    工程师视角拆解 Stripe Radar 的最新升级：实时模型推理 + 反馈闭环让欺诈识别准确率提升 30%，同时误杀率下降一半……
+                </div>
+                <div>
+                    <span class="ui-tag">支付</span>
+                    <span class="ui-tag">机器学习</span>
+                </div>
+            </div>
+        </div>
+
+        <h2>设计原则</h2>
+        <div class="principle-list">
+            <div class="principle-item">
+                <div class="principle-num">1</div>
+                <div class="principle-body">
+                    <strong>阅读优先（Reading-first）</strong>
+                    <p>UI 永远服务于内容。界面元素克制，字距、行距、留白经过反复调试，长时间阅读不疲劳。</p>
+                </div>
+            </div>
+            <div class="principle-item">
+                <div class="principle-num">2</div>
+                <div class="principle-body">
+                    <strong>静谧而有力（Quiet Power）</strong>
+                    <p>避免抢眼的炫技动画，但在关键操作（如评分高亮、AI 摘要生成）使用细腻的微交互建立信任。</p>
+                </div>
+            </div>
+            <div class="principle-item">
+                <div class="principle-num">3</div>
+                <div class="principle-body">
+                    <strong>信任可视化（Trust by Design）</strong>
+                    <p>每个 AI 输出标注来源与置信度；评分点击可看分维度解释。用户永远知道"为什么"。</p>
+                </div>
+            </div>
+            <div class="principle-item">
+                <div class="principle-num">4</div>
+                <div class="principle-body">
+                    <strong>渐进式复杂（Progressive Complexity）</strong>
+                    <p>新手只看到"今日精选"和"摘要"；深度用户能解锁双链、知识图谱、API。同一产品支撑不同深度。</p>
+                </div>
+            </div>
+            <div class="principle-item">
+                <div class="principle-num">5</div>
+                <div class="principle-body">
+                    <strong>深色模式即一等公民</strong>
+                    <p>深色不是"亮色翻转"，而是为夜间深度阅读重新设计的独立视觉体系。</p>
+                </div>
+            </div>
+        </div>
+
+        <h2>品牌语调（Tone of Voice）</h2>
+        <div class="voice-grid">
+            <div class="voice-card do">
+                <h4>✓ 我们这样说</h4>
+                <p><strong>智识、克制、平等。</strong>把用户当作有判断力的成年人，不灌输、不卖弄、不焦虑营销。</p>
+                <div class="voice-example">"我们给这篇打了 92 分——因为它有数据、有视角、有作者十年的行业沉淀。但你的判断才是最终的判断。"</div>
+            </div>
+            <div class="voice-card dont">
+                <h4>✗ 我们不这样说</h4>
+                <p><strong>避免：营销腔、焦虑词、技术炫耀。</strong>不用"震惊体"、"必看"、"颠覆"，不堆砌技术术语。</p>
+                <div class="voice-example">❌ "震惊！这篇文章被 AI 评为 99 分，错过就晚了！"<br>
+                ❌ "我们采用了 transformer-based RAG 与 cross-attention……"</div>
+            </div>
+        </div>
+
+        <h2>关键场景文案</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>场景</th>
+                    <th>文案</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>启动加载</td>
+                    <td>"正在为你筛选今天值得读的内容……"</td>
+                </tr>
+                <tr>
+                    <td>空状态 · 首次注册</td>
+                    <td>"还没准备好。告诉我你关心什么，我帮你过滤噪音。"</td>
+                </tr>
+                <tr>
+                    <td>AI 摘要前</td>
+                    <td>"读全文需要 8 分钟。要不要我先给你讲讲重点？"</td>
+                </tr>
+                <tr>
+                    <td>低质内容提示</td>
+                    <td>"这篇评分较低（38 分），原因：信息密度不足。仍要阅读？"</td>
+                </tr>
+                <tr>
+                    <td>升级 Pro 引导</td>
+                    <td>"你今天已经读了 5 篇好文。升级 Pro，让我陪你走得更远。"</td>
+                </tr>
+                <tr>
+                    <td>关键里程碑</td>
+                    <td>"过去 30 天，你深度阅读了 42 篇文章，沉淀了 156 张笔记卡片。"</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>品牌应用矩阵</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>触点</th>
+                    <th>核心元素</th>
+                    <th>关键体验</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>官网</td>
+                    <td>Hero 区域：今日精选 5 篇 + 实时阅读数据</td>
+                    <td>3 秒内让访客理解"这不是 RSS 工具"</td>
+                </tr>
+                <tr>
+                    <td>App Icon</td>
+                    <td>渐变紫底 + 白色"i"字符 + 微妙的波纹（代表 flow）</td>
+                    <td>在 Home Screen 一眼可识别</td>
+                </tr>
+                <tr>
+                    <td>邮件模板</td>
+                    <td>极简衬线大标题 + 文章卡片 + 一键"读完即扔"</td>
+                    <td>邮件本身就是优秀的阅读体验</td>
+                </tr>
+                <tr>
+                    <td>分享卡片</td>
+                    <td>OG 图自动生成：评分 + 标题 + 摘要 + 品牌水印</td>
+                    <td>每次社交分享都是品牌曝光</td>
+                </tr>
+                <tr>
+                    <td>线下物料</td>
+                    <td>沙龙活动、读者会面、阅读笔记本周边</td>
+                    <td>建立"深度阅读者"的身份认同</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="conclusion">
+            <h2 style="display:inline-block;">规划总结</h2>
+            <p style="margin-top:24px;font-size:16px;">
+                <strong style="color:#fff;">InsightFlow</strong> 是面向新一代知识工作者的 AI 阅读平台。<br>
+                差异于 BestBlogs，我们将<strong style="color:#a78bfa;">"AI 评分透明化"</strong>、<strong style="color:#a78bfa;">"跨文献长期记忆"</strong>、<strong style="color:#a78bfa;">"知识沉淀闭环"</strong>作为三大支柱，<br>
+                用 24 个月时间从精选阅读工具进化为知识工作者的核心基础设施。
+            </p>
+            <p style="margin-top:16px;color:#a78bfa;font-style:italic;">
+                "在信息洪流中保持深度——这是我们交付给用户最大的承诺。"
+            </p>
+        </div>
+
+        <div class="nav">
+            <a href="05-business.html">← 上一部分：商业模式</a>
+            <a href="01-vision.html">回到第一部分 →</a>
+        </div>
+    </div>
+</body>
+</html>

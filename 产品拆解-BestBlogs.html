@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BestBlogs 产品深度拆解 · 复刻蓝图</title>
+<style>
+  :root{
+    --bg:#0d1117; --panel:#161b22; --panel2:#1c232c; --line:#2d3640;
+    --text:#e6edf3; --muted:#9aa7b4; --dim:#6e7b8a;
+    --acc:#58a6ff; --acc2:#3fb950; --warn:#f0883e; --pink:#db61a2; --purple:#bc8cff;
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:linear-gradient(180deg,#0a0e13,#0d1117 240px); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    line-height:1.75; font-size:15.5px;
+  }
+  a{color:var(--acc); text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{display:grid; grid-template-columns:248px 1fr; max-width:1320px; margin:0 auto}
+  /* sidebar */
+  nav{position:sticky; top:0; height:100vh; overflow-y:auto; padding:28px 18px; border-right:1px solid var(--line); background:rgba(13,17,23,.6)}
+  nav .brand{font-weight:800; font-size:18px; letter-spacing:.3px; margin-bottom:4px}
+  nav .brand span{color:var(--acc)}
+  nav .sub{color:var(--dim); font-size:12px; margin-bottom:22px}
+  nav a{display:block; color:var(--muted); padding:7px 12px; border-radius:9px; font-size:13.5px; margin:2px 0; border-left:2px solid transparent}
+  nav a:hover{background:var(--panel); color:var(--text); text-decoration:none}
+  nav .grp{color:var(--dim); font-size:11px; text-transform:uppercase; letter-spacing:1px; margin:18px 0 4px 12px}
+  main{padding:46px 56px 120px; min-width:0}
+  /* hero */
+  .hero{margin-bottom:46px}
+  .tag{display:inline-block; background:rgba(88,166,255,.12); color:var(--acc); border:1px solid rgba(88,166,255,.3); padding:4px 12px; border-radius:999px; font-size:12.5px; font-weight:600; margin-bottom:18px}
+  h1{font-size:38px; line-height:1.25; margin:0 0 14px; font-weight:800; letter-spacing:-.5px}
+  h1 em{font-style:normal; background:linear-gradient(90deg,var(--acc),var(--purple)); -webkit-background-clip:text; background-clip:text; color:transparent}
+  .lede{color:var(--muted); font-size:17px; max-width:760px}
+  .stats{display:flex; gap:14px; flex-wrap:wrap; margin-top:26px}
+  .stat{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:16px 20px; min-width:130px}
+  .stat b{display:block; font-size:26px; font-weight:800; color:var(--acc2)}
+  .stat span{color:var(--dim); font-size:12.5px}
+  section{margin:54px 0; scroll-margin-top:24px}
+  h2{font-size:25px; margin:0 0 8px; font-weight:800; display:flex; align-items:center; gap:10px}
+  h2::before{content:""; width:5px; height:24px; background:linear-gradient(var(--acc),var(--purple)); border-radius:3px}
+  h3{font-size:18px; margin:26px 0 10px; color:#fff}
+  .note{color:var(--dim); font-size:13.5px; margin-bottom:18px}
+  p{margin:10px 0}
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:22px 24px; margin:16px 0}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+  .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
+  .mini{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:18px}
+  .mini h4{margin:0 0 6px; font-size:15px; color:#fff}
+  .mini p{margin:0; color:var(--muted); font-size:13.5px}
+  .mini .ic{font-size:22px; margin-bottom:8px; display:block}
+  table{width:100%; border-collapse:collapse; margin:16px 0; font-size:13.8px; overflow:hidden; border-radius:10px}
+  th,td{padding:11px 14px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top}
+  th{background:var(--panel2); color:#fff; font-weight:700}
+  td{color:var(--muted)}
+  tr:last-child td{border-bottom:none}
+  td strong,th strong{color:var(--text)}
+  .hl{color:var(--acc2); font-weight:700}
+  .badge{display:inline-block; font-size:11px; padding:2px 8px; border-radius:6px; font-weight:700; margin-left:6px}
+  .b-done{background:rgba(63,185,80,.15); color:var(--acc2)}
+  .b-wip{background:rgba(240,136,62,.15); color:var(--warn)}
+  .b-plan{background:rgba(110,123,138,.18); color:var(--dim)}
+  /* flywheel */
+  .fly{display:flex; flex-direction:column; gap:14px; margin:18px 0}
+  .layer{border-radius:var(--radius); padding:18px 22px; position:relative; border:1px solid var(--line)}
+  .l3{background:linear-gradient(135deg,rgba(188,140,255,.13),rgba(188,140,255,.04)); border-color:rgba(188,140,255,.35)}
+  .l2{background:linear-gradient(135deg,rgba(88,166,255,.13),rgba(88,166,255,.04)); border-color:rgba(88,166,255,.35)}
+  .l1{background:linear-gradient(135deg,rgba(63,185,80,.13),rgba(63,185,80,.04)); border-color:rgba(63,185,80,.35)}
+  .layer .lt{font-weight:800; font-size:16px; margin-bottom:4px}
+  .layer .ld{color:var(--muted); font-size:13.5px}
+  .layer .tagline{position:absolute; right:20px; top:18px; font-size:12px; color:var(--dim)}
+  .arrow{text-align:center; color:var(--dim); font-size:18px; margin:-6px 0}
+  /* pipeline */
+  .pipe{display:flex; align-items:stretch; gap:0; flex-wrap:wrap; margin:18px 0}
+  .step{flex:1; min-width:120px; background:var(--panel); border:1px solid var(--line); padding:14px 12px; text-align:center; position:relative}
+  .step:first-child{border-radius:10px 0 0 10px}
+  .step:last-child{border-radius:0 10px 10px 0}
+  .step .n{font-size:11px; color:var(--acc); font-weight:700}
+  .step .t{font-size:13.5px; font-weight:700; margin:4px 0 2px}
+  .step .d{font-size:11.5px; color:var(--dim)}
+  .step:not(:last-child)::after{content:"›"; position:absolute; right:-9px; top:50%; transform:translateY(-50%); color:var(--acc); font-size:20px; z-index:2}
+  ul.clean{margin:10px 0; padding-left:20px}
+  ul.clean li{margin:6px 0; color:var(--muted)}
+  ul.clean li strong{color:var(--text)}
+  .callout{border-left:3px solid var(--acc); background:rgba(88,166,255,.07); padding:14px 18px; border-radius:0 10px 10px 0; margin:16px 0; color:var(--muted)}
+  .callout.warn{border-color:var(--warn); background:rgba(240,136,62,.07)}
+  .callout.pink{border-color:var(--pink); background:rgba(219,97,162,.07)}
+  .callout b{color:var(--text)}
+  code{background:var(--panel2); padding:1.5px 7px; border-radius:5px; font-size:13px; color:var(--purple); font-family:"SF Mono",Consolas,monospace}
+  .scoredims{display:grid; grid-template-columns:repeat(6,1fr); gap:10px; margin:16px 0}
+  .dim{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px 8px; text-align:center}
+  .dim .e{font-size:20px}
+  .dim .n{font-size:13px; font-weight:700; margin-top:6px}
+  .roadmap{position:relative; margin:20px 0 0; padding-left:28px}
+  .roadmap::before{content:""; position:absolute; left:7px; top:6px; bottom:6px; width:2px; background:var(--line)}
+  .ms{position:relative; margin-bottom:22px}
+  .ms::before{content:""; position:absolute; left:-25px; top:5px; width:13px; height:13px; border-radius:50%; background:var(--acc); box-shadow:0 0 0 4px rgba(88,166,255,.15)}
+  .ms.p2::before{background:var(--warn); box-shadow:0 0 0 4px rgba(240,136,62,.15)}
+  .ms.p3::before{background:var(--purple); box-shadow:0 0 0 4px rgba(188,140,255,.15)}
+  .ms h4{margin:0 0 4px; font-size:16px}
+  .ms .wk{font-size:12px; color:var(--dim); font-weight:700; text-transform:uppercase; letter-spacing:.5px}
+  .ms p{margin:4px 0 0; color:var(--muted); font-size:13.8px}
+  .stack{display:flex; flex-wrap:wrap; gap:8px; margin:12px 0}
+  .chip{background:var(--panel2); border:1px solid var(--line); border-radius:8px; padding:6px 12px; font-size:12.5px; color:var(--muted)}
+  .chip b{color:var(--acc)}
+  .foot{margin-top:80px; padding-top:24px; border-top:1px solid var(--line); color:var(--dim); font-size:13px}
+  @media(max-width:980px){
+    .wrap{grid-template-columns:1fr} nav{display:none} main{padding:28px 20px 80px}
+    .grid2,.grid3{grid-template-columns:1fr} .scoredims{grid-template-columns:repeat(3,1fr)}
+    h1{font-size:29px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <div class="brand">Best<span>Blogs</span> 拆解</div>
+    <div class="sub">产品复刻蓝图 · 2026</div>
+    <div class="grp">认识产品</div>
+    <a href="#what">① 它是什么</a>
+    <a href="#problem">② 解决什么问题</a>
+    <a href="#compete">③ 竞争定位</a>
+    <div class="grp">核心结构</div>
+    <a href="#flywheel">④ 三层飞轮</a>
+    <a href="#features">⑤ 核心功能拆解</a>
+    <a href="#ai">⑥ AI 分析管线（护城河）</a>
+    <a href="#arch">⑦ 技术架构</a>
+    <div class="grp">商业 & 复刻</div>
+    <a href="#biz">⑧ 商业模式</a>
+    <a href="#moat">⑨ 护城河与风险</a>
+    <a href="#build">⑩ 做你自己的产品</a>
+    <a href="#mvp">⑪ MVP 落地路线</a>
+    <a href="#diff">⑫ 差异化切入点</a>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <span class="tag">产品深度拆解 · 可复刻蓝图</span>
+      <h1>BestBlogs.dev —— <em>AI 驱动的个性化高质量阅读工作流</em></h1>
+      <p class="lede">不是又一个内容聚合器，也不是追热点的推荐流。它的核心命题是：<b>真正稀缺的不是内容，而是高质量信息的发现、判断、压缩与持续跟踪能力</b>。用 AI 做规模化质量判断 + 人工精审建立公共质量池，再叠加个性化工作流驱动留存与付费。</p>
+      <div class="stats">
+        <div class="stat"><b>13000+</b><span>注册用户</span></div>
+        <div class="stat"><b>600+</b><span>订阅源</span></div>
+        <div class="stat"><b>1000+</b><span>日均处理内容</span></div>
+        <div class="stat"><b>6 维</b><span>AI 评分体系</span></div>
+        <div class="stat"><b>356</b><span>兴趣标签</span></div>
+      </div>
+    </div>
+
+    <!-- 1 -->
+    <section id="what">
+      <h2>① 它到底是什么</h2>
+      <p>每天从 600+ 订阅源自动抓取文章、播客、视频、推文（日均 1000+ 篇），经大语言模型<b>六维评分、摘要、翻译</b>后，按每位用户的兴趣标签生成个性化早报。一句话定位：<span class="hl">公共策展建立信任，个人工作流驱动留存，可调用基础设施打开天花板。</span></p>
+      <div class="grid3">
+        <div class="mini"><span class="ic">🔍</span><h4>AI 内容分析</h4><p>六维评分 + 一句话总结 + 摘要 + 关键观点 + 金句 + 自动打标</p></div>
+        <div class="mini"><span class="ic">🌐</span><h4>中英双语</h4><p>自动识别原文语言并翻译分析结果，三段式意译流程</p></div>
+        <div class="mini"><span class="ic">🏷️</span><h4>六维兴趣标签</h4><p>编程 / AI / 产品设计 / 商业科技 / 个人成长 / 综合，多选 + 权重</p></div>
+        <div class="mini"><span class="ic">📰</span><h4>每日早报</h4><p>个性化摘要（文字 / 音频 / 邮件），公共版 + Pro 深度版</p></div>
+        <div class="mini"><span class="ic">🤖</span><h4>AI 伴读</h4><p>摘要、互动问答、章节跳转、划线提问，降低长文理解成本</p></div>
+        <div class="mini"><span class="ic">🔌</span><h4>开放能力</h4><p>OpenAPI v2 + CLI + Agent Skills（MCP），人和智能体都可调用</p></div>
+      </div>
+      <h3>内容类型</h3>
+      <p class="note">文章 · 播客 · 视频 · 推文（Twitter）—— 多形态统一进入同一条质量判断与分发链路。</p>
+    </section>
+
+    <!-- 2 -->
+    <section id="problem">
+      <h2>② 解决什么问题</h2>
+      <div class="grid3">
+        <div class="card"><h3 style="margin-top:0">发现与判断的鸿沟</h3><p style="color:var(--muted);font-size:14px">高噪音环境里，判断一条内容是否值得读的成本，已经高于获取它的成本。多数产品要么只搬运，要么把相似热点推给所有人。</p></div>
+        <div class="card"><h3 style="margin-top:0">吸收效率的瓶颈</h3><p style="color:var(--muted);font-size:14px">长内容太多、时间太少。没有压缩和优先级排序能力的产品，本质在浪费用户最稀缺的资源——注意力。</p></div>
+        <div class="card"><h3 style="margin-top:0">阅读无法沉淀为知识</h3><p style="color:var(--muted);font-size:14px">阅读停留在"看过"，缺少回顾、积累与复用。碎片化阅读没有跟踪机制，读过的好内容最终遗忘。</p></div>
+      </div>
+      <div class="callout pink"><b>核心信念（决定产品形态）：</b>「最好的阅读产品让你读得更少，而不是更多。」—— 因此他们<b>拒绝优化阅读时长、内容数量、无深度日活</b>这三个指标，北极星是<b>"深度阅读闭环率"</b>。这与今日头条类产品的目标函数根本对立，是产品哲学层面的差异。</div>
+    </section>
+
+    <!-- 3 -->
+    <section id="compete">
+      <h2>③ 竞争定位</h2>
+      <p class="note">内容消费产品光谱：纯订阅工具 ←→ AI 增强阅读 ←→ 算法推荐流。BestBlogs 站在三者交叠的空白结构位。</p>
+      <table>
+        <thead><tr><th>维度</th><th>订阅工具 (Feedly)</th><th>阅读工具 (Readwise)</th><th>推荐流 (今日头条)</th><th>BestBlogs</th></tr></thead>
+        <tbody>
+          <tr><td><strong>质量判断</strong></td><td>无</td><td>无</td><td>算法隐式</td><td class="hl">AI + 人工双层</td></tr>
+          <tr><td><strong>个性化</strong></td><td>用户手动</td><td>无</td><td>算法黑箱</td><td class="hl">可理解可调节</td></tr>
+          <tr><td><strong>阅读辅助</strong></td><td>无</td><td>标注+笔记</td><td>无</td><td class="hl">AI 伴读</td></tr>
+          <tr><td><strong>公共信任</strong></td><td>无</td><td>无</td><td>弱</td><td class="hl">策展品牌</td></tr>
+          <tr><td><strong>开放性</strong></td><td>API</td><td>API</td><td>封闭</td><td class="hl">支持智能体调用</td></tr>
+        </tbody>
+      </table>
+      <div class="callout"><b>结构性差异不在某个功能，而在三层能力的垂直整合。</b>当前主流产品很少同时具备「公共策展质量池」和「内建的个性化阅读工作流」——这是较少被占据的结构位。</div>
+    </section>
+
+    <!-- 4 -->
+    <section id="flywheel">
+      <h2>④ 核心结构：三层飞轮</h2>
+      <p class="note">三层不是三个独立产品，而是同一个飞轮的三次加速。这是整个产品 / 架构 / 商业的组织主线。</p>
+      <div class="fly">
+        <div class="layer l3"><span class="tagline">长期天花板</span><div class="lt">第三层 · 可调用知识基础设施 <span class="badge b-plan">方向性</span></div><div class="ld">面向智能体与外部系统：OpenAPI 2.0、结构化研究包、主题监控、早报原语、MCP 服务。让质量判断成为人和 Agent 都能调用的基础设施。</div></div>
+        <div class="arrow">▲ 建立在</div>
+        <div class="layer l2"><span class="tagline">留存 & 付费</span><div class="lt">第二层 · 个人 AI 阅读工作流 <span class="badge b-wip">建设中</span></div><div class="ld">我的早报、为你推荐、六维兴趣标签、行为学习、订阅源管理、AI 伴读。把公共判断力转化为"替你选"。Pro 的核心价值承载层。</div></div>
+        <div class="arrow">▲ 建立在</div>
+        <div class="layer l1"><span class="tagline">获客 & 信任</span><div class="lt">第一层 · 公共策展质量池 <span class="badge b-done">成熟</span></div><div class="ld">采集→分析→筛选→审核全链路 + 公共早报 + 精选内容 + SEO。AI 初评 + 专家精审形成随时间复利的质量资产。</div></div>
+      </div>
+      <div class="grid3" style="margin-top:18px">
+        <div class="mini"><h4>飞轮动力 ①</h4><p>第一层建品牌信任 → 吸引用户（免费价值）</p></div>
+        <div class="mini"><h4>飞轮动力 ②</h4><p>第二层驱动留存付费 → 产生行为数据 → 反哺第一层质量判断</p></div>
+        <div class="mini"><h4>飞轮动力 ③</h4><p>第三层扩大分发复用 → 更多数据与场景 → 再次强化前两层</p></div>
+      </div>
+    </section>
+
+    <!-- 5 -->
+    <section id="features">
+      <h2>⑤ 核心功能拆解</h2>
+      <h3>每日节奏：发现 → 阅读 → 回顾/沉淀 → 创作/分享</h3>
+      <div class="pipe">
+        <div class="step"><div class="n">阶段 1</div><div class="t">发现</div><div class="d">公共/我的早报、为你推荐、搜索</div></div>
+        <div class="step"><div class="n">阶段 2</div><div class="t">阅读</div><div class="d">详情页、AI 伴读、章节跳转</div></div>
+        <div class="step"><div class="n">阶段 3</div><div class="t">回顾/沉淀</div><div class="d">复盘、深度笔记、研究会话</div></div>
+        <div class="step"><div class="n">阶段 4</div><div class="t">创作/分享</div><div class="d">知识复用、输出</div></div>
+      </div>
+      <p class="note">前两段（发现/阅读）已成熟，后两段为建设中 / 长期方向。"先把发现和阅读做到极致，让回顾沉淀自然生长出来。"</p>
+
+      <table>
+        <thead><tr><th>能力</th><th>说明</th><th>所属层 / 状态</th></tr></thead>
+        <tbody>
+          <tr><td><strong>公共早报</strong></td><td>3 天窗口 + 加权评分（来源优先级/头部厂商/AI Coding/视频播客）+ 历史去重 + 质量检查；含文字/音频/邮件/微信群推送</td><td>第一层 <span class="badge b-done">成熟</span></td></tr>
+          <tr><td><strong>我的早报</strong></td><td>基于用户关注、兴趣、阅读行为生成的个人化整理，是第二层最关键的日入口</td><td>第二层 <span class="badge b-done">上线</span></td></tr>
+          <tr><td><strong>为你推荐</strong></td><td>多路召回 + 重排：qualityScore + 标签相关性 + 新鲜度 + 多样性惩罚</td><td>第二层 <span class="badge b-wip">优化中</span></td></tr>
+          <tr><td><strong>六维兴趣标签</strong></td><td>356 标签 4 层级：domain(8)/topic(~220)/entity(~30)/format(16)；冷启动仅用 ~27 个清晰主题降低认知负荷</td><td>第二层 <span class="badge b-wip">实施中</span></td></tr>
+          <tr><td><strong>AI 伴读</strong></td><td>总结、互动问答、章节跳转、划线提问；配额与 Free/Pro 边界在服务层统一治理</td><td>第二层 <span class="badge b-done">上线</span></td></tr>
+          <tr><td><strong>我的关注 / 私有订阅源</strong></td><td>用户引入长期信息源；可见性严格隔离，不污染公共池</td><td>第二层 <span class="badge b-done">上线</span></td></tr>
+          <tr><td><strong>RSS / OPML</strong></td><td>全站/精选/分类/按分数 多维 RSS 订阅；公开 400 个订阅源 OPML</td><td>第一层 <span class="badge b-done">成熟</span></td></tr>
+          <tr><td><strong>CLI + Agent Skills</strong></td><td><code>npm i -g @bestblogs/cli</code>，所有命令支持 <code>--json</code>，可被 Agent 消费</td><td>第三层 <span class="badge b-done">上线</span></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 6 -->
+    <section id="ai">
+      <h2>⑥ AI 分析管线（真正的护城河）</h2>
+      <p>这是产品最值得复刻、也最难复刻的部分。早期他们用<b>一个大而全的提示词</b>做摘要+标签+评分+翻译，结果：摘要遗漏信息、标签不统一、评分难调、翻译生硬。后来拆成 <b>Dify Workflow 多子流程</b>，效果与可维护性大幅提升。</p>
+      <h3>三大子流程</h3>
+      <div class="pipe">
+        <div class="step"><div class="n">流程 A</div><div class="t">文章初评</div><div class="d">中英分模型 + CO-STAR 提示词，剔除低质/营销内容</div></div>
+        <div class="step"><div class="n">流程 B</div><div class="t">文章分析</div><div class="d">分段→汇总→打标→评分→反思→优化</div></div>
+        <div class="step"><div class="n">流程 C</div><div class="t">结果翻译</div><div class="d">识别术语→初译→检查→意译</div></div>
+      </div>
+
+      <h3>流程 B 内部节点（核心）</h3>
+      <ul class="clean">
+        <li><strong>长度判断</strong>：>6000 字符则分段处理（迭代 + 变量聚合），否则全文分析，避免遗漏段落关键信息</li>
+        <li><strong>内容生成</strong>：一句话总结 + 摘要 + 关键词 + 主要观点 + 金句</li>
+        <li><strong>领域划分与打标</strong>：主题/技术/领域/应用/产品/公司/平台/名人/趋势</li>
+        <li><strong>多维评分</strong>：内容深度、写作质量、实用性、相关性等</li>
+        <li><strong>检查反思</strong>：LLM 扮演"技术文章评审专家"，按全面性/准确性/一致性审查上述输出</li>
+        <li><strong>优化改进</strong>：基于反思结果二次确认格式与语言，输出最终分析 + 更新原因</li>
+      </ul>
+
+      <h3>对外呈现的六维评分</h3>
+      <div class="scoredims">
+        <div class="dim"><div class="e">🎯</div><div class="n">选题</div></div>
+        <div class="dim"><div class="e">📖</div><div class="n">内容</div></div>
+        <div class="dim"><div class="e">🔬</div><div class="n">深度</div></div>
+        <div class="dim"><div class="e">🛠️</div><div class="n">实用</div></div>
+        <div class="dim"><div class="e">💡</div><div class="n">创新</div></div>
+        <div class="dim"><div class="e">✍️</div><div class="n">表达</div></div>
+      </div>
+      <div class="callout warn"><b>复刻要点：</b>不要把摘要/打标/评分/翻译塞进一个提示词。拆成"单一职责节点 + 检查反思 + 优化改进"的链路，每个节点可独立调试、独立换模型、独立观测。这是质量稳定性的关键，也是"AI 放大判断力而非替代判断力"的工程落地。</div>
+    </section>
+
+    <!-- 7 -->
+    <section id="arch">
+      <h2>⑦ 技术架构</h2>
+      <h3>仓库结构（Monorepo）</h3>
+      <div class="grid2">
+        <div class="mini"><h4>bestblogs-app</h4><p>公开站：内容广场、我的早报、为你推荐、AI 伴读</p></div>
+        <div class="mini"><h4>bestblogs-admin</h4><p>管理端：内容审核、参数配置、运营管理</p></div>
+        <div class="mini"><h4>bestblogs-api</h4><p>用户 API（<code>/api/*</code>）+ 对外 OpenAPI（<code>/openapi/v2/*</code>）</p></div>
+        <div class="mini"><h4>bestblogs-admin-api</h4><p>管理 API + Job 宿主（调度、后台任务）</p></div>
+        <div class="mini"><h4>bestblogs-worker</h4><p>任务模块（作为库被 admin-api 依赖，不独立部署）</p></div>
+        <div class="mini"><h4>bestblogs-common</h4><p>共享领域模型、仓储、适配器、ConfigKey 参数体系</p></div>
+      </div>
+      <h3>技术基线</h3>
+      <div class="stack">
+        <div class="chip"><b>Java 21</b> + Virtual Threads</div>
+        <div class="chip"><b>Spring Boot 3.x</b></div>
+        <div class="chip"><b>MongoDB</b> 主存储</div>
+        <div class="chip"><b>Elasticsearch</b> 搜索读模型</div>
+        <div class="chip"><b>Redis</b> 缓存/限流/分布式协调</div>
+        <div class="chip"><b>Dify</b> LLM Workflow（自部署）</div>
+      </div>
+      <h3>内容状态机（公共质量边界）</h3>
+      <div class="pipe">
+        <div class="step"><div class="t">WAIT_PREPARE</div><div class="d">预处理</div></div>
+        <div class="step"><div class="t">WAIT_FILTER</div><div class="d">初评过滤</div></div>
+        <div class="step"><div class="t">WAIT_ANALYSIS</div><div class="d">深度分析</div></div>
+        <div class="step"><div class="t">WAIT_TRANSLATE</div><div class="d">翻译</div></div>
+        <div class="step"><div class="t">WAIT_REVIEW</div><div class="d">人工精审</div></div>
+        <div class="step"><div class="t">COMPLETED</div><div class="d">发布</div></div>
+      </div>
+      <p class="note">前台只消费 <code>COMPLETED + processed=true</code>。状态机不仅推进任务，更是公共质量边界的一部分。</p>
+      <div class="callout"><b>关键工程治理：</b>所有动态配置走 <code>ConfigKey</code> 枚举单一真相源；新能力先上 Feature Flag（默认关闭）→ 人工验证 → 放量；任意功能可通过 ConfigKey 瞬时关闭而无需回滚部署。<b>"上线可观测、可控制、可回滚"</b>。</div>
+    </section>
+
+    <!-- 8 -->
+    <section id="biz">
+      <h2>⑧ 商业模式</h2>
+      <div class="grid2">
+        <div class="card"><h3 style="margin-top:0">Free = 高质量公共输入入口</h3><ul class="clean"><li>公共精选内容</li><li>公共早报</li><li>基础发现能力</li><li>有限 AI 阅读辅助（以摘要为主）</li></ul><p class="note">作用：先让用户接触公共判断力，建立信任与品牌心智。</p></div>
+        <div class="card"><h3 style="margin-top:0">Pro = 个性化阅读工作流</h3><ul class="clean"><li>我的早报 + 为你推荐</li><li>更多订阅源管理</li><li>完整 AI 伴读（互动问答、跨文章上下文、高用量）</li><li>后续回顾与沉淀能力</li></ul><p class="note">作用：让内容真正"为你而生"。</p></div>
+      </div>
+      <h3>Pro 三阶段定价（信号驱动放量）</h3>
+      <div class="pipe">
+        <div class="step"><div class="n">阶段 1</div><div class="t">邀请内测</div><div class="d">≤50 赞赏用户 + 定向邀请</div></div>
+        <div class="step"><div class="n">→ 5/1</div><div class="t">早鸟开放</div><div class="d">$10 / 月</div></div>
+        <div class="step"><div class="n">→ 9/1</div><div class="t">正式定价</div><div class="d">$20 / 月</div></div>
+      </div>
+      <h3>增长漏斗（内嵌飞轮）</h3>
+      <p style="color:var(--muted)">获客（公共策展/SEO）→ 激活（首次"我的早报"预览，让用户感受到"它真的开始懂我"）→ 留存（个性化工作流越用越准，形成迁移壁垒）→ 付费（Pro = 内容越来越贴合）→ 扩展（第三层可调用基础设施）。</p>
+    </section>
+
+    <!-- 9 -->
+    <section id="moat">
+      <h2>⑨ 护城河与风险</h2>
+      <div class="grid2">
+        <div class="card"><h3 style="margin-top:0">护城河</h3><ul class="clean"><li><strong>质量池是时间复利资产</strong>：每次评审都在训练更精准的判断标准</li><li><strong>三层垂直整合</strong>：单一产品内闭环，竞品难以同时复制</li><li><strong>个性化迁移壁垒</strong>：工作流越用越适合你</li><li><strong>可被 Agent 调用</strong>：抢占"智能体时代默认阅读基础设施"的位置</li></ul></div>
+        <div class="card"><h3 style="margin-top:0">风险与应对</h3><ul class="clean"><li><strong>大模型成本飙升</strong> → 多模型分级调用 + 缓存层</li><li><strong>内容源封锁</strong> → 多源冗余 + 私有订阅 + 创作者合作</li><li><strong>竞品复制策展</strong> → 持续投判断力而非内容量</li><li><strong>单人团队瓶颈</strong> → AI 最大化个人产出 + 自动化运营</li><li><strong>冷启动流量</strong> → 技术社区精准切入，内容质量即获客</li></ul></div>
+      </div>
+    </section>
+
+    <!-- 10 -->
+    <section id="build">
+      <h2>⑩ 如果你要做你自己的产品</h2>
+      <p>下面是从这套产品中提炼的、可直接套用的<b>方法论与决策清单</b>。复刻它的"形"不难，难在复刻它的"魂"——质量判断力。</p>
+      <div class="grid2">
+        <div class="card">
+          <h3 style="margin-top:0">✅ 该照搬的</h3>
+          <ul class="clean">
+            <li><strong>拆解式 AI 管线</strong>：单一职责节点 + 检查反思 + 优化改进，而非一个巨型提示词</li>
+            <li><strong>内容状态机</strong>：把"质量边界"编码进状态流转，前台只消费终态</li>
+            <li><strong>公共池 + 个性化层</strong>分离：先建公共质量信任，再叠个人工作流</li>
+            <li><strong>ConfigKey + Feature Flag</strong>：所有能力可瞬时开关、灰度、回滚</li>
+            <li><strong>反指标</strong>：明确"拒绝优化什么"（时长/数量/无深度日活）</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3 style="margin-top:0">⚠️ 该重新思考的</h3>
+          <ul class="clean">
+            <li><strong>选垂直领域</strong>：他们从技术内容切入。你应选一个你有判断力 / 有信息源优势的窄领域</li>
+            <li><strong>不要一上来做三层</strong>：先把第一层（公共策展）做到让人信任</li>
+            <li><strong>成本控制前置</strong>：LLM 调用是主要成本，从第一天就做缓存 + 多模型分级</li>
+            <li><strong>人工精审不能省</strong>：纯 AI 会让质量天花板封顶，"AI 初筛 + 人工把关"是关键</li>
+            <li><strong>Agent / MCP 接口</strong>：这是新增量，可作为你的差异化早期卖点</li>
+          </ul>
+        </div>
+      </div>
+      <div class="callout pink"><b>最关键的一条认知：</b>这个产品的真正资产不是代码，而是"<b>什么是好内容</b>"的判断标准——它沉淀在评分提示词、专家精审规则、标签体系里，随时间复利。你的差异化也应建立在"你比别人更懂哪类内容好"之上。</div>
+    </section>
+
+    <!-- 11 -->
+    <section id="mvp">
+      <h2>⑪ MVP 落地路线（单人 / 小团队）</h2>
+      <p class="note">目标：用最小成本验证"个性化高质量策展能否带来留存"。建议技术栈优先简单可演进。</p>
+      <div class="roadmap">
+        <div class="ms"><div class="wk">第 1-2 周 · 采集层</div><h4>跑通"抓取 → 入库"</h4><p>选 20-50 个你领域内的优质 RSS 源 + 无头浏览器抓全文。存 PostgreSQL/MongoDB。先不做爬虫规模化。</p></div>
+        <div class="ms"><div class="wk">第 3-4 周 · 分析层（核心）</div><h4>搭 AI 分析管线</h4><p>用 Dify / LangGraph / 直接调 API 实现：初评过滤 → 摘要+打标+多维评分 → 检查反思。先单语言。把评分提示词当作核心资产反复调。</p></div>
+        <div class="ms p2"><div class="wk">第 5-6 周 · 分发层</div><h4>公共内容站 + 每日早报</h4><p>一个内容列表 + 详情页 + 每天自动生成的"今日精选"邮件/页面。这是你的第一层公共质量池，也是获客入口。</p></div>
+        <div class="ms p2"><div class="wk">第 7-9 周 · 个性化层</div><h4>兴趣标签 + 我的早报</h4><p>新用户冷启动选 5-8 个主题 → 基于标签做"我的早报"。先用规则+标签匹配，不急上向量。</p></div>
+        <div class="ms p2"><div class="wk">第 10-12 周 · 留存验证</div><h4>AI 伴读 + 行为埋点</h4><p>详情页加"总结/提问"。埋点：点击、深读、收藏。观察"深度阅读闭环率"和 7 日留存。</p></div>
+        <div class="ms p3"><div class="wk">后续 · 商业 & 开放</div><h4>Pro 订阅 + API/MCP</h4><p>留存验证通过后再上 Pro（个性化 + 完整伴读）。最后开放 OpenAPI / MCP，吃 Agent 增量。</p></div>
+      </div>
+    </section>
+
+    <!-- 12 -->
+    <section id="diff">
+      <h2>⑫ 你的差异化切入点（建议）</h2>
+      <div class="grid3">
+        <div class="mini"><span class="ic">🎯</span><h4>更窄的垂直领域</h4><p>BestBlogs 偏技术泛领域。你可深耕某一窄领域（如某行业/某语言/某职能），用"更懂"换"更准"。</p></div>
+        <div class="mini"><span class="ic">🗣️</span><h4>本地化 / 单语言</h4><p>聚焦中文创作者生态 / 某语种，省掉双语翻译成本，把预算投在判断力上。</p></div>
+        <div class="mini"><span class="ic">🤖</span><h4>Agent-first</h4><p>直接以 MCP / Agent Skills 为第一形态，做"给 Agent 用的策展 API"，避开前端站点的运营重担。</p></div>
+        <div class="mini"><span class="ic">📥</span><h4>个人知识库导向</h4><p>更重"沉淀"（第二阶段方向），做 Readwise + 策展的结合，主打回顾与复用。</p></div>
+        <div class="mini"><span class="ic">👥</span><h4>社区化策展</h4><p>引入人工众包精审 + 投票，用社区信号替代/补充昂贵的专家精审。</p></div>
+        <div class="mini"><span class="ic">💰</span><h4>更低成本模型策略</h4><p>用小模型做初评 + 大模型做精分析，把单篇分析成本压到可规模化的水平。</p></div>
+      </div>
+      <div class="callout"><b>一句话总结复刻策略：</b>照搬"<b>公共质量池 + 个性化工作流 + 拆解式 AI 管线</b>"这套骨架，但在"<b>领域选择 + 判断标准 + 成本结构 + 分发形态</b>"上做出属于你自己的选择。骨架是共通的，灵魂必须是你自己的。</div>
+    </section>
+
+    <div class="foot">
+      本报告基于 BestBlogs 仓库内 <code>docs/1-VISION.md</code>、<code>docs/2-PRODUCT.md</code>、<code>docs/4-ARCHITECTURE.md</code>、<code>flows/Dify/…文章智能分析实践.md</code> 及 <code>README.md</code> 拆解整理 · 用于产品研究与复刻参考 · 2026
+    </div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>产品二 · Agent 策展 API / MCP — 开发架构</title>
+<style>
+  :root{
+    --bg:#0a0f0d; --panel:#121a18; --panel2:#19231f; --line:#26332d;
+    --text:#e8f6ef; --muted:#97b6a8; --dim:#65887a;
+    --acc:#a78bfa; --acc2:#34d399; --teal:#2dd4bf; --amber:#fbbf24; --rose:#fb7185; --blue:#60a5fa;
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0; background:radial-gradient(900px 480px at 78% -10%,rgba(52,211,153,.10),transparent),var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; line-height:1.7; font-size:15.5px}
+  a{color:var(--acc2); text-decoration:none} a:hover{text-decoration:underline}
+  .wrap{display:grid; grid-template-columns:262px 1fr; max-width:1340px; margin:0 auto}
+  nav{position:sticky; top:0; height:100vh; overflow-y:auto; padding:26px 16px; border-right:1px solid var(--line); background:rgba(10,15,13,.7)}
+  nav .brand{font-weight:800; font-size:16px} nav .brand span{color:var(--acc2)}
+  nav .sub{color:var(--dim); font-size:11.5px; margin-bottom:18px}
+  nav a{display:block; color:var(--muted); padding:6px 11px; border-radius:8px; font-size:13px; margin:1px 0}
+  nav a:hover{background:var(--panel); color:var(--text); text-decoration:none}
+  nav .grp{color:var(--dim); font-size:10.5px; text-transform:uppercase; letter-spacing:1px; margin:14px 0 3px 11px}
+  nav .pill{display:block; margin:14px 8px 0; padding:9px 12px; background:rgba(52,211,153,.1); border:1px solid rgba(52,211,153,.3); border-radius:9px; font-size:12px; color:var(--muted)}
+  nav .pill b{color:var(--acc2)}
+  main{padding:42px 54px 120px; min-width:0}
+  .tag{display:inline-block; background:rgba(52,211,153,.14); color:var(--acc2); border:1px solid rgba(52,211,153,.34); padding:4px 12px; border-radius:999px; font-size:12.5px; font-weight:600; margin-bottom:14px}
+  h1{font-size:33px; line-height:1.25; margin:0 0 12px; font-weight:800; letter-spacing:-.5px}
+  h1 em{font-style:normal; background:linear-gradient(90deg,var(--acc),var(--acc2)); -webkit-background-clip:text; background-clip:text; color:transparent}
+  .lede{color:var(--muted); font-size:16px; max-width:820px}
+  section{margin:46px 0; scroll-margin-top:18px}
+  h2{font-size:22px; margin:0 0 6px; font-weight:800; display:flex; align-items:center; gap:10px}
+  h2::before{content:""; width:5px; height:22px; background:linear-gradient(var(--acc),var(--acc2)); border-radius:3px}
+  h3{font-size:16.5px; margin:22px 0 9px; color:#fff}
+  .note{color:var(--dim); font-size:13px; margin-bottom:14px}
+  p{margin:9px 0}
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:20px 22px; margin:14px 0}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+  .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+  .grid4{display:grid; grid-template-columns:repeat(4,1fr); gap:12px}
+  .mini{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px}
+  .mini h4{margin:0 0 5px; font-size:14.5px; color:#fff} .mini p{margin:0; color:var(--muted); font-size:12.8px}
+  .mini .ic{font-size:20px; margin-bottom:6px; display:block}
+  table{width:100%; border-collapse:collapse; margin:14px 0; font-size:13px; border-radius:10px; overflow:hidden}
+  th,td{padding:10px 12px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top}
+  th{background:var(--panel2); color:#fff; font-weight:700} td{color:var(--muted)}
+  tr:last-child td{border-bottom:none} td strong{color:var(--text)}
+  .hl{color:var(--acc2); font-weight:700}
+  .badge{display:inline-block; font-size:10.5px; padding:2px 7px; border-radius:6px; font-weight:700}
+  .b-share{background:rgba(96,165,250,.16); color:var(--blue)}
+  .b-own{background:rgba(52,211,153,.16); color:var(--acc2)}
+  .m-get{background:rgba(52,211,153,.16); color:var(--acc2)} .m-post{background:rgba(251,191,36,.16); color:var(--amber)}
+  pre{background:#0b1310; border:1px solid var(--line); border-radius:12px; padding:16px 18px; overflow-x:auto; font-size:12.6px; line-height:1.6; color:#cfe6db; margin:14px 0}
+  pre .c{color:var(--dim)} pre .k{color:var(--acc)} pre .s{color:var(--acc2)} pre .y{color:var(--amber)} pre .b{color:var(--blue)}
+  code{background:var(--panel2); padding:1.5px 6px; border-radius:5px; font-size:12.6px; color:var(--acc); font-family:"SF Mono",Consolas,monospace}
+  ul.clean{margin:9px 0; padding-left:19px} ul.clean li{margin:5px 0; color:var(--muted)} ul.clean li strong{color:var(--text)}
+  .callout{border-left:3px solid var(--acc2); background:rgba(52,211,153,.08); padding:13px 17px; border-radius:0 10px 10px 0; margin:14px 0; color:var(--muted)}
+  .callout.blue{border-color:var(--blue); background:rgba(96,165,250,.07)}
+  .callout.amber{border-color:var(--amber); background:rgba(251,191,36,.07)}
+  .callout.violet{border-color:var(--acc); background:rgba(167,139,250,.07)}
+  .callout b{color:var(--text)}
+  .stack{display:flex; flex-direction:column; gap:9px; margin:14px 0}
+  .layer{border-radius:12px; padding:14px 18px; border:1px solid var(--line); position:relative}
+  .layer .lt{font-weight:700; font-size:14.5px; margin-bottom:3px} .layer .ld{color:var(--muted); font-size:12.7px}
+  .layer .lb{position:absolute; right:14px; top:13px}
+  .ls{background:linear-gradient(135deg,rgba(96,165,250,.12),rgba(96,165,250,.03)); border-color:rgba(96,165,250,.3)}
+  .lo{background:linear-gradient(135deg,rgba(52,211,153,.12),rgba(52,211,153,.03)); border-color:rgba(52,211,153,.32)}
+  .seq{counter-reset:s; margin:14px 0}
+  .seq .r{display:flex; gap:13px; padding:10px 0; border-bottom:1px dashed var(--line)}
+  .seq .r:last-child{border-bottom:none}
+  .seq .r::before{counter-increment:s; content:counter(s); flex-shrink:0; width:24px; height:24px; border-radius:7px; background:var(--panel2); color:var(--acc2); font-weight:700; font-size:12px; display:flex; align-items:center; justify-content:center}
+  .seq .r div{font-size:13.3px; color:var(--muted)} .seq .r b{color:var(--text)}
+  .roadmap{position:relative; margin:18px 0 0; padding-left:26px}
+  .roadmap::before{content:""; position:absolute; left:6px; top:6px; bottom:6px; width:2px; background:var(--line)}
+  .ms{position:relative; margin-bottom:18px}
+  .ms::before{content:""; position:absolute; left:-24px; top:5px; width:12px; height:12px; border-radius:50%; background:var(--acc2); box-shadow:0 0 0 4px rgba(52,211,153,.15)}
+  .ms h4{margin:0 0 3px; font-size:15px} .ms .wk{font-size:11.5px; color:var(--dim); font-weight:700; text-transform:uppercase}
+  .ms p{margin:3px 0 0; color:var(--muted); font-size:13.2px}
+  .foot{margin-top:60px; padding-top:20px; border-top:1px solid var(--line); color:var(--dim); font-size:12.5px}
+  @media(max-width:980px){.wrap{grid-template-columns:1fr} nav{display:none} main{padding:24px 16px 70px}
+    .grid2,.grid3,.grid4{grid-template-columns:1fr} h1{font-size:25px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <div class="brand">产品二 · <span>Agent API</span></div>
+    <div class="sub">策展 API / MCP · 开发架构</div>
+    <div class="grp">总览</div>
+    <a href="#intro">定位与边界</a>
+    <a href="#context">① 系统上下文 (C4-L1)</a>
+    <a href="#reuse">② 复用共享中台</a>
+    <div class="grp">架构</div>
+    <a href="#container">③ 容器架构 (C4-L2)</a>
+    <a href="#modules">④ 核心模块 (C4-L3)</a>
+    <a href="#primitives">⑤ 稳定原语 (REST)</a>
+    <a href="#mcp">⑥ MCP 工具设计</a>
+    <a href="#data">⑦ 数据模型</a>
+    <a href="#flows">⑧ 关键流程时序</a>
+    <div class="grp">工程</div>
+    <a href="#authz">⑨ 鉴权/限流/配额/版本</a>
+    <a href="#stack">⑩ 选型与部署</a>
+    <a href="#dx">⑪ 开发者体验 (DX)</a>
+    <a href="#build">⑫ 开发里程碑</a>
+    <div class="pill">配套：<b>产品一（Reader）</b>另见独立文件。产品二<b>复用同一中台 + 同一垂直判断层</b>，只新增"对外受控暴露"。</div>
+  </nav>
+
+  <main>
+    <span class="tag">开发架构文档 · 2 / 2</span>
+    <h1>产品二：<em>Agent-first 策展 API / MCP</em></h1>
+    <p class="lede">把"高质量内容 + 结构化判断"开放为人和智能体都能调用的<b>稳定原语</b>。它<b>不重建</b>采集与分析，而是复用与产品一<b>同一个内容中台和垂直判断层</b>，只新增"受控对外暴露"——API Key 鉴权、限流配额、版本治理，以及一层 MCP Server。</p>
+
+    <section id="intro">
+      <h2>定位与边界</h2>
+      <div class="grid3">
+        <div class="mini"><span class="ic">🎯</span><h4>它负责</h4><p>稳定原语 REST API、API Key 鉴权、限流/配额、版本治理、MCP Server、开发者门户/文档</p></div>
+        <div class="mini"><span class="ic">🔗</span><h4>它复用</h4><p>共享中台（采集/实体/基础分析）+ 垂直判断层（VerticalScore）——与产品一<b>同一份数据</b></p></div>
+        <div class="mini"><span class="ic">🚫</span><h4>它不暴露</h4><p>内部推荐决策、用户隐私上下文、后台审核流程、内部任务状态</p></div>
+      </div>
+      <div class="callout violet"><b>为什么几乎零额外成本：</b>产品一已经把内容采集、基础分析、垂直评分都做好并写进共享库了。产品二只是在这份<b>已有的结构化数据</b>上加一层"受控读接口 + MCP 封装"。这正是上一轮"共享数据核心"结论的直接收益——<span class="hl">同一份判断，两种消费方式（人用 Web，Agent 用 API）。</span></div>
+    </section>
+
+    <section id="context">
+      <h2>① 系统上下文 (C4 Level 1)</h2>
+      <pre><span class="c">    开发者 / Agent 生态                      产品二 · Agent 策展 API
+ ┌──────────────────────┐               ┌────────────────────────────┐
+ │ Claude / Cursor 等    │   MCP (stdio  │   ┌──────────────────────┐  │
+ │ MCP 客户端            │◀──/HTTP)─────▶│   │   MCP Server          │  │
+ ├──────────────────────┤               │   └──────────┬───────────┘  │
+ │ 自建 Agent / 工作流   │   REST        │              ▼              │
+ │ (n8n/LangChain/...)   │◀──(X-API-KEY)▶│   ┌──────────────────────┐  │
+ ├──────────────────────┤               │   │  稳定原语 REST API     │  │
+ │ 第三方应用 / 脚本     │               │   │  + 鉴权/限流/配额      │  │
+ └──────────────────────┘               │   └──────────┬───────────┘  │
+                                         └──────────────┼──────────────┘
+                                                        │ 只读已发布内容
+                                                        ▼
+                                ┌───────────────────────────────────┐
+                                │  共享内容中台 + 垂直判断层 (与产品一  │
+                                │  同一 PostgreSQL / 向量 / 对象存储)  │
+                                └───────────────────────────────────┘</span></pre>
+      <p class="note">消费者：MCP 客户端（Claude/Cursor）、自建 Agent/自动化工作流、第三方应用。三类统一走 API Key 鉴权与配额。</p>
+    </section>
+
+    <section id="reuse">
+      <h2>② 复用共享中台（复用边界）</h2>
+      <div class="stack">
+        <div class="layer ls"><span class="lb"><span class="badge b-share">复用·只读</span></span><div class="lt">内容实体 + 基础分析</div><div class="ld">直接查询 content_items / content_base_analysis，不重新抓取、不重新分析。</div></div>
+        <div class="layer ls"><span class="lb"><span class="badge b-share">复用·只读</span></span><div class="lt">垂直判断层 VerticalScore</div><div class="ld">查询 content_vertical_scores（COMPLETED）。"今日精选/搜索/深度分析"都基于这层。</div></div>
+        <div class="layer lo"><span class="lb"><span class="badge b-own">本产品新增</span></span><div class="lt">受控暴露层</div><div class="ld">API Key、限流、配额、字段裁剪（隐藏内部字段）、稳定契约与版本。</div></div>
+        <div class="layer lo"><span class="lb"><span class="badge b-own">本产品新增</span></span><div class="lt">MCP 适配层</div><div class="ld">把 REST 原语包装成 MCP tools，供智能体直接调用。</div></div>
+      </div>
+      <div class="callout blue"><b>关键纪律：</b>对外只暴露<b>稳定原语</b>，不透出内部实现。读取走<b>独立的对外查询服务</b>（或同库不同视图），与产品一的 BFF 在信任边界上分离——不同前缀、不同过滤器、不同鉴权。</div>
+    </section>
+
+    <section id="container">
+      <h2>③ 容器架构 (C4 Level 2)</h2>
+      <pre><span class="c">┌───────────────────────── Agent API 运行时 ─────────────────────────┐
+│                                                                     │
+│  ┌──────────────┐         ┌────────────────────────────────────┐   │
+│  │  MCP Server  │  内部    │        API Gateway / 过滤器链        │   │
+│  │ (npm 包,可    │─HTTP───▶│  ① API Key 校验  ② 限流  ③ 配额计数 │   │
+│  │  本地/远程)   │         │  ④ 字段裁剪/序列化                   │   │
+│  └──────────────┘         └───────────────┬────────────────────┘   │
+│                                            ▼                        │
+│                          ┌──────────────────────────────────────┐  │
+│                          │       原语服务 (Primitives)           │  │
+│                          │  today · search · item · trending ·  │  │
+│                          │  sources · verticals                 │  │
+│                          └───────────────┬──────────────────────┘  │
+│   ┌────────────────┐                     │                         │
+│   │ 开发者门户 +    │                     │ 只读                    │
+│   │ API Docs(OpenAPI)│                    ▼                         │
+│   └────────────────┘     ┌───────────────────────────────────────┐ │
+│                          │ 共享库(PG/向量) · Redis(Key缓存/限流/  │ │
+│                          │ 配额) · 与产品一同一数据源              │ │
+│                          └───────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────────┘</span></pre>
+    </section>
+
+    <section id="modules">
+      <h2>④ 核心模块 (C4 Level 3)</h2>
+      <table>
+        <thead><tr><th>模块</th><th>职责</th><th>关键点</th></tr></thead>
+        <tbody>
+          <tr><td><strong>API Gateway / 过滤器链</strong></td><td>统一入口：鉴权→限流→配额→裁剪</td><td>顺序固定；任一不过直接拒；与产品一前缀/信任边界分离</td></tr>
+          <tr><td><strong>API Key 服务</strong></td><td>签发/吊销/scope 管理</td><td>存 hash；Redis 优先读，miss 回源 PG 回填</td></tr>
+          <tr><td><strong>限流 + 配额</strong></td><td>速率限制 + 每日用量</td><td>Redis 共享计数（跨节点）；超限返回 429 + 重置时间</td></tr>
+          <tr><td><strong>原语服务</strong></td><td>today/search/item/trending/sources</td><td>只读 COMPLETED；统一分页与排序；字段裁剪</td></tr>
+          <tr><td><strong>MCP Server</strong></td><td>把原语包装成 MCP tools</td><td>npm 分发；支持 stdio + 远程 HTTP；工具描述对 LLM 友好</td></tr>
+          <tr><td><strong>开发者门户</strong></td><td>Key 自助生成、用量看板、OpenAPI 文档</td><td>可挂在产品一 <code>/settings</code> 或独立站</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="primitives">
+      <h2>⑤ 稳定原语 (REST API)</h2>
+      <p class="note">Base：<code>https://api.yourdomain.dev/v1</code> · 鉴权：Header <code>X-API-KEY</code> · 全部只读、幂等。</p>
+      <table>
+        <thead><tr><th>方法</th><th>端点</th><th>说明</th><th>关键参数</th></tr></thead>
+        <tbody>
+          <tr><td><span class="badge m-get">GET</span></td><td><code>/v1/today</code></td><td>某垂直今日最值得读 Top N</td><td>vertical, limit, minScore, lang</td></tr>
+          <tr><td><span class="badge m-get">GET</span></td><td><code>/v1/search</code></td><td>按查询/标签/分数检索</td><td>q, vertical, tags, minScore, cursor</td></tr>
+          <tr><td><span class="badge m-get">GET</span></td><td><code>/v1/items/:id</code></td><td>单条结构化分析（摘要/观点/金句/评分）</td><td>fields</td></tr>
+          <tr><td><span class="badge m-get">GET</span></td><td><code>/v1/trending</code></td><td>窗口内热度/高分趋势</td><td>vertical, window</td></tr>
+          <tr><td><span class="badge m-get">GET</span></td><td><code>/v1/sources</code></td><td>某垂直的优质源列表</td><td>vertical</td></tr>
+          <tr><td><span class="badge m-get">GET</span></td><td><code>/v1/verticals</code></td><td>可用垂直列表与元数据</td><td>—</td></tr>
+        </tbody>
+      </table>
+      <h3>响应示例 <code>GET /v1/today?vertical=ai-coding&limit=2</code></h3>
+      <pre><span class="k">{</span>
+  <span class="s">"vertical"</span>: <span class="s">"ai-coding"</span>, <span class="s">"date"</span>: <span class="s">"2026-05-29"</span>,
+  <span class="s">"items"</span>: <span class="k">[</span>
+    <span class="k">{</span>
+      <span class="s">"id"</span>: <span class="s">"ci_8f2a"</span>, <span class="s">"title"</span>: <span class="s">"..."</span>, <span class="s">"url"</span>: <span class="s">"https://..."</span>,
+      <span class="s">"source"</span>: <span class="s">"..."</span>, <span class="s">"publishedAt"</span>: <span class="s">"..."</span>, <span class="s">"lang"</span>: <span class="s">"en"</span>,
+      <span class="s">"oneLiner"</span>: <span class="s">"..."</span>, <span class="s">"summary"</span>: <span class="s">"..."</span>,
+      <span class="s">"keyPoints"</span>: <span class="k">[</span><span class="s">"..."</span><span class="k">]</span>, <span class="s">"quotes"</span>: <span class="k">[</span><span class="s">"..."</span><span class="k">]</span>,
+      <span class="s">"scores"</span>: <span class="k">{</span><span class="s">"relevance"</span>:<span class="y">94</span>,<span class="s">"depth"</span>:<span class="y">88</span>,<span class="s">"practical"</span>:<span class="y">91</span><span class="k">}</span>,
+      <span class="s">"tags"</span>: <span class="k">[</span><span class="s">"agent"</span>,<span class="s">"eval"</span><span class="k">]</span>
+    <span class="k">}</span>
+  <span class="k">]</span>,
+  <span class="s">"quota"</span>: <span class="k">{</span> <span class="s">"remaining"</span>: <span class="y">142</span>, <span class="s">"resetAt"</span>: <span class="s">"..."</span> <span class="k">}</span>
+<span class="k">}</span></pre>
+    </section>
+
+    <section id="mcp">
+      <h2>⑥ MCP 工具设计</h2>
+      <p class="note">MCP Server 是 REST 原语的薄封装，工具命名与描述对 LLM 友好（动词清晰、参数少、返回结构化）。</p>
+      <table>
+        <thead><tr><th>MCP Tool</th><th>映射端点</th><th>典型用法（自然语言触发）</th></tr></thead>
+        <tbody>
+          <tr><td><code>bestpick_today</code></td><td>GET /v1/today</td><td>"今天 AI Coding 有什么值得读的？"</td></tr>
+          <tr><td><code>bestpick_search</code></td><td>GET /v1/search</td><td>"找几篇关于 RAG 评测的高分文章"</td></tr>
+          <tr><td><code>bestpick_analyze</code></td><td>GET /v1/items/:id</td><td>"把这篇的结构化分析给我"</td></tr>
+          <tr><td><code>bestpick_trending</code></td><td>GET /v1/trending</td><td>"本周这个领域在热议什么"</td></tr>
+          <tr><td><code>bestpick_sources</code></td><td>GET /v1/sources</td><td>"这个垂直有哪些优质源"</td></tr>
+        </tbody>
+      </table>
+      <h3>分发与安装</h3>
+      <pre><span class="c"># 用户安装（npm）</span>
+npx <span class="b">@yourbrand/mcp</span>            <span class="c"># 启动 MCP server</span>
+
+<span class="c"># Claude / Cursor 配置 mcp.json</span>
+<span class="k">{</span> <span class="s">"mcpServers"</span>: <span class="k">{</span>
+    <span class="s">"bestpick"</span>: <span class="k">{</span>
+      <span class="s">"command"</span>: <span class="s">"npx"</span>, <span class="s">"args"</span>: <span class="k">[</span><span class="s">"@yourbrand/mcp"</span><span class="k">]</span>,
+      <span class="s">"env"</span>: <span class="k">{</span> <span class="s">"API_KEY"</span>: <span class="s">"sk_..."</span> <span class="k">}</span>
+    <span class="k">}</span> <span class="k">}</span> <span class="k">}</span></pre>
+      <div class="callout"><b>差异化卖点：</b>"任何 Agent 一行调用，拿到某领域今日最值得读的内容 + 结构化分析"。这是产品一前端站给不了的场景，也是当前 MCP 生态稀缺的"高质量内容上下文"供给。</div>
+    </section>
+
+    <section id="data">
+      <h2>⑦ 数据模型</h2>
+      <h3>复用（与产品一同库，只读）</h3>
+      <pre><span class="b">content_items</span> · <span class="b">content_base_analysis</span> · <span class="b">content_vertical_scores</span> · <span class="b">verticals</span>
+<span class="c">-- 不重建，直接查询 COMPLETED 内容。字段经"裁剪层"对外，隐藏内部字段。</span></pre>
+      <h3>本产品独有（鉴权与计量）</h3>
+      <pre><span class="k">table</span> api_keys
+  id, owner_user_id, key_hash <span class="k">unique</span>, prefix, scopes <span class="k">text[]</span>,
+  rate_limit_rpm <span class="k">int</span>, daily_quota <span class="k">int</span>, status<span class="c">[active|revoked]</span>, created_at
+
+<span class="k">table</span> api_usage_daily          <span class="c">-- 配额计数（Redis 原子计数 + 落库）</span>
+  key_id, day, count, <span class="k">primary key</span>(key_id, day)
+
+<span class="k">table</span> api_request_log          <span class="c">-- 审计/分析（可采样）</span>
+  id, key_id, endpoint, status, latency_ms, ts</pre>
+      <div class="callout amber"><b>实现演进（与 BestBlogs 一致）：</b>限流/配额计数<b>当前态</b>可用进程内 + DB 原子计数起步；<b>目标态</b>迁到 Redis 共享计数以支持多节点。API 契约保持不变，仅换底层实现。</div>
+    </section>
+
+    <section id="flows">
+      <h2>⑧ 关键流程时序</h2>
+      <h3>A. REST 请求（带鉴权/限流/配额）</h3>
+      <div class="seq">
+        <div class="r"><div>客户端带 <code>X-API-KEY</code> 请求 <code>/v1/today</code></div></div>
+        <div class="r"><div><b>API Key 校验</b>：Redis 查 key 元数据（miss 回源 PG 回填）；无效 → 401</div></div>
+        <div class="r"><div><b>限流</b>：Redis 滑窗计数，超 rpm → 429（带 Retry-After）</div></div>
+        <div class="r"><div><b>配额</b>：原子自增当日计数，超 daily_quota → 429（带 resetAt）</div></div>
+        <div class="r"><div><b>原语服务</b>查询 COMPLETED 垂直评分 + 基础分析，<b>裁剪字段</b>后返回</div></div>
+        <div class="r"><div>异步写 <code>api_request_log</code>（可采样）</div></div>
+      </div>
+      <h3>B. MCP 工具调用</h3>
+      <div class="seq">
+        <div class="r"><div>Agent（Claude/Cursor）触发 <code>bestpick_today({vertical})</code></div></div>
+        <div class="r"><div>MCP Server 用环境里的 API_KEY 调内部 <code>/v1/today</code></div></div>
+        <div class="r"><div>把结构化 JSON 作为工具结果返回给 LLM；LLM 据此回答用户</div></div>
+      </div>
+    </section>
+
+    <section id="authz">
+      <h2>⑨ 鉴权 / 限流 / 配额 / 版本治理</h2>
+      <div class="grid2">
+        <div class="card"><h3 style="margin-top:0">鉴权与信任边界</h3><ul class="clean">
+          <li>对外仅 <code>/v1/*</code> + API Key；与产品一 <code>/api/*</code>（内部 Token/JWT）<strong>边界隔离</strong></li>
+          <li>Key 存 hash、带 scope；可吊销；前缀便于识别</li>
+          <li>OAuth/Webhook 等回调入口走各自签名校验，不混入</li>
+        </ul></div>
+        <div class="card"><h3 style="margin-top:0">版本与契约</h3><ul class="clean">
+          <li>路径版本 <code>/v1</code>、<code>/v2</code> 并行；破坏性变更走灰度</li>
+          <li>v1 下线须等接入方完成切换通知</li>
+          <li>响应含 <code>quota</code> 元信息，便于客户端自治</li>
+        </ul></div>
+      </div>
+      <table>
+        <thead><tr><th>分层</th><th>免费</th><th>开发者</th><th>商用</th></tr></thead>
+        <tbody>
+          <tr><td>速率 (rpm)</td><td>20</td><td>120</td><td>自定义</td></tr>
+          <tr><td>每日配额</td><td>200</td><td>5,000</td><td>按量计费</td></tr>
+          <tr><td>scope</td><td>today/search</td><td>+analyze/trending</td><td>全部 + SLA</td></tr>
+        </tbody>
+      </table>
+      <p class="note">具体数值交运营 ConfigKey 维护，此处仅示意分层结构。</p>
+    </section>
+
+    <section id="stack">
+      <h2>⑩ 选型与部署</h2>
+      <table>
+        <thead><tr><th>层</th><th>选型</th><th>理由</th></tr></thead>
+        <tbody>
+          <tr><td>API 服务</td><td><strong>Hono / Fastify (TS)</strong> 或 NestJS</td><td>轻量、高吞吐、Edge 友好</td></tr>
+          <tr><td>MCP Server</td><td><strong>@modelcontextprotocol/sdk (TS)</strong></td><td>官方 SDK，stdio + HTTP；npm 分发</td></tr>
+          <tr><td>鉴权/限流/配额</td><td><strong>Redis</strong> + 中间件</td><td>共享计数，跨节点一致</td></tr>
+          <tr><td>数据访问</td><td>复用产品一 <strong>PostgreSQL/pgvector</strong></td><td>同一真相源，只读</td></tr>
+          <tr><td>文档</td><td><strong>OpenAPI + Scalar/Redoc</strong></td><td>自动生成；开发者门户内嵌</td></tr>
+          <tr><td>部署</td><td>同 compose 起步 → 独立 API 服务水平扩展</td><td>对外流量与产品一隔离限界</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="dx">
+      <h2>⑪ 开发者体验 (DX)</h2>
+      <div class="grid3">
+        <div class="mini"><span class="ic">🔑</span><h4>自助 Key</h4><p>设置页一键生成/吊销，看实时用量与配额</p></div>
+        <div class="mini"><span class="ic">📘</span><h4>即用文档</h4><p>OpenAPI + 可复制 curl/JS/Python 片段 + MCP 配置</p></div>
+        <div class="mini"><span class="ic">📦</span><h4>一键 MCP</h4><p><code>npx @yourbrand/mcp</code> 即装；附 Claude/Cursor 配置模板</p></div>
+        <div class="mini"><span class="ic">🧪</span><h4>免费档</h4><p>无需信用卡即可试用 today/search，降低尝试门槛</p></div>
+        <div class="mini"><span class="ic">🪝</span><h4>清晰错误</h4><p>401/429 带原因与重置时间，Agent 可自处理</p></div>
+        <div class="mini"><span class="ic">🌐</span><h4>生态分发</h4><p>提交到 MCP 市场、发 Claude/Cursor 社区获取流量</p></div>
+      </div>
+    </section>
+
+    <section id="build">
+      <h2>⑫ 开发里程碑</h2>
+      <div class="roadmap">
+        <div class="ms"><div class="wk">N1 · 前置依赖</div><h4>产品一中台 + 垂直评分已产出 COMPLETED</h4><p>产品二建立在已有结构化数据上，故先有产品一 M1-M2。</p></div>
+        <div class="ms"><div class="wk">N2 · 原语 + 鉴权</div><h4>REST /v1 + API Key + 限流配额</h4><p>today/search/item 先行；Redis 计数；字段裁剪层。</p></div>
+        <div class="ms"><div class="wk">N3 · MCP 封装</div><h4>MCP Server + npm 包</h4><p>5 个工具；stdio 起步；Claude/Cursor 跑通。</p></div>
+        <div class="ms"><div class="wk">N4 · 门户 + 文档</div><h4>开发者门户 + OpenAPI</h4><p>自助 Key、用量看板、可复制片段。</p></div>
+        <div class="ms"><div class="wk">N5 · 分发 + 变现</div><h4>生态投放 + 计费分层</h4><p>MCP 市场/社区；免费→开发者→商用分层；按量计费。</p></div>
+      </div>
+      <div class="callout"><b>排序原则：</b>产品二是产品一的"<b>顺手延伸</b>"，不应抢在 Reader 验证 PMF 之前重投入。建议 Reader 跑到 M4（留存验证）后，用 N2-N3 低成本卡位 Agent 生态作为差异化标签。</div>
+    </section>
+
+    <div class="foot">产品二开发架构 · 与《产品一：垂直 AI 策展阅读》共用内容中台与垂直判断层 · 配套《产品拆解》《市场分析与产品规划》阅读 · 2026-05</div>
+  </main>
+</div>
+</body>
+</html>

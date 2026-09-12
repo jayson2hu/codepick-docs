@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InsightFlow 产品规划 - 第五部分：商业模式与路线图</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+            line-height: 1.8;
+            color: #1a1a2e;
+            background: #f8f9fa;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+            padding: 60px;
+        }
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        h1 { font-size: 36px; font-weight: 700; margin-bottom: 8px; }
+        .subtitle { font-size: 18px; color: #6c757d; margin-bottom: 40px; }
+        h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-top: 48px;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #667eea;
+            display: inline-block;
+        }
+        h3 { font-size: 18px; font-weight: 600; margin-top: 32px; margin-bottom: 12px; }
+        p { margin-bottom: 16px; color: #4a4a4a; }
+        ul { padding-left: 20px; margin-bottom: 16px; }
+        li { margin-bottom: 8px; color: #4a4a4a; }
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin: 24px 0;
+        }
+        .price-card {
+            border: 2px solid #e9ecef;
+            border-radius: 16px;
+            padding: 28px 24px;
+            background: #fff;
+            position: relative;
+        }
+        .price-card.featured {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #f5f3ff, #ede9fe);
+            transform: scale(1.04);
+        }
+        .price-card.featured::before {
+            content: "推荐";
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .plan-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #4c1d95;
+            margin-bottom: 8px;
+        }
+        .plan-price {
+            font-size: 36px;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: 4px;
+        }
+        .plan-price small {
+            font-size: 14px;
+            color: #6c757d;
+            font-weight: 400;
+        }
+        .plan-tagline {
+            font-size: 13px;
+            color: #6c757d;
+            margin-bottom: 20px;
+            min-height: 36px;
+        }
+        .plan-features {
+            list-style: none;
+            padding: 0;
+        }
+        .plan-features li {
+            font-size: 13px;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            color: #374151;
+        }
+        .plan-features li::before {
+            content: "✓ ";
+            color: #10b981;
+            font-weight: 700;
+            margin-right: 4px;
+        }
+        .plan-features li.muted {
+            color: #9ca3af;
+        }
+        .plan-features li.muted::before {
+            content: "— ";
+            color: #d1d5db;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            font-size: 14px;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px 16px;
+            border-bottom: 1px solid #e9ecef;
+            vertical-align: top;
+        }
+        th {
+            background: #f5f3ff;
+            font-weight: 600;
+            color: #4c1d95;
+        }
+        .timeline {
+            position: relative;
+            margin: 32px 0;
+            padding-left: 32px;
+        }
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, #667eea, #c084fc);
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 32px;
+        }
+        .timeline-item::before {
+            content: "";
+            position: absolute;
+            left: -32px;
+            top: 6px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #fff;
+            border: 3px solid #667eea;
+        }
+        .timeline-phase {
+            font-size: 12px;
+            font-weight: 700;
+            color: #667eea;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+        .timeline-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 8px;
+        }
+        .timeline-content {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 16px 20px;
+            font-size: 14px;
+        }
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin: 24px 0;
+        }
+        .metric-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        .metric-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .metric-label {
+            font-size: 12px;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .channel-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin: 24px 0;
+        }
+        .channel-card {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            border-radius: 0 10px 10px 0;
+            padding: 16px 20px;
+        }
+        .channel-card h4 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #4c1d95;
+            margin-bottom: 6px;
+        }
+        .channel-card p {
+            font-size: 13px;
+            margin-bottom: 0;
+            color: #6c757d;
+        }
+        .callout {
+            background: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            padding: 16px 20px;
+            border-radius: 0 10px 10px 0;
+            margin: 16px 0;
+        }
+        .callout strong { color: #b45309; }
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e9ecef;
+        }
+        .nav a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s;
+        }
+        .nav a:hover { background: #f5f3ff; border-color: #667eea; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="badge">PART 05 / 06</div>
+        <h1>商业模式与路线图</h1>
+        <p class="subtitle">InsightFlow · 商业化设计、增长策略与 24 个月路线</p>
+
+        <h2>商业模式总览</h2>
+        <p>InsightFlow 采用<strong>"Freemium + 订阅 + 企业版 + 内容生态"</strong>四引擎模式：免费版承担获客，订阅版承担主营收，企业版做高客单，内容生态做长期壁垒。</p>
+
+        <div class="metric-grid">
+            <div class="metric-card">
+                <div class="metric-value">¥0</div>
+                <div class="metric-label">Free</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">¥39<small style="font-size:14px">/月</small></div>
+                <div class="metric-label">Pro</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">¥99<small style="font-size:14px">/月</small></div>
+                <div class="metric-label">Pro Max</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">¥定制</div>
+                <div class="metric-label">Team</div>
+            </div>
+        </div>
+
+        <h2>付费方案设计</h2>
+
+        <div class="pricing-grid">
+            <div class="price-card">
+                <div class="plan-name">Free · 探索版</div>
+                <div class="plan-price">¥0</div>
+                <div class="plan-tagline">让用户先爱上产品</div>
+                <ul class="plan-features">
+                    <li>订阅源 ≤ 30 个</li>
+                    <li>AI 摘要 20 次/天</li>
+                    <li>追问对话 5 次/天</li>
+                    <li>高亮收藏 ≤ 200 条</li>
+                    <li class="muted">知识图谱</li>
+                    <li class="muted">Notion 同步</li>
+                    <li class="muted">无广告体验</li>
+                </ul>
+            </div>
+            <div class="price-card featured">
+                <div class="plan-name">Pro · 专业版</div>
+                <div class="plan-price">¥39<small>/月</small></div>
+                <div class="plan-tagline">深度阅读者的标配</div>
+                <ul class="plan-features">
+                    <li>订阅源 无限</li>
+                    <li>AI 摘要 无限</li>
+                    <li>追问对话 200 次/天</li>
+                    <li>高亮收藏 无限</li>
+                    <li>知识图谱 + 双链</li>
+                    <li>Notion / Obsidian 同步</li>
+                    <li>无广告，全平台同步</li>
+                </ul>
+            </div>
+            <div class="price-card">
+                <div class="plan-name">Pro Max · 至尊版</div>
+                <div class="plan-price">¥99<small>/月</small></div>
+                <div class="plan-tagline">重度用户与创作者</div>
+                <ul class="plan-features">
+                    <li>Pro 全部权益</li>
+                    <li>顶级模型 (Opus / GPT-5)</li>
+                    <li>播客/视频转写 10h/月</li>
+                    <li>专家点评栏目</li>
+                    <li>专属客服</li>
+                    <li>抢先体验新功能</li>
+                    <li>API 配额 1000 次/月</li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>Team 企业版（独立销售）</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>方案</th>
+                    <th>价格</th>
+                    <th>核心权益</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Team Starter</td>
+                    <td>¥199 / 人 / 月（≥ 5 人）</td>
+                    <td>Pro 全部 + 团队共享书单 + SSO</td>
+                </tr>
+                <tr>
+                    <td>Team Pro</td>
+                    <td>¥399 / 人 / 月（≥ 20 人）</td>
+                    <td>+ 私有知识库 + 自定义评分模型</td>
+                </tr>
+                <tr>
+                    <td>Enterprise</td>
+                    <td>定制（≥ 100 人）</td>
+                    <td>私有化部署 + SLA + 专属模型微调</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>单位经济模型 (Unit Economics)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>指标</th>
+                    <th>免费用户</th>
+                    <th>Pro 用户</th>
+                    <th>Pro Max 用户</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>月均 AI 成本</td>
+                    <td>$0.05</td>
+                    <td>$0.8</td>
+                    <td>$2.5</td>
+                </tr>
+                <tr>
+                    <td>月均基础设施</td>
+                    <td>$0.03</td>
+                    <td>$0.1</td>
+                    <td>$0.2</td>
+                </tr>
+                <tr>
+                    <td>总成本 (月)</td>
+                    <td>$0.08</td>
+                    <td>$0.9</td>
+                    <td>$2.7</td>
+                </tr>
+                <tr>
+                    <td>月收入</td>
+                    <td>$0</td>
+                    <td>$5.5</td>
+                    <td>$14</td>
+                </tr>
+                <tr>
+                    <td><strong>毛利率</strong></td>
+                    <td>-</td>
+                    <td><strong>~84%</strong></td>
+                    <td><strong>~81%</strong></td>
+                </tr>
+                <tr>
+                    <td>预期 LTV (24 个月)</td>
+                    <td>$0（贡献漏斗）</td>
+                    <td>~$110</td>
+                    <td>~$280</td>
+                </tr>
+                <tr>
+                    <td>目标 CAC</td>
+                    <td>$0.5</td>
+                    <td>$25</td>
+                    <td>$60</td>
+                </tr>
+                <tr>
+                    <td><strong>LTV / CAC</strong></td>
+                    <td>-</td>
+                    <td><strong>4.4×</strong></td>
+                    <td><strong>4.6×</strong></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="callout">
+            <strong>关键假设：</strong>免费 → Pro 转化率 5%，月流失率 4%，年付折扣 20%。AI 成本随模型迭代下降 30% / 年，毛利率有望提升至 88%。
+        </div>
+
+        <h2>增长策略</h2>
+        <h3>获客渠道矩阵</h3>
+        <div class="channel-grid">
+            <div class="channel-card">
+                <h4>1. 内容种子 · 公开精选页</h4>
+                <p>每日精选 5 篇文章 + AI 摘要，开放索引被 Google / 即刻 / Twitter 抓取，SEO 长尾导流</p>
+            </div>
+            <div class="channel-card">
+                <h4>2. KOL 共创计划</h4>
+                <p>邀请 100 位行业 KOL 提供独家书单，他们带来初始流量，平台帮他们沉淀粉丝</p>
+            </div>
+            <div class="channel-card">
+                <h4>3. 浏览器插件钩子</h4>
+                <p>插件免费安装，遇到长文一键 InsightFlow 阅读，引导注册</p>
+            </div>
+            <div class="channel-card">
+                <h4>4. Newsletter 双向引流</h4>
+                <p>"InsightFlow 周报"覆盖 10 万邮箱，反向引导外站读者注册</p>
+            </div>
+            <div class="channel-card">
+                <h4>5. 邀请激励</h4>
+                <p>邀请 1 位好友双方各得 1 个月 Pro，社交裂变</p>
+            </div>
+            <div class="channel-card">
+                <h4>6. 企业渠道</h4>
+                <p>面向投资机构、咨询公司、产品/技术团队定向 BD</p>
+            </div>
+        </div>
+
+        <h2>北极星指标 (North Star)</h2>
+        <div class="callout">
+            <strong>北极星指标：每周深度阅读用户数（Weekly Deep Readers, WDR）</strong><br>
+            定义：一周内至少有 3 次有效阅读（停留 ≥ 2 分钟）且产生 1 次以上 AI 交互的用户数。<br>
+            这个指标同时反映了内容质量（吸引阅读）、推荐质量（找到喜欢的）、AI 价值（产生交互），是产品健康度的最佳衡量。
+        </div>
+
+        <h3>核心指标体系</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>层级</th>
+                    <th>指标</th>
+                    <th>M6 目标</th>
+                    <th>M12 目标</th>
+                    <th>M24 目标</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>规模</td>
+                    <td>注册用户</td>
+                    <td>5 万</td>
+                    <td>30 万</td>
+                    <td>200 万</td>
+                </tr>
+                <tr>
+                    <td>规模</td>
+                    <td>MAU / DAU</td>
+                    <td>1.5 万 / 4 千</td>
+                    <td>8 万 / 2 万</td>
+                    <td>50 万 / 12 万</td>
+                </tr>
+                <tr>
+                    <td>规模</td>
+                    <td>WDR（北极星）</td>
+                    <td>3 千</td>
+                    <td>2 万</td>
+                    <td>15 万</td>
+                </tr>
+                <tr>
+                    <td>留存</td>
+                    <td>D30 留存率</td>
+                    <td>30%</td>
+                    <td>40%</td>
+                    <td>50%</td>
+                </tr>
+                <tr>
+                    <td>商业化</td>
+                    <td>付费用户数</td>
+                    <td>500</td>
+                    <td>5 千</td>
+                    <td>5 万</td>
+                </tr>
+                <tr>
+                    <td>商业化</td>
+                    <td>付费转化率</td>
+                    <td>2%</td>
+                    <td>4%</td>
+                    <td>6%</td>
+                </tr>
+                <tr>
+                    <td>商业化</td>
+                    <td>ARR</td>
+                    <td>$30k</td>
+                    <td>$400k</td>
+                    <td>$5M</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>24 个月路线图</h2>
+
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-phase">Phase 0 · M1-M3</div>
+                <div class="timeline-title">MVP · 验证 PMF</div>
+                <div class="timeline-content">
+                    Web 端 MVP 上线，覆盖核心闭环（订阅 → 评分 → 推荐 → 摘要）。<br>
+                    种子用户 1000 人，邀请制内测。完成最小可用产品打磨，验证"AI 评分 + 个性推荐"对深度读者是否有真实价值。<br>
+                    <strong>里程碑：</strong>WAU ≥ 500，NPS ≥ 40
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-phase">Phase 1 · M4-M6</div>
+                <div class="timeline-title">V1.0 · 公开发布</div>
+                <div class="timeline-content">
+                    移动端 App 上线，开放注册，浏览器插件发布。开启付费订阅（Pro 计划）。<br>
+                    上线 AI 追问对话、高亮收藏、文章详情页优化。<br>
+                    <strong>里程碑：</strong>注册 5 万，付费用户 500，ARR $30k
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-phase">Phase 2 · M7-M12</div>
+                <div class="timeline-title">V2.0 · 知识库化</div>
+                <div class="timeline-content">
+                    上线双链笔记、知识图谱、定期回顾。Notion / Obsidian 同步。<br>
+                    推出 Pro Max 计划，引入顶级模型与播客转写。<br>
+                    启动 KOL 共创与内容种子运营。<br>
+                    <strong>里程碑：</strong>MAU 8 万，付费 5 千，ARR $400k
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-phase">Phase 3 · M13-M18</div>
+                <div class="timeline-title">V3.0 · 社区与企业</div>
+                <div class="timeline-content">
+                    上线主题圈子、专家点评、共享书单。<br>
+                    Team 企业版开始 BD，签下 20 家种子企业客户。<br>
+                    出海试点：发布英文版，重点切入 Product Hunt / Indie Hackers 群体。<br>
+                    <strong>里程碑：</strong>MAU 25 万，企业客户 20，ARR $1.5M
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-phase">Phase 4 · M19-M24</div>
+                <div class="timeline-title">V4.0 · 平台化</div>
+                <div class="timeline-content">
+                    开放 API，允许第三方接入（如内容平台、企业知识库工具）。<br>
+                    上线自定义评分模型（企业可训练专属偏好）。<br>
+                    探索"InsightFlow 出版"——优秀内容的二次分发渠道。<br>
+                    <strong>里程碑：</strong>MAU 50 万，付费 5 万，ARR $5M
+                </div>
+            </div>
+        </div>
+
+        <h2>融资与组织规划</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>阶段</th>
+                    <th>融资</th>
+                    <th>团队规模</th>
+                    <th>关键岗位</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>种子轮 (M0)</td>
+                    <td>$500k - $1M</td>
+                    <td>4-6 人</td>
+                    <td>2 后端 + 1 前端 + 1 AI + 1 设计 + 1 PM</td>
+                </tr>
+                <tr>
+                    <td>Pre-A (M9)</td>
+                    <td>$3M - $5M</td>
+                    <td>15-20 人</td>
+                    <td>+ 移动端 + 增长 + 运营 + BD</td>
+                </tr>
+                <tr>
+                    <td>A 轮 (M18)</td>
+                    <td>$10M - $20M</td>
+                    <td>40-60 人</td>
+                    <td>+ 海外团队 + 企业销售 + 内容编辑</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="nav">
+            <a href="04-architecture.html">← 上一部分：技术架构</a>
+            <a href="06-brand.html">下一部分：品牌与设计 →</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L3 应用与分发 · 产品文档</title>
+<style>
+  :root{--bg:#f7f6fb;--card:#fff;--ink:#1a1726;--muted:#5b5470;--dim:#928aa6;--line:#e7e3f1;--acc:#7c3aed;--acc2:#6d28d9;--soft:#f1ebfe;--amber:#c2730a;--rose:#e11d48;--blue:#2563eb}
+  *{box-sizing:border-box}html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.72;font-size:15px}
+  a{color:var(--acc)}.wrap{display:grid;grid-template-columns:236px 1fr;max-width:1240px;margin:0 auto}
+  nav{position:sticky;top:0;height:100vh;overflow-y:auto;padding:24px 14px;border-right:1px solid var(--line);background:#fff}
+  nav .bk{display:inline-block;font-size:10px;font-weight:800;letter-spacing:1px;color:#fff;background:var(--acc);padding:3px 9px;border-radius:6px;margin-bottom:8px}
+  nav .brand{font-weight:800;font-size:15px}nav .sub{color:var(--dim);font-size:11px;margin-bottom:14px}
+  nav a{display:block;color:var(--muted);padding:5.5px 11px;border-radius:8px;font-size:12.6px}nav a:hover{background:var(--soft);color:var(--acc2);text-decoration:none}
+  main{padding:38px 52px 110px;min-width:0}
+  .tag{display:inline-block;background:var(--soft);color:var(--acc2);border:1px solid #d8c8fb;padding:4px 12px;border-radius:999px;font-size:12.5px;font-weight:700;margin-bottom:12px}
+  h1{font-size:29px;line-height:1.25;margin:0 0 10px;font-weight:800}h1 em{font-style:normal;color:var(--acc)}
+  .lede{color:var(--muted);font-size:16px;max-width:820px}
+  .meta{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}.mt{background:#fff;border:1px solid var(--line);border-radius:8px;padding:5px 11px;font-size:11.5px;color:var(--muted)}.mt b{color:var(--ink)}
+  section{margin:36px 0;scroll-margin-top:14px}
+  h2{font-size:20px;margin:0 0 6px;font-weight:800;display:flex;align-items:center;gap:10px;padding-bottom:7px;border-bottom:2px solid var(--line)}
+  h2 .x{background:var(--acc);color:#fff;width:25px;height:25px;border-radius:7px;display:inline-flex;align-items:center;justify-content:center;font-size:12.5px;flex-shrink:0}
+  h3{font-size:15.5px;margin:18px 0 7px}.note{color:var(--dim);font-size:12.5px;margin-bottom:12px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:17px 19px;margin:12px 0;box-shadow:0 1px 2px rgba(16,24,40,.04)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .mini{background:#fff;border:1px solid var(--line);border-radius:11px;padding:14px}.mini h4{margin:0 0 5px;font-size:13.8px}.mini p{margin:0;color:var(--muted);font-size:12.3px}.mini .ic{font-size:18px;margin-bottom:5px;display:block}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:12.6px;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}th{background:#f1ebfb;color:var(--ink);font-weight:700}td{color:var(--muted)}tr:last-child td{border-bottom:none}td strong{color:var(--ink)}
+  .hl{color:var(--acc2);font-weight:700}
+  ul.clean{margin:8px 0;padding-left:19px}ul.clean li{margin:4px 0;color:var(--muted)}ul.clean li strong{color:var(--ink)}
+  .callout{border-left:4px solid var(--acc);background:var(--soft);padding:12px 16px;border-radius:0 10px 10px 0;margin:12px 0;color:var(--muted)}.callout.amber{border-color:var(--amber);background:#fff8ec}.callout b{color:var(--ink)}
+  code{background:#efecf6;padding:1.5px 6px;border-radius:5px;font-size:12.2px;color:var(--acc2);font-family:Consolas,monospace}
+  .badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:5px;font-weight:700;background:var(--soft);color:var(--acc2)}
+  .bfree{background:#f1f5f9;color:#475569}.bpro{background:#fef9c3;color:#a16207}
+  .foot{margin-top:46px;padding-top:16px;border-top:1px solid var(--line);color:var(--dim);font-size:12px}
+  @media(max-width:980px){.wrap{grid-template-columns:1fr}nav{display:none}main{padding:22px 15px 60px}.grid2,.grid3{grid-template-columns:1fr}h1{font-size:23px}}
+  @media print{nav{display:none}.wrap{grid-template-columns:1fr}body{background:#fff}main{padding:0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <span class="bk">LAYER 3</span>
+    <div class="brand">应用与分发</div>
+    <div class="sub">产品文档 · Products & Sites</div>
+    <a href="#what">① 是什么</a>
+    <a href="#products">② 产品矩阵</a>
+    <a href="#customers">③ 客户(人+机器)</a>
+    <a href="#reader">④ Reader 详解</a>
+    <a href="#api">⑤ Agent API/MCP</a>
+    <a href="#biz">⑥ 商业化</a>
+    <a href="#metrics">⑦ 北极星与指标</a>
+    <a href="#crosssite">⑧ 跨站</a>
+    <a href="#boundary">⑨ 边界</a>
+    <a href="#roadmap">⑩ 演进</a>
+  </nav>
+  <main>
+    <span class="tag">分层产品 4 / 4 · 产品文档</span>
+    <h1>L3 应用与分发 — <em>Products & Sites</em></h1>
+    <p class="lede">直接面向终端的产品集：<b>Reader（人用的阅读工作流）</b>、<b>Agent API / MCP（机器用的策展接口）</b>、Newsletter。它们消费下层（L0–L2）已 COMPLETED 的判断结果，只负责<b>体验、分发与商业化</b>，并且可以"跨站"——多个垂直站共享同一平台。</p>
+    <div class="meta">
+      <span class="mt">层级：<b>L3</b></span>
+      <span class="mt">客户：<b>开发者(人) + Agent(机器)</b></span>
+      <span class="mt">商业：<b>Free / Pro · USD</b></span>
+      <span class="mt">北极星：<b>深度阅读闭环率</b></span>
+    </div>
+
+    <section id="what">
+      <h2><span class="x">1</span>是什么</h2>
+      <p>L3 是平台价值的"变现出口"。它把 L2 的判断结果转化为<b>人能用的产品</b>和<b>机器能调的接口</b>。同一份判断，两种消费：人在 Reader 里读，Agent 通过 API/MCP 调。</p>
+    </section>
+
+    <section id="products">
+      <h2><span class="x">2</span>产品矩阵</h2>
+      <table>
+        <thead><tr><th>产品</th><th>面向</th><th>形态</th><th>阶段</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Reader Web</strong></td><td>开发者(人)</td><td>公共精选 + 我的早报 + 推荐 + AI 伴读 + 账户</td><td><span class="badge">MVP→V1</span></td></tr>
+          <tr><td><strong>Daily Brief / Email</strong></td><td>人</td><td>每日早报（页面 + 邮件）</td><td><span class="badge">MVP</span></td></tr>
+          <tr><td><strong>Public API /v1</strong></td><td>开发者/第三方</td><td>稳定原语 REST（today/search/analyze…）</td><td>V2</td></tr>
+          <tr><td><strong>MCP Server</strong></td><td>Agent(Claude/Cursor)</td><td>把原语包装为 MCP 工具</td><td>V2</td></tr>
+          <tr><td><strong>Newsletter</strong></td><td>人</td><td>每周精选邮件</td><td>V1</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="customers">
+      <h2><span class="x">3</span>它的客户：人 + 机器</h2>
+      <div class="grid2">
+        <div class="card"><h3 style="margin-top:0">👤 人（开发者）</h3><ul class="clean"><li>在 Reader 浏览公共精选、读个性化早报</li><li>用 AI 伴读快速理解长文/英文</li><li>订阅 Pro 获得个性化工作流</li></ul></div>
+        <div class="card"><h3 style="margin-top:0">🤖 机器（Agent）</h3><ul class="clean"><li>在 Cursor/Claude 里问"今天 AI Coding 值得读什么"</li><li>自建 Agent 调 /v1 获取结构化策展结果</li><li>把高质量内容上下文喂进自己的工作流</li></ul></div>
+      </div>
+    </section>
+
+    <section id="reader">
+      <h2><span class="x">4</span>Reader 详解（核心产品）</h2>
+      <table>
+        <thead><tr><th>功能</th><th>说明</th><th>Free/Pro</th></tr></thead>
+        <tbody>
+          <tr><td>公共精选 + 公共早报</td><td>SEO 入口，建立信任</td><td><span class="badge bfree">Free</span></td></tr>
+          <tr><td>内容详情 + 双语分析</td><td>摘要/观点/金句/评分（秒开）</td><td><span class="badge bfree">Free</span></td></tr>
+          <tr><td>AI 伴读</td><td>总结/问答/章节跳转</td><td>Free 限量 / <span class="badge bpro">Pro</span></td></tr>
+          <tr><td>我的早报 + 为你推荐</td><td>个性化工作流核心</td><td><span class="badge bpro">Pro</span></td></tr>
+          <tr><td>关注 + 私有源</td><td>长期信息源管理</td><td><span class="badge bpro">Pro</span></td></tr>
+          <tr><td>阅读库 / 回顾</td><td>收藏/划线/每日回顾</td><td><span class="badge bpro">Pro</span></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="api">
+      <h2><span class="x">5</span>Agent API / MCP</h2>
+      <p class="note">第二曲线，面向开发者与 Agent 生态，是差异化卖点。</p>
+      <ul class="clean">
+        <li><strong>稳定原语</strong>：<code>/v1/today</code> · <code>/v1/search</code> · <code>/v1/items/:id</code> · <code>/v1/trending</code> · <code>/v1/sources</code>。</li>
+        <li><strong>MCP 工具</strong>：<code>bestpick_today / search / analyze / trending</code>，<code>npx</code> 一键装。</li>
+        <li><strong>跨站</strong>：<code>/v1?vertical=</code> 一个接口服务所有垂直站。</li>
+      </ul>
+    </section>
+
+    <section id="biz">
+      <h2><span class="x">6</span>商业化（USD · 面向海外）</h2>
+      <div class="grid2">
+        <div class="card"><h3 style="margin-top:0"><span class="badge bfree">Free</span> 公共入口</h3><ul class="clean"><li>公共精选 + 公共早报 + 基础发现</li><li>有限 AI 伴读</li><li>作用：建立信任、SEO 获客</li></ul></div>
+        <div class="card"><h3 style="margin-top:0"><span class="badge bpro">Pro</span> $8/月 · $79/年</h3><ul class="clean"><li>我的早报 + 推荐 + 完整伴读 + 私有源 + 回顾</li><li>早鸟 $4.9；收款 Paddle/Stripe（USD）</li></ul></div>
+      </div>
+      <div class="callout"><b>开发者侧：</b>Public API/MCP 按用量/订阅分层（免费档→开发者→商用），作为第二曲线收入。</div>
+    </section>
+
+    <section id="metrics">
+      <h2><span class="x">7</span>北极星与指标</h2>
+      <table>
+        <thead><tr><th>层级</th><th>指标</th></tr></thead>
+        <tbody>
+          <tr><td><strong>北极星</strong></td><td class="hl">深度阅读闭环率（发现→深读的周活占比）</td></tr>
+          <tr><td>获客</td><td>SEO 流量、公共早报点击率、注册转化</td></tr>
+          <tr><td>留存/付费</td><td>7/30 日留存、AI 伴读使用率、Free→Pro 转化、续订率</td></tr>
+          <tr><td>可调用</td><td>API 调用量、MCP 安装数</td></tr>
+          <tr><td><strong>反指标</strong></td><td>阅读时长 · 内容数量 · 无深度 DAU</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="crosssite">
+      <h2><span class="x">8</span>跨站</h2>
+      <div class="callout amber"><b>L3 是"可跨站"的那一层。</b>每个垂直对应一个 L3 站点（CodePick = AI Coding 站），共享 L0–L2 平台。未来加垂直只需起一个新站 + 配一个 L2 lens。Public API/MCP 则天然跨站，一个接口按 <code>vertical</code> 服务全部。</div>
+    </section>
+
+    <section id="boundary">
+      <h2><span class="x">9</span>边界：L3 不做什么</h2>
+      <ul class="clean">
+        <li><strong>不重算判断</strong>：评分/推荐来自 L2，L3 只消费与展示。</li>
+        <li><strong>不做内容理解/抓取</strong>——L0/L1。</li>
+        <li><strong>不把未 COMPLETED 内容对外</strong>。</li>
+        <li><strong>不泄漏内部推荐决策与隐私上下文给对外 API</strong>。</li>
+      </ul>
+    </section>
+
+    <section id="roadmap">
+      <h2><span class="x">10</span>演进</h2>
+      <table>
+        <thead><tr><th>阶段</th><th>重点</th></tr></thead>
+        <tbody>
+          <tr><td>MVP</td><td>公共精选站 + 公共早报（邮件）</td></tr>
+          <tr><td>V1</td><td>账户 + 我的早报 + 推荐 + 伴读 + Pro 订阅</td></tr>
+          <tr><td>V2</td><td>Public API + MCP + Newsletter + 回顾沉淀</td></tr>
+          <tr><td>跨站</td><td>第二垂直站；跨垂直综合入口</td></tr>
+        </tbody>
+      </table>
+      <div class="callout"><b>配套：</b>技术实现见《L3 应用与分发 · 架构设计文档》。</div>
+    </section>
+
+    <div class="foot">L3 应用与分发 · 产品文档 · CodePick 分层平台（4/4）· 人+机器双消费 · 可跨站 · 2026-05-30</div>
+  </main>
+</div>
+</body>
+</html>

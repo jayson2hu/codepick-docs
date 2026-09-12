@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InsightFlow 产品规划 - 第三部分：用户体验与信息架构</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+            line-height: 1.8;
+            color: #1a1a2e;
+            background: #f8f9fa;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+            padding: 60px;
+        }
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            font-size: 18px;
+            color: #6c757d;
+            margin-bottom: 40px;
+        }
+        h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-top: 48px;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #667eea;
+            display: inline-block;
+        }
+        h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 32px;
+            margin-bottom: 12px;
+        }
+        p { margin-bottom: 16px; color: #4a4a4a; }
+        ul { padding-left: 20px; margin-bottom: 16px; }
+        li { margin-bottom: 8px; color: #4a4a4a; }
+        .persona-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin: 24px 0;
+        }
+        .persona-card {
+            background: linear-gradient(135deg, #fff, #f8f9fa);
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 28px;
+        }
+        .persona-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        .persona-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .persona-role {
+            font-size: 13px;
+            color: #667eea;
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+        .persona-section {
+            margin-top: 16px;
+            font-size: 14px;
+        }
+        .persona-section strong {
+            display: block;
+            color: #4c1d95;
+            margin-bottom: 4px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .journey-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            font-size: 14px;
+        }
+        .journey-table th, .journey-table td {
+            text-align: left;
+            padding: 14px 16px;
+            border: 1px solid #e9ecef;
+            vertical-align: top;
+        }
+        .journey-table th {
+            background: #f5f3ff;
+            color: #4c1d95;
+            font-weight: 600;
+        }
+        .ia-tree {
+            background: #1a1a2e;
+            color: #e5e7eb;
+            padding: 28px;
+            border-radius: 12px;
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 13px;
+            line-height: 1.9;
+            margin: 24px 0;
+            overflow-x: auto;
+        }
+        .ia-node { color: #a78bfa; font-weight: 600; }
+        .ia-leaf { color: #9ca3af; }
+        .ia-comment { color: #6b7280; font-style: italic; }
+        .wireframe {
+            background: #fff;
+            border: 2px dashed #cbd5e0;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 12px;
+            line-height: 1.6;
+            color: #4a5568;
+            white-space: pre;
+            overflow-x: auto;
+        }
+        .principle-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin: 24px 0;
+        }
+        .principle-card {
+            background: #f5f3ff;
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 4px solid #667eea;
+        }
+        .principle-card h4 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #4c1d95;
+            margin-bottom: 6px;
+        }
+        .principle-card p {
+            font-size: 13px;
+            margin-bottom: 0;
+        }
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #e9ecef;
+        }
+        .nav a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s;
+        }
+        .nav a:hover {
+            background: #f5f3ff;
+            border-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="badge">PART 03 / 06</div>
+        <h1>用户体验与信息架构</h1>
+        <p class="subtitle">InsightFlow · 用户画像、核心旅程与界面结构</p>
+
+        <h2>目标用户画像</h2>
+        <p>InsightFlow 的目标用户是<strong>高质量信息消费者</strong>——他们每天投入大量时间阅读，但被信息过载和低质内容困扰。我们定义了 4 个核心人物模型：</p>
+
+        <div class="persona-grid">
+            <div class="persona-card">
+                <div class="persona-avatar">L</div>
+                <div class="persona-name">Leo · 技术 KOL</div>
+                <div class="persona-role">资深工程师 / 32 岁</div>
+                <div class="persona-section">
+                    <strong>场景</strong>
+                    每天通勤 1 小时阅读 AI 与产品趋势，关注 50+ 海外博客
+                </div>
+                <div class="persona-section">
+                    <strong>痛点</strong>
+                    英文长文阅读慢、Twitter 信息碎片化、找不到深度好文
+                </div>
+                <div class="persona-section">
+                    <strong>诉求</strong>
+                    一站式聚合 + AI 摘要 + 跨文章关联
+                </div>
+            </div>
+            <div class="persona-card">
+                <div class="persona-avatar">M</div>
+                <div class="persona-name">Mia · 产品经理</div>
+                <div class="persona-role">独角兽公司 PM / 28 岁</div>
+                <div class="persona-section">
+                    <strong>场景</strong>
+                    需要持续关注同行动态、用户研究、商业案例
+                </div>
+                <div class="persona-section">
+                    <strong>痛点</strong>
+                    公众号沦为广告、知识管理混乱、灵感无法系统沉淀
+                </div>
+                <div class="persona-section">
+                    <strong>诉求</strong>
+                    高质筛选 + 主题归类 + Notion 同步
+                </div>
+            </div>
+            <div class="persona-card">
+                <div class="persona-avatar">D</div>
+                <div class="persona-name">David · 投资人</div>
+                <div class="persona-role">VC 合伙人 / 40 岁</div>
+                <div class="persona-section">
+                    <strong>场景</strong>
+                    每天浏览 100+ 篇行业资讯，追踪赛道动态
+                </div>
+                <div class="persona-section">
+                    <strong>痛点</strong>
+                    信息太多无法精读、关键 insight 容易遗漏
+                </div>
+                <div class="persona-section">
+                    <strong>诉求</strong>
+                    精准 AI 摘要 + 重要资讯提醒 + 团队协作分享
+                </div>
+            </div>
+            <div class="persona-card">
+                <div class="persona-avatar">S</div>
+                <div class="persona-name">Sara · 内容创作者</div>
+                <div class="persona-role">独立博主 / 26 岁</div>
+                <div class="persona-section">
+                    <strong>场景</strong>
+                    寻找选题灵感、研究爆款内容、构建素材库
+                </div>
+                <div class="persona-section">
+                    <strong>痛点</strong>
+                    灵感转瞬即逝、素材难分类、跨平台搜索低效
+                </div>
+                <div class="persona-section">
+                    <strong>诉求</strong>
+                    高亮摘录 + 智能标签 + 灵感图谱
+                </div>
+            </div>
+        </div>
+
+        <h2>核心用户旅程</h2>
+        <p>以 Mia（产品经理）为例，描绘她从注册到深度使用的完整旅程：</p>
+
+        <table class="journey-table">
+            <thead>
+                <tr>
+                    <th>阶段</th>
+                    <th>行为</th>
+                    <th>触点</th>
+                    <th>情绪</th>
+                    <th>机会点</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>认知</strong></td>
+                    <td>朋友推荐 / KOL 安利 / 看到精选文章</td>
+                    <td>Twitter、即刻、播客</td>
+                    <td>😊 好奇</td>
+                    <td>种子内容透出，Demo 体验入口</td>
+                </tr>
+                <tr>
+                    <td><strong>注册</strong></td>
+                    <td>邮箱/微信登录，选兴趣标签，导入 OPML</td>
+                    <td>Web / 移动端</td>
+                    <td>😐 期待</td>
+                    <td>3 步内完成，立即看到推荐</td>
+                </tr>
+                <tr>
+                    <td><strong>初次体验</strong></td>
+                    <td>浏览今日精选，点击 1-2 篇文章，看摘要</td>
+                    <td>首页信息流</td>
+                    <td>🤩 惊喜</td>
+                    <td>首次摘要必须惊艳，建立信任</td>
+                </tr>
+                <tr>
+                    <td><strong>习惯养成</strong></td>
+                    <td>每天打开 1-2 次，订阅源不断完善</td>
+                    <td>App + 邮件推送</td>
+                    <td>😌 依赖</td>
+                    <td>个性化推荐越用越准</td>
+                </tr>
+                <tr>
+                    <td><strong>深度使用</strong></td>
+                    <td>开始用追问、高亮、笔记、同步 Notion</td>
+                    <td>阅读详情页 + 知识库</td>
+                    <td>💼 工具化</td>
+                    <td>从"读"到"用"，提升留存</td>
+                </tr>
+                <tr>
+                    <td><strong>付费转化</strong></td>
+                    <td>因 AI 调用限额 / 高级功能升级 Pro</td>
+                    <td>付费墙 / 邮件促销</td>
+                    <td>💳 心甘情愿</td>
+                    <td>免费版痛点 + 付费版甜点平衡</td>
+                </tr>
+                <tr>
+                    <td><strong>传播</strong></td>
+                    <td>分享精选书单 / 推荐给同事</td>
+                    <td>分享链接 / 推荐奖励</td>
+                    <td>🎁 自豪</td>
+                    <td>邀请奖励 + 公开书单功能</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>信息架构（IA）</h2>
+        <p>整体采用"<strong>三层结构</strong>"：导航层（一级 Tab） → 模块层（二级页面） → 操作层（详情/编辑）。</p>
+
+        <div class="ia-tree">
+<span class="ia-node">InsightFlow</span><br>
+├── <span class="ia-node">📰 发现 (Discover)</span>  <span class="ia-comment"># 默认首页</span><br>
+│   ├── <span class="ia-leaf">今日精选 (Today's Top)</span><br>
+│   ├── <span class="ia-leaf">为你推荐 (For You)</span><br>
+│   ├── <span class="ia-leaf">热门话题 (Trending)</span><br>
+│   └── <span class="ia-leaf">深度专题 (Deep Dive)</span><br>
+├── <span class="ia-node">📚 订阅 (Subscriptions)</span><br>
+│   ├── <span class="ia-leaf">订阅源管理</span><br>
+│   ├── <span class="ia-leaf">分类文件夹</span><br>
+│   ├── <span class="ia-leaf">公共源市场</span><br>
+│   └── <span class="ia-leaf">OPML 导入/导出</span><br>
+├── <span class="ia-node">🧠 知识库 (Library)</span><br>
+│   ├── <span class="ia-leaf">收藏夹</span><br>
+│   ├── <span class="ia-leaf">高亮卡片</span><br>
+│   ├── <span class="ia-leaf">笔记 (双链)</span><br>
+│   ├── <span class="ia-leaf">知识图谱</span><br>
+│   └── <span class="ia-leaf">每日回顾</span><br>
+├── <span class="ia-node">🤖 AI 助手 (Assistant)</span><br>
+│   ├── <span class="ia-leaf">智能问答</span><br>
+│   ├── <span class="ia-leaf">跨文献检索</span><br>
+│   └── <span class="ia-leaf">对话历史</span><br>
+├── <span class="ia-node">👥 社区 (Community)</span><br>
+│   ├── <span class="ia-leaf">主题圈子</span><br>
+│   ├── <span class="ia-leaf">公开书单</span><br>
+│   └── <span class="ia-leaf">专家点评</span><br>
+└── <span class="ia-node">⚙️ 设置 (Settings)</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="ia-leaf">账户与会员</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="ia-leaf">推送偏好</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="ia-leaf">第三方同步 (Notion / Obsidian)</span>
+        </div>
+
+        <h2>核心界面线框示意</h2>
+
+        <h3>首页 · 发现页</h3>
+        <div class="wireframe">┌──────────────────────────────────────────────────────────┐
+│  InsightFlow      🔍 搜索文章/作者/话题      🔔  👤    │
+├──────┬───────────────────────────────────────────────────┤
+│      │  ✨ 今日精选 · 5 月 28 日                          │
+│ 📰   │  ┌──────────────────────────────────────────────┐ │
+│ 发现 │  │ ⭐ 92  · OpenAI 发布 GPT-5：从模型到平台    │ │
+│      │  │ The Information · 8 min · AI 编辑精选        │ │
+│ 📚   │  │ ▸ 核心要点：从工具到操作系统的转变...        │ │
+│ 订阅 │  └──────────────────────────────────────────────┘ │
+│      │  ┌──────────────────────────────────────────────┐ │
+│ 🧠   │  │ ⭐ 89  · Stripe 如何用 AI 重构支付欺诈检测  │ │
+│ 知识 │  │ Stripe Blog · 12 min · 推荐给「产品」       │ │
+│      │  │ ▸ 核心要点：实时风控 + 模型迭代闭环...      │ │
+│ 🤖   │  └──────────────────────────────────────────────┘ │
+│ AI   │                                                    │
+│      │  📈 为你推荐                          [刷新 ↻]    │
+│ 👥   │  [文章卡片] [文章卡片] [文章卡片] [文章卡片]      │
+│ 社区 │                                                    │
+│      │  🔥 热门话题                                       │
+│ ⚙️   │  #AI Coding  #出海  #设计系统  #开源商业化       │
+└──────┴───────────────────────────────────────────────────┘</div>
+
+        <h3>文章详情页 · AI 阅读</h3>
+        <div class="wireframe">┌────────────────────────────────────┬─────────────────────┐
+│ ← 返回                              │  🤖 AI 助手          │
+│                                    │ ─────────────────── │
+│ OpenAI 发布 GPT-5：从模型到平台    │ 📝 一键摘要         │
+│ The Information · Alex Heath       │ ┌─────────────────┐ │
+│ ⭐ 92  · 8 min · 5/28              │ │ 核心要点：       │ │
+│                                    │ │ 1. ...           │ │
+│ [原文 / 中译 / 摘要] [🔊朗读]     │ │ 2. ...           │ │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ │ │ 3. ...           │ │
+│                                    │ └─────────────────┘ │
+│ OpenAI today unveiled GPT-5, ...   │                     │
+│ ...                                │ 💬 追问对话         │
+│ [选中文字 → 高亮 / 笔记 / 追问]   │ ┌─────────────────┐ │
+│ ...                                │ │ 你: 这和 GPT-4 │ │
+│                                    │ │ 的核心区别是？  │ │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ │ │ AI: 根据文章... │ │
+│ 👍 132  💬 28  ⭐ 收藏  ➤ 分享    │ └─────────────────┘ │
+│                                    │                     │
+│ 📎 相关阅读                         │ 🔗 你之前读过：     │
+│ • Anthropic Claude 4.6 ...         │ • Claude 4 评测... │
+│ • Google Gemini Ultra ...          │ • LLM 路线图...    │
+└────────────────────────────────────┴─────────────────────┘</div>
+
+        <h2>设计原则</h2>
+        <div class="principle-grid">
+            <div class="principle-card">
+                <h4>1. 内容为王</h4>
+                <p>界面服务于阅读，UI 元素克制，留白充足，阅读区不被打断</p>
+            </div>
+            <div class="principle-card">
+                <h4>2. 信任先行</h4>
+                <p>评分透明可解释，AI 输出标注来源，用户可质疑可纠错</p>
+            </div>
+            <div class="principle-card">
+                <h4>3. 渐进式 AI</h4>
+                <p>新手默认只看摘要，老用户可解锁追问、跨文献、知识图谱</p>
+            </div>
+            <div class="principle-card">
+                <h4>4. 一键即达</h4>
+                <p>核心操作不超过 2 次点击：精选 → 摘要、高亮 → 卡片</p>
+            </div>
+            <div class="principle-card">
+                <h4>5. 跨端一致</h4>
+                <p>Web / iOS / Android / 桌面 / 浏览器插件，阅读进度无缝同步</p>
+            </div>
+            <div class="principle-card">
+                <h4>6. 隐私优先</h4>
+                <p>阅读数据本地优先，云端加密，可一键导出/删除全部数据</p>
+            </div>
+        </div>
+
+        <div class="nav">
+            <a href="02-features.html">← 上一部分：核心功能</a>
+            <a href="04-architecture.html">下一部分：技术架构 →</a>
+        </div>
+    </div>
+</body>
+</html>

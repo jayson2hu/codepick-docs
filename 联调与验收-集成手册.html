@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CodePick · 联调与验收集成手册</title>
+<style>
+  :root{--bg:#0f1115;--card:#181b22;--card2:#1f232c;--line:#2c323d;--ink:#eef1f6;--muted:#9aa4b4;--dim:#697283;
+    --acc:#fb923c;--acc2:#fdba74;--l0:#22d3ee;--l1:#34d399;--l2:#60a5fa;--l3:#a78bfa;--green:#34d399;--amber:#fbbf24;--rose:#fb7185}
+  *{box-sizing:border-box}html{scroll-behavior:smooth}
+  body{margin:0;background:radial-gradient(1000px 500px at 80% -10%,rgba(251,146,60,.08),transparent),var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;line-height:1.7;font-size:14.5px}
+  a{color:var(--acc2)}.wrap{display:grid;grid-template-columns:248px 1fr;max-width:1320px;margin:0 auto}
+  nav{position:sticky;top:0;height:100vh;overflow-y:auto;padding:24px 14px;border-right:1px solid var(--line);background:rgba(15,17,21,.72)}
+  nav .brand{font-weight:800;font-size:15.5px}nav .brand span{color:var(--acc)}
+  nav .sub{color:var(--dim);font-size:11px;margin-bottom:14px}
+  nav a{display:block;color:var(--muted);padding:5.5px 11px;border-radius:8px;font-size:12.4px}nav a:hover{background:var(--card);color:var(--ink);text-decoration:none}
+  nav .grp{color:var(--dim);font-size:10px;text-transform:uppercase;letter-spacing:1px;margin:13px 0 3px 11px}
+  main{padding:40px 52px 110px;min-width:0}
+  .tag{display:inline-block;background:rgba(251,146,60,.13);color:var(--acc2);border:1px solid rgba(251,146,60,.32);padding:4px 12px;border-radius:999px;font-size:12.5px;font-weight:700;margin-bottom:13px}
+  h1{font-size:30px;line-height:1.24;margin:0 0 11px;font-weight:800}h1 em{font-style:normal;background:linear-gradient(90deg,var(--acc),var(--l2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lede{color:var(--muted);font-size:16px;max-width:840px}
+  section{margin:38px 0;scroll-margin-top:14px}
+  h2{font-size:21px;margin:0 0 6px;font-weight:800;display:flex;align-items:center;gap:10px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+  h2 .x{background:linear-gradient(135deg,var(--acc),#ea7c2a);color:#1a1008;width:27px;height:27px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0}
+  h3{font-size:16px;margin:18px 0 8px}.note{color:var(--dim);font-size:12.5px;margin-bottom:12px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:12px 0}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:12.5px;border-radius:10px;overflow:hidden}
+  th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}th{background:var(--card2);color:#fff;font-weight:700}td{color:var(--muted)}tr:last-child td{border-bottom:none}td strong{color:var(--ink)}
+  code{background:var(--card2);padding:1.5px 6px;border-radius:5px;font-size:12px;color:#fdba74;font-family:Consolas,monospace}
+  pre{background:#0b0d12;border:1px solid var(--line);border-radius:11px;padding:14px 16px;overflow-x:auto;font-size:12px;line-height:1.55;color:#c6d0de;margin:12px 0}
+  pre .c{color:#5d6675}pre .l0{color:#67e8f9}pre .l1{color:#6ee7b7}pre .l2{color:#93c5fd}pre .l3{color:#c4b5fd}pre .y{color:#fcd34d}pre .g{color:#86efac}
+  ul.clean{margin:8px 0;padding-left:19px}ul.clean li{margin:4px 0;color:var(--muted)}ul.clean li strong{color:var(--ink)}
+  .callout{border-left:3px solid var(--acc);background:rgba(251,146,60,.07);padding:12px 16px;border-radius:0 10px 10px 0;margin:12px 0;color:var(--muted)}.callout.green{border-color:var(--green);background:rgba(52,211,153,.07)}.callout.rose{border-color:var(--rose);background:rgba(251,113,133,.07)}.callout b{color:var(--ink)}
+  .lbadge{display:inline-block;font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:5px;color:#0b1020}
+  .bl0{background:var(--l0)}.bl1{background:var(--l1)}.bl2{background:var(--l2)}.bl3{background:var(--l3)}
+  .stage{border:1px solid var(--line);border-radius:12px;margin:12px 0;overflow:hidden}
+  .stage .sh{padding:11px 16px;font-weight:700;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:9px;background:var(--card2)}
+  .stage .sb{padding:13px 16px}
+  .step{font-size:11px;font-weight:800;color:var(--acc2);background:rgba(251,146,60,.12);border:1px solid rgba(251,146,60,.3);padding:1px 8px;border-radius:5px}
+  .vbox{background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.3);border-radius:9px;padding:10px 13px;margin:8px 0;font-size:12.5px}.vbox b{color:#86efac}
+  .chk{list-style:none;padding:0;margin:8px 0}.chk li{padding:6px 0 6px 28px;position:relative;border-bottom:1px solid var(--line);font-size:12.7px;color:var(--muted)}.chk li:last-child{border-bottom:none}
+  .chk li::before{content:"☐";position:absolute;left:3px;top:5px;color:var(--acc);font-size:15px}.chk li b{color:var(--ink)}
+  .prompt{background:#0b0d12;border:1px solid #3a2e1e;border-radius:12px;padding:15px 17px;margin:10px 0;color:#e8ddcf;font-size:12.3px;line-height:1.6;white-space:pre-wrap;font-family:Consolas,monospace}
+  .prompt .h{color:#fdba74;font-weight:800}
+  .foot{margin-top:50px;padding-top:18px;border-top:1px solid var(--line);color:var(--dim);font-size:12px}
+  @media(max-width:980px){.wrap{grid-template-columns:1fr}nav{display:none}main{padding:24px 16px 70px}.grid2,.grid3{grid-template-columns:1fr}h1{font-size:23px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <div class="brand">Code<span>Pick</span> · 联调</div>
+    <div class="sub">集成与验收手册</div>
+    <a href="#about">定位与前提</a>
+    <a href="#arch">① 联调架构</a>
+    <a href="#prep">② 前置：统一基础设施</a>
+    <a href="#startup">③ 各项目启动</a>
+    <a href="#strategy">④ 联调策略（自下而上）</a>
+    <div class="grp">分阶段</div>
+    <a href="#s1">阶段1 · L0 真实自检</a>
+    <a href="#s2">阶段2 · L0+L1</a>
+    <a href="#s3">阶段3 · +L2</a>
+    <a href="#s4">阶段4 · +L3 全链</a>
+    <div class="grp">验收</div>
+    <a href="#e2e">⑤ 端到端验收用例</a>
+    <a href="#checklist">⑥ 联调检查清单</a>
+    <a href="#trouble">⑦ 常见问题排查</a>
+    <a href="#final">⑧ 最终验收清单</a>
+    <a href="#rollback">⑨ 回滚与应急</a>
+    <a href="#prompt">★ 集成会话提示词</a>
+  </nav>
+  <main>
+    <span class="tag">联调 + 验收 · 4 项目集成手册</span>
+    <h1>CodePick — <em>联调与验收集成手册</em></h1>
+    <p class="lede">4 个项目（L0/L1/L2/L3）各自独立开发完成、过了自己的 DoD 后，本手册指导你把它们<b>分别启动、互相联调、最终验收</b>。核心方法：共享一套基础设施，自下而上把每层的 stub 换成真实下层，逐阶段验证，最后跑通端到端真实内容。</p>
+
+    <section id="about">
+      <h2><span class="x">i</span>定位与前提</h2>
+      <div class="card">
+        <p style="margin-top:0"><b>前提</b>：4 个项目各自已通过自己的冒烟与 DoD（<code>make *-smoke</code> = PASS）。本手册<b>不</b>处理单层内部 bug，只处理"拼起来"。</p>
+        <p style="margin-bottom:0"><b>能拼起来的根据</b>：4 层在开发期就遵守了<b>冻结契约</b>——事件主题统一、产物 schema 固定、数据库表归属互不重叠、跨层只经 Provider 接口。联调本质 = <b>换注入 + 共享基础设施 + 接事件总线</b>，不是重写。</p>
+      </div>
+    </section>
+
+    <section id="arch">
+      <h2><span class="x">1</span>联调架构（共享基础设施）</h2>
+      <pre><span class="c">                     一套共享基础设施（联调期所有项目都连它）</span>
+        ┌───────────────── PostgreSQL + pgvector ─────────────────┐
+        │  L0 表  │  L1 表  │  L2 表  │  L3 表   （归属互不重叠）   │
+        └──────────────────────────┬──────────────────────────────┘
+        ┌──────────── Redis（事件总线 + 队列 + 缓存 + 限流）─────────┐
+        │  topics: content.ingested → analyzed → completed         │
+        └──────────────────────────┴──────────────────────────────┘
+                       ┌────────── 对象存储（原文/媒体）──────────┐
+   ┌──────────┐  ingested  ┌──────────┐ analyzed ┌──────────┐ completed ┌──────────┐
+   │ </span><span class="l0">L0</span><span class="c"> 采集 │──────────▶│ </span><span class="l1">L1</span><span class="c"> 加工 │────────▶│ </span><span class="l2">L2</span><span class="c"> 判断 │─────────▶│ </span><span class="l3">L3</span><span class="c"> 应用 │
+   │ worker   │            │ worker   │          │ worker   │           │ web/api  │
+   └──────────┘            └──────────┘          └──────────┘           └──────────┘
+   真实抓取                 读 content_items      读 base_analysis      读 COMPLETED+scores
+   写 raw/content          写 base_analysis      写 vertical_scores    渲染/早报/计费</span></pre>
+      <div class="callout"><b>联调 = 把"假数据"换成"真数据流"。</b>开发期各层从 fixtures 取数；联调期统统连<b>同一个 PG + 同一个 Redis</b>，数据沿 <code>ingested→analyzed→completed</code> 真正流过四层。</div>
+    </section>
+
+    <section id="prep">
+      <h2><span class="x">2</span>前置：统一基础设施</h2>
+      <h3>2.1 起一套共享 infra</h3>
+      <pre><span class="c"># 用任一项目的 deploy/docker-compose（4 份内容一致），只起一次</span>
+docker compose -f deploy/docker-compose.yml up -d   <span class="c"># postgres+pgvector / redis / minio</span></pre>
+      <h3>2.2 合并数据库迁移</h3>
+      <pre><span class="c"># 因表归属互不重叠，4 套 Alembic 迁移可合并到一处按序执行</span>
+alembic upgrade head     <span class="c"># 顺序: L0 表 → L1 表 → L2 表 → L3 表</span>
+<span class="c"># 若 4 仓各自有 alembic head，合并为一条迁移链（multiple heads → merge）</span>
+alembic merge -m "integrate L0-L3" &lt;heads&gt; && alembic upgrade head</pre>
+      <h3>2.3 统一连接配置（所有项目指向同一 infra）</h3>
+      <pre>DATABASE_URL=postgresql+psycopg://codepick:dev@localhost:5432/codepick   <span class="c"># 四项目相同</span>
+REDIS_URL=redis://localhost:6379/0                                       <span class="c"># 同一实例/同一 db</span>
+S3_ENDPOINT=http://localhost:9000  S3_BUCKET=codepick-raw
+<span class="c"># 关键：关闭各层的 stub 开关</span>
+L1_USE_STUB=false   L1_USE_FAKE_LLM=false
+L2_USE_STUB=false   L2_USE_FAKE_LLM=false
+L3_USE_STUB_L2=false
+<span class="c"># 接真实外部（联调后期）</span>
+LLM_API_KEY=...     PADDLE_*（沙箱→生产）   RESEND_API_KEY=...</pre>
+      <div class="callout rose"><b>最易踩的坑：</b>① Redis 必须是<b>同一实例同一 db</b>，否则事件发出去没人收；② 事件 topic 名四层必须<b>逐字一致</b>（<code>content.ingested/analyzed/completed</code>）；③ 各层的 <code>*_USE_STUB</code> 开关必须确实关掉。</div>
+    </section>
+
+    <section id="startup">
+      <h2><span class="x">3</span>各项目启动方式（分别启动）</h2>
+      <table>
+        <thead><tr><th>项目</th><th>启动什么</th><th>命令（示例）</th></tr></thead>
+        <tbody>
+          <tr><td><span class="lbadge bl0">L0</span></td><td>采集 worker + 调度</td><td><code>uv run arq workers.ingestion.worker</code> · <code>core-data source import seed.opml</code></td></tr>
+          <tr><td><span class="lbadge bl1">L1</span></td><td>enrichment worker</td><td><code>uv run arq workers.enrichment.worker</code></td></tr>
+          <tr><td><span class="lbadge bl2">L2</span></td><td>scoring worker（+ seed ai-coding lens）</td><td><code>uv run arq workers.scoring.worker</code></td></tr>
+          <tr><td><span class="lbadge bl3">L3</span></td><td>reader-api + reader-web + briefs worker（+ public-api/mcp 可选）</td><td><code>uvicorn reader_api.main:app</code> · <code>pnpm --filter reader-web dev</code> · <code>uv run arq workers.briefs.worker</code></td></tr>
+        </tbody>
+      </table>
+      <div class="callout"><b>顺序无所谓，但都连同一 infra。</b>worker 是事件驱动的，先起后起都能消费到队列里的消息。建议：先把 4 个项目都连好配置、各自能起来不报连接错误，再开始推数据联调。</div>
+    </section>
+
+    <section id="strategy">
+      <h2><span class="x">4</span>联调策略：自下而上，逐层接真</h2>
+      <p class="note">不要四层一起接真后才测。每接通一层就验证一层，问题范围最小化。</p>
+      <pre><span class="l0">阶段1</span>  只 L0：真实采集 → 验证 content_items / raw / ingested 事件
+<span class="l1">阶段2</span>  + L1：ingested 自动触发加工 → 验证 base_analysis / analyzed 事件
+<span class="l2">阶段3</span>  + L2：analyzed 自动触发评分 → 验证 vertical_scores / translations / completed / COMPLETED
+<span class="l3">阶段4</span>  + L3：COMPLETED 内容上 Reader、进早报、可被 /v1 调用 → 全链打通</pre>
+    </section>
+
+    <section id="s1">
+      <h2><span class="x">▸</span><span class="lbadge bl0" style="margin-right:6px">阶段1</span>L0 真实自检</h2>
+      <div class="stage"><div class="sh"><span class="step">动作</span> 启动 L0，导入真实源，跑一轮采集</div><div class="sb">
+        <pre>core-data source import seed.opml      <span class="c"># 真实 AI Coding 源</span>
+core-data ingest run --all            <span class="c"># 或等调度自动触发</span></pre>
+        <div class="vbox"><b>✓ 验证</b>
+        <pre><span class="c">-- 有真实内容入库</span>
+SELECT count(*) FROM content_items WHERE status='WAIT_FILTER';   <span class="g">-- &gt; 0</span>
+<span class="c">-- 原文完整保存可溯源</span>
+SELECT raw_html_ref, raw_html_sha256 FROM raw_documents LIMIT 1; <span class="g">-- 非空</span>
+<span class="c">-- 事件已发出</span>
+SELECT count(*) FROM outbox_events WHERE topic='content.ingested' AND published_at IS NOT NULL;</pre></div>
+      </div></div>
+    </section>
+
+    <section id="s2">
+      <h2><span class="x">▸</span><span class="lbadge bl1" style="margin-right:6px">阶段2</span>L0 + L1 联调</h2>
+      <div class="stage"><div class="sh"><span class="step">动作</span> 启动 L1 worker（stub 关闭，连共享 infra）</div><div class="sb">
+        <p class="note">L1 的 <code>ContentProvider</code> 现在读共享 DB 的真实 <code>content_items</code>；消费 Redis 上 L0 发的 <code>content.ingested</code>。</p>
+        <div class="vbox"><b>✓ 验证（内容自动从 ingested 流到 analyzed）</b>
+        <pre>SELECT count(*) FROM content_base_analysis;                      <span class="g">-- 随时间增长</span>
+SELECT status, count(*) FROM content_items GROUP BY status;      <span class="g">-- 出现 WAIT_SCORE</span>
+SELECT count(*) FROM outbox_events WHERE topic='content.analyzed';
+<span class="c">-- 抽查一条：摘要/观点/向量齐全</span>
+SELECT one_liner, summary, jsonb_array_length(key_points), (embedding IS NOT NULL)
+FROM content_base_analysis LIMIT 1;</pre></div>
+        <div class="callout">若 base_analysis 不增长：检查 ① L1 是否消费到 ingested（Redis 同实例？topic 名？）② <code>L1_USE_STUB=false</code>？③ LLM 凭证有效？看 L1 worker 日志。</div>
+      </div></div>
+    </section>
+
+    <section id="s3">
+      <h2><span class="x">▸</span><span class="lbadge bl2" style="margin-right:6px">阶段3</span>+ L2 联调</h2>
+      <div class="stage"><div class="sh"><span class="step">动作</span> seed ai-coding lens，启动 L2 worker</div><div class="sb">
+        <p class="note">L2 的 <code>AnalysisProvider</code> 读真实 <code>content_base_analysis</code>；消费 <code>content.analyzed</code>。</p>
+        <div class="vbox"><b>✓ 验证（流到 completed）</b>
+        <pre>SELECT count(*) FROM content_vertical_scores WHERE vertical_code='ai-coding';
+SELECT dim_scores FROM content_vertical_scores LIMIT 1;          <span class="g">-- 六维分合法</span>
+SELECT count(*) FROM content_translations;                       <span class="g">-- 中英</span>
+SELECT status, count(*) FROM content_items GROUP BY status;      <span class="g">-- 出现 COMPLETED</span>
+SELECT count(*) FROM outbox_events WHERE topic='content.completed';</pre></div>
+        <div class="callout">若卡在 WAIT_SCORE：检查 lens 是否 seed、relevance_gate 是否把内容判成"不属于该垂直"、L2 是否消费到 analyzed。</div>
+      </div></div>
+    </section>
+
+    <section id="s4">
+      <h2><span class="x">▸</span><span class="lbadge bl3" style="margin-right:6px">阶段4</span>+ L3 全链</h2>
+      <div class="stage"><div class="sh"><span class="step">动作</span> 启动 reader-api / reader-web / briefs worker（L3 读真实 L2 产物）</div><div class="sb">
+        <div class="vbox"><b>✓ 验证（终端可见）</b>
+        <ul class="clean" style="margin:4px 0">
+          <li>打开 <code>/</code> 公共精选 → <b>看到刚采集分析的真实文章</b>，含评分/双语摘要</li>
+          <li>详情页 <code>/read/:id</code> → 摘要/观点/金句/六维分/中英切换正常</li>
+          <li>触发早报 Job → <code>briefs</code> 出现今天的早报项；邮件发出</li>
+          <li>AI 伴读对该文提问 → 流式返回（reader-api 代理 L2 companion）</li>
+          <li>（可选）<code>GET /v1/today?vertical=ai-coding</code> 带 key → 返回该文</li>
+          <li>Free 账户访问 Pro 功能 → 被门禁拦截；支付沙箱升 Pro → 放行</li>
+        </ul></div>
+      </div></div>
+      <div class="callout green"><b>四阶段全过 = 全链打通。</b>一条真实内容已从"采集"走到"在 Reader 上被读"。</div>
+    </section>
+
+    <section id="e2e">
+      <h2><span class="x">5</span>端到端验收用例（黄金路径）</h2>
+      <div class="card"><p style="margin-top:0"><b>用例：一条真实文章的完整旅程</b></p>
+        <ul class="clean">
+          <li>① 在 L0 登记一个真实 AI Coding 源，触发采集</li>
+          <li>② 数分钟内，该源新文章自动：采集 → 加工 → 评分 → 翻译 → COMPLETED（无人工干预）</li>
+          <li>③ 该文出现在 Reader 公共精选与详情页，含六维分 + 中英分析</li>
+          <li>④ 该文进入当天公共早报，邮件可收到</li>
+          <li>⑤ 对该文用 AI 伴读提问，得到基于内容的回答</li>
+          <li>⑥ <code>/v1/today</code> 与 MCP <code>bestpick_today</code> 能返回该文</li>
+          <li>⑦ 升级 rubric/graph 版本 → 触发 reprocess → 该文被重新加工评分（验证可重放）</li>
+        </ul>
+        <p style="margin-bottom:0">全部通过 = <b>平台级端到端验收 PASS</b>。</p>
+      </div>
+    </section>
+
+    <section id="checklist">
+      <h2><span class="x">6</span>联调检查清单</h2>
+      <table>
+        <thead><tr><th>类别</th><th>检查项</th></tr></thead>
+        <tbody>
+          <tr><td><strong>基础设施</strong></td><td>4 项目同一 PG / 同一 Redis 实例与 db / 同一对象存储桶</td></tr>
+          <tr><td><strong>迁移</strong></td><td>合并后 <code>alembic upgrade head</code> 成功；表归属无重叠无冲突</td></tr>
+          <tr><td><strong>事件</strong></td><td>topic 名逐字一致；outbox relay 在各层都在跑；消费者能收到</td></tr>
+          <tr><td><strong>开关</strong></td><td>所有 <code>*_USE_STUB</code> / <code>*_USE_FAKE_LLM</code> 已关闭</td></tr>
+          <tr><td><strong>契约</strong></td><td>BaseAnalysis / VerticalScore / 翻译 schema 与文档一致（无字段漂移）</td></tr>
+          <tr><td><strong>状态机</strong></td><td>内容能从 WAIT_FILTER 一路走到 COMPLETED，无卡死</td></tr>
+          <tr><td><strong>外部</strong></td><td>LLM / 支付（沙箱）/ 邮件凭证有效</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="trouble">
+      <h2><span class="x">7</span>常见问题排查</h2>
+      <table>
+        <thead><tr><th>现象</th><th>定位与解决</th></tr></thead>
+        <tbody>
+          <tr><td>下游表不增长（如 base_analysis 一直空）</td><td>上游事件没被消费：查 Redis 同实例？topic 名？消费者在跑？stub 关了吗？看该层 worker 日志</td></tr>
+          <tr><td>内容卡在某状态</td><td>对应层未运行/在报错；查该层 worker 日志与状态机转移逻辑</td></tr>
+          <tr><td>事件重复处理</td><td>消费幂等键缺失；按 content_id 幂等</td></tr>
+          <tr><td>schema 不匹配/反序列化失败</td><td>契约漂移：对照冻结契约（BaseAnalysis/VerticalScore）逐字段比对，回退到契约</td></tr>
+          <tr><td>迁移 multiple heads</td><td><code>alembic merge</code> 合并 heads 后 upgrade</td></tr>
+          <tr><td>Reader 看不到内容</td><td>只消费 COMPLETED：确认 L2 已把状态推到 COMPLETED；ContentReadProvider 已连真实 DB</td></tr>
+          <tr><td>跨域/SSE 断流</td><td>reader-api 代理 L2 companion 的 SSE 透传与超时配置</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="final">
+      <h2><span class="x">8</span>最终验收清单（平台级 DoD）</h2>
+      <ul class="chk">
+        <li><b>全链自动</b>：真实源新内容自动走完 采集→加工→评分→翻译→COMPLETED，无人工干预</li>
+        <li><b>数据完整</b>：原文/分析/评分/翻译可溯源；L0 全量保存可校验</li>
+        <li><b>终端可见</b>：COMPLETED 内容在 Reader 公共精选/详情双语正确呈现</li>
+        <li><b>个性化</b>：登录后我的早报/推荐基于真实评分生成；行为埋点支撑北极星</li>
+        <li><b>分发</b>：公共/我的早报生成并邮件投递</li>
+        <li><b>伴读</b>：基于真实内容流式问答；Free/Pro 配额生效</li>
+        <li><b>商业化</b>：支付（沙箱）升/降级闭环，门禁正确</li>
+        <li><b>开放</b>（可选）：/v1 原语 + MCP 返回真实数据，限流配额生效</li>
+        <li><b>可重放</b>：升级 rubric/graph 版本可对历史内容重处理</li>
+        <li><b>可观测</b>：四层各有日志/指标；端到端黄金路径用例 PASS</li>
+        <li><b>回归</b>：四层各自单测 + 全链冒烟在 CI 全绿</li>
+      </ul>
+      <div class="callout green"><b>全部勾选 = CodePick 平台联调验收通过</b>，可进入接真实外部（LLM/支付/邮件生产）与上线准备。</div>
+    </section>
+
+    <section id="rollback">
+      <h2><span class="x">9</span>回滚与应急</h2>
+      <ul class="clean">
+        <li><strong>单层回退</strong>：任一层出问题，把它的 Provider 暂时切回 stub，隔离排查，不阻塞其他层联调。</li>
+        <li><strong>事件重放</strong>：丢消息时用 L0 的 <code>reprocess(scope)</code> 重新发事件，驱动下游重算（幂等保证不重复）。</li>
+        <li><strong>数据安全</strong>：原始层不可变，任何重算都从原始层派生，不会损坏真相源。</li>
+        <li><strong>迁移回滚</strong>：<code>alembic downgrade</code> 按层回退；因表归属隔离，互不影响。</li>
+      </ul>
+    </section>
+
+    <section id="prompt">
+      <h2><span class="x">★</span>集成会话提示词（交给负责联调的 Codex）</h2>
+      <div class="prompt"><span class="h"># 角色</span>
+你负责把 CodePick 的 4 个已完成项目（L0/L1/L2/L3）做集成联调与平台级验收。各项目已通过各自 DoD。
+
+<span class="h"># 输入材料</span>
+本《联调与验收-集成手册.html》+ 4 个项目代码 + 各项目的《实施手册》（含契约与 smoke）。
+
+<span class="h"># 任务</span>
+按本手册：① 起一套共享 infra（PG+pgvector/Redis/对象存储）；② 合并 4 套 Alembic 迁移；③ 统一连接配置并关闭所有 stub/FakeLLM 开关；④ 自下而上分阶段联调（L0→+L1→+L2→+L3），每阶段用手册的 SQL/页面「验证」收口；⑤ 跑端到端黄金路径用例；⑥ 过"最终验收清单"。
+
+<span class="h"># 硬约束</span>
+1. 不改任何层的冻结契约（事件主题 / 产物 schema / 表归属）；发现契约不一致先报告，不擅自改。
+2. 集成只做：共享 infra + 合并迁移 + 接事件总线 + Provider 由 stub 换真实实现 + 配置统一。不重写业务逻辑。
+3. 每接通一层先验证再进下一层；问题用手册"排查表"定位，必要时把某层切回 stub 隔离。
+
+<span class="h"># 交付</span>
+- 一套可运行的 docker-compose/启动脚本，一条命令起全链。
+- 端到端黄金路径用例自动化脚本（真实源→Reader 可见）PASS。
+- 「最终验收清单」逐项结果 + 遗留问题清单。
+
+<span class="h"># 工作方式</span>
+每完成一个阶段汇报：本阶段验证结果（贴 SQL/页面证据）、发现的问题与处理、是否可进入下一阶段。</div>
+    </section>
+
+    <div class="foot">CodePick · 联调与验收集成手册 · 共享 infra + 自下而上逐层接真 + 端到端验收 · 2026-05-30</div>
+  </main>
+</div>
+</body>
+</html>

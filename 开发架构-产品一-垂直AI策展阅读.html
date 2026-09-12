@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>产品一 · 垂直 AI 策展阅读 — 开发架构</title>
+<style>
+  :root{
+    --bg:#0a0e16; --panel:#121826; --panel2:#19202f; --line:#26303f;
+    --text:#e8eef6; --muted:#97a6ba; --dim:#65748a;
+    --acc:#6366f1; --acc2:#60a5fa; --green:#34d399; --amber:#fbbf24; --rose:#fb7185; --violet:#a78bfa;
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0; background:radial-gradient(900px 480px at 78% -10%,rgba(99,102,241,.10),transparent),var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif; line-height:1.7; font-size:15.5px}
+  a{color:var(--acc2); text-decoration:none} a:hover{text-decoration:underline}
+  .wrap{display:grid; grid-template-columns:262px 1fr; max-width:1340px; margin:0 auto}
+  nav{position:sticky; top:0; height:100vh; overflow-y:auto; padding:26px 16px; border-right:1px solid var(--line); background:rgba(10,14,22,.7)}
+  nav .brand{font-weight:800; font-size:16px} nav .brand span{color:var(--acc2)}
+  nav .sub{color:var(--dim); font-size:11.5px; margin-bottom:18px}
+  nav a{display:block; color:var(--muted); padding:6px 11px; border-radius:8px; font-size:13px; margin:1px 0}
+  nav a:hover{background:var(--panel); color:var(--text); text-decoration:none}
+  nav .grp{color:var(--dim); font-size:10.5px; text-transform:uppercase; letter-spacing:1px; margin:14px 0 3px 11px}
+  nav .pill{display:block; margin:14px 8px 0; padding:9px 12px; background:rgba(99,102,241,.1); border:1px solid rgba(99,102,241,.3); border-radius:9px; font-size:12px; color:var(--muted)}
+  nav .pill b{color:var(--acc2)}
+  main{padding:42px 54px 120px; min-width:0}
+  .tag{display:inline-block; background:rgba(99,102,241,.14); color:var(--acc2); border:1px solid rgba(99,102,241,.34); padding:4px 12px; border-radius:999px; font-size:12.5px; font-weight:600; margin-bottom:14px}
+  h1{font-size:33px; line-height:1.25; margin:0 0 12px; font-weight:800; letter-spacing:-.5px}
+  h1 em{font-style:normal; background:linear-gradient(90deg,var(--acc),var(--acc2)); -webkit-background-clip:text; background-clip:text; color:transparent}
+  .lede{color:var(--muted); font-size:16px; max-width:820px}
+  section{margin:46px 0; scroll-margin-top:18px}
+  h2{font-size:22px; margin:0 0 6px; font-weight:800; display:flex; align-items:center; gap:10px}
+  h2::before{content:""; width:5px; height:22px; background:linear-gradient(var(--acc),var(--acc2)); border-radius:3px}
+  h3{font-size:16.5px; margin:22px 0 9px; color:#fff}
+  .note{color:var(--dim); font-size:13px; margin-bottom:14px}
+  p{margin:9px 0}
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:20px 22px; margin:14px 0}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+  .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+  .grid4{display:grid; grid-template-columns:repeat(4,1fr); gap:12px}
+  .mini{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px}
+  .mini h4{margin:0 0 5px; font-size:14.5px; color:#fff} .mini p{margin:0; color:var(--muted); font-size:12.8px}
+  .mini .ic{font-size:20px; margin-bottom:6px; display:block}
+  table{width:100%; border-collapse:collapse; margin:14px 0; font-size:13px; border-radius:10px; overflow:hidden}
+  th,td{padding:10px 12px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top}
+  th{background:var(--panel2); color:#fff; font-weight:700} td{color:var(--muted)}
+  tr:last-child td{border-bottom:none} td strong{color:var(--text)}
+  .hl{color:var(--acc2); font-weight:700}
+  .badge{display:inline-block; font-size:10.5px; padding:2px 7px; border-radius:6px; font-weight:700}
+  .b-share{background:rgba(52,211,153,.15); color:var(--green)}
+  .b-own{background:rgba(99,102,241,.18); color:var(--acc2)}
+  .b-ext{background:rgba(251,191,36,.15); color:var(--amber)}
+  pre{background:#0c111c; border:1px solid var(--line); border-radius:12px; padding:16px 18px; overflow-x:auto; font-size:12.6px; line-height:1.6; color:#cdd9e8; margin:14px 0}
+  pre .c{color:var(--dim)} pre .k{color:var(--violet)} pre .s{color:var(--green)} pre .y{color:var(--amber)}
+  code{background:var(--panel2); padding:1.5px 6px; border-radius:5px; font-size:12.6px; color:var(--violet); font-family:"SF Mono",Consolas,monospace}
+  ul.clean{margin:9px 0; padding-left:19px} ul.clean li{margin:5px 0; color:var(--muted)} ul.clean li strong{color:var(--text)}
+  .callout{border-left:3px solid var(--acc); background:rgba(99,102,241,.08); padding:13px 17px; border-radius:0 10px 10px 0; margin:14px 0; color:var(--muted)}
+  .callout.green{border-color:var(--green); background:rgba(52,211,153,.07)}
+  .callout.amber{border-color:var(--amber); background:rgba(251,191,36,.07)}
+  .callout b{color:var(--text)}
+  /* layered stack */
+  .stack{display:flex; flex-direction:column; gap:9px; margin:14px 0}
+  .layer{border-radius:12px; padding:14px 18px; border:1px solid var(--line); position:relative}
+  .layer .lt{font-weight:700; font-size:14.5px; margin-bottom:3px}
+  .layer .ld{color:var(--muted); font-size:12.7px}
+  .layer .lb{position:absolute; right:14px; top:13px}
+  .ls{background:linear-gradient(135deg,rgba(52,211,153,.12),rgba(52,211,153,.03)); border-color:rgba(52,211,153,.3)}
+  .lo{background:linear-gradient(135deg,rgba(99,102,241,.12),rgba(99,102,241,.03)); border-color:rgba(99,102,241,.32)}
+  /* pipeline */
+  .pipe{display:flex; flex-wrap:wrap; margin:14px 0}
+  .step{flex:1; min-width:108px; background:var(--panel); border:1px solid var(--line); padding:12px 10px; text-align:center; position:relative}
+  .step:first-child{border-radius:10px 0 0 10px} .step:last-child{border-radius:0 10px 10px 0}
+  .step .n{font-size:10.5px; color:var(--acc2); font-weight:700}
+  .step .t{font-size:12.8px; font-weight:700; margin:3px 0 2px} .step .d{font-size:11px; color:var(--dim)}
+  .step:not(:last-child)::after{content:"›"; position:absolute; right:-8px; top:50%; transform:translateY(-50%); color:var(--acc2); font-size:18px; z-index:2}
+  /* sequence */
+  .seq{counter-reset:s; margin:14px 0}
+  .seq .r{display:flex; gap:13px; padding:10px 0; border-bottom:1px dashed var(--line)}
+  .seq .r:last-child{border-bottom:none}
+  .seq .r::before{counter-increment:s; content:counter(s); flex-shrink:0; width:24px; height:24px; border-radius:7px; background:var(--panel2); color:var(--acc2); font-weight:700; font-size:12px; display:flex; align-items:center; justify-content:center}
+  .seq .r div{font-size:13.3px; color:var(--muted)} .seq .r b{color:var(--text)}
+  .roadmap{position:relative; margin:18px 0 0; padding-left:26px}
+  .roadmap::before{content:""; position:absolute; left:6px; top:6px; bottom:6px; width:2px; background:var(--line)}
+  .ms{position:relative; margin-bottom:18px}
+  .ms::before{content:""; position:absolute; left:-24px; top:5px; width:12px; height:12px; border-radius:50%; background:var(--acc); box-shadow:0 0 0 4px rgba(99,102,241,.15)}
+  .ms h4{margin:0 0 3px; font-size:15px} .ms .wk{font-size:11.5px; color:var(--dim); font-weight:700; text-transform:uppercase}
+  .ms p{margin:3px 0 0; color:var(--muted); font-size:13.2px}
+  .foot{margin-top:60px; padding-top:20px; border-top:1px solid var(--line); color:var(--dim); font-size:12.5px}
+  @media(max-width:980px){.wrap{grid-template-columns:1fr} nav{display:none} main{padding:24px 16px 70px}
+    .grid2,.grid3,.grid4{grid-template-columns:1fr} h1{font-size:25px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <div class="brand">产品一 · <span>Reader</span></div>
+    <div class="sub">垂直 AI 策展阅读 · 开发架构</div>
+    <div class="grp">总览</div>
+    <a href="#intro">定位与边界</a>
+    <a href="#context">① 系统上下文 (C4-L1)</a>
+    <a href="#core">② 共享内容中台</a>
+    <div class="grp">架构</div>
+    <a href="#container">③ 容器架构 (C4-L2)</a>
+    <a href="#modules">④ 核心模块 (C4-L3)</a>
+    <a href="#data">⑤ 数据模型</a>
+    <a href="#flows">⑥ 关键流程时序</a>
+    <div class="grp">工程</div>
+    <a href="#stack">⑦ 技术选型</a>
+    <a href="#routes">⑧ 页面与接口</a>
+    <a href="#deploy">⑨ 部署拓扑</a>
+    <a href="#cross">⑩ 横切机制</a>
+    <a href="#build">⑪ 开发里程碑</a>
+    <div class="pill">配套：<b>产品二（Agent API / MCP）</b>另见独立文件。两者<b>共用同一内容中台</b>，仅本产品独有的"个性化 / 分发 / 账户"部分不同。</div>
+  </nav>
+
+  <main>
+    <span class="tag">开发架构文档 · 1 / 2</span>
+    <h1>产品一：<em>垂直 AI 策展阅读（Reader）</em></h1>
+    <p class="lede">面向 C 端读者的 Web 产品：在一个垂直领域内，把"今天值得读什么"判断好，生成个性化早报，并提供 AI 伴读。本文档描述其完整开发架构——采集与基础分析复用<b>共享内容中台</b>，本产品聚焦<b>垂直判断、个性化、分发与账户/订阅</b>。</p>
+
+    <section id="intro">
+      <h2>定位与边界</h2>
+      <div class="grid3">
+        <div class="mini"><span class="ic">🎯</span><h4>它负责</h4><p>垂直评分与精审、兴趣标签与行为学习、我的早报、为你推荐、AI 伴读、Web/邮件分发、账户与订阅</p></div>
+        <div class="mini"><span class="ic">🔗</span><h4>它复用</h4><p>共享中台的：采集、内容实体、基础分析（摘要/观点/金句/实体/embedding）</p></div>
+        <div class="mini"><span class="ic">🚫</span><h4>它不做</h4><p>对外开放 API / MCP（那是产品二）；不重复爬取、不重复基础分析</p></div>
+      </div>
+      <div class="callout green"><b>共享原则（与上一轮讨论一致）：</b>一条内容全局<b>唯一</b>，基础分析<b>算一次</b>；"它对某垂直的价值（评分/标签）"是 <code>content × vertical</code> 的<b>每垂直一份</b>记录。本产品消费 <span class="hl">COMPLETED + 已精审</span> 的垂直评分结果。</div>
+    </section>
+
+    <section id="context">
+      <h2>① 系统上下文 (C4 Level 1)</h2>
+      <pre><span class="c">                         ┌───────────────────────────────┐
+   外部内容源              │        产品一 · Reader         │        最终用户
+ (RSS/网页/播客/X)         │   垂直 AI 策展阅读 Web 产品     │   (垂直领域读者 / Pro)
+        │                 └───────────────────────────────┘            │
+        │ 抓取                      ▲           ▲                       │
+        ▼                          │ 读取已发布  │ 个性化/伴读           │ 浏览/早报/订阅
+  ┌──────────────┐  写入   ┌───────┴───────┐   │            ┌──────────┴─────────┐
+  │ 共享内容中台  │────────▶│ 垂直判断+精审  │   └────────────│  Web App + 邮件     │
+  │ (采集/实体/   │         │ (评分/标签)    │◀───行为数据────│  (Next.js / Resend) │
+  │  基础分析)    │         └───────────────┘                └────────────────────┘
+  └──────────────┘                                                     │
+        ▲                                                              ▼
+        │                                                      ┌──────────────┐
+   ┌────┴────┐   LLM 调用                                       │ 支付 (Stripe/ │
+   │ LLM 提供 │◀─────────────────────────────────────────────│  国内支付)    │
+   │  方/Dify │                                                └──────────────┘
+   └─────────┘</span></pre>
+      <p class="note">人/系统角色：读者（免费/Pro）、内容源（外部）、LLM 提供方、支付。Reader 本身不直接爬取——它消费中台产出。</p>
+    </section>
+
+    <section id="core">
+      <h2>② 共享内容中台（边界）</h2>
+      <p class="note">两个产品共用。这里只描述边界与职责；实现细节在中台自身仓库/模块维护。Reader 以"只读已发布内容 + 读写垂直评分"的方式接入。</p>
+      <div class="stack">
+        <div class="layer ls"><span class="lb"><span class="badge b-share">共享</span></span><div class="lt">采集层 · Ingestion</div><div class="ld">源注册表 + RSS 轮询 + 无头浏览器全文抓取（Playwright）+ 正文提取/清洗。通用源共享；垂直私有源由本产品追加。</div></div>
+        <div class="layer ls"><span class="lb"><span class="badge b-share">共享</span></span><div class="lt">内容实体层 · ContentItem</div><div class="ld">规范化记录，按 url_hash + simhash 全局去重。一篇 = 一条。原文 HTML/正文存对象存储，元数据入库。</div></div>
+        <div class="layer ls"><span class="lb"><span class="badge b-share">共享</span></span><div class="lt">基础分析层 · BaseAnalysis</div><div class="ld">LLM 算一次：一句话总结、摘要、关键观点、金句、实体、基础标签、embedding。与垂直无关的"事实层"。</div></div>
+        <div class="layer lo"><span class="lb"><span class="badge b-own">本产品</span></span><div class="lt">垂直判断层 · VerticalScore</div><div class="ld">按 <code>content × vertical</code> 算：相关性 + 六维分 + 垂直标签 + 精审状态。<b>护城河在这层</b>，每垂直独立 rubric。</div></div>
+      </div>
+      <div class="callout"><b>接入方式：</b>中台完成基础分析后，发事件 <code>content.analyzed</code>；Reader 的"垂直评分 Worker"订阅该事件，对匹配本产品垂直的内容计算 VerticalScore，写回共享库 → 进入精审队列 → COMPLETED。</div>
+    </section>
+
+    <section id="container">
+      <h2>③ 容器架构 (C4 Level 2)</h2>
+      <pre><span class="c">┌────────────────────────────── Reader 运行时 ──────────────────────────────┐
+│                                                                            │
+│  ┌─────────────────┐   HTTP/SSE   ┌──────────────────────┐                 │
+│  │  Web App (SSR)  │◀────────────▶│  BFF / API 路由       │                 │
+│  │  Next.js App    │              │  (Next API / Hono)   │                 │
+│  │  Router         │              │  鉴权·聚合·限流       │                 │
+│  └─────────────────┘              └───────┬──────────────┘                 │
+│                                           │                                │
+│   ┌───────────────────────────┬──────────┼───────────────┬──────────────┐ │
+│   ▼                           ▼          ▼               ▼              ▼ │
+│ ┌────────┐  ┌──────────┐  ┌─────────┐ ┌──────────┐  ┌──────────┐ ┌────────┐│
+│ │ 垂直评分│  │ 个性化   │  │ AI伴读   │ │ 早报生成 │  │ 行为采集 │ │ 账户/  ││
+│ │ Worker │  │ 召回重排 │  │ Service │ │ Cron Job │  │ Ingest   │ │ 订阅   ││
+│ └───┬────┘  └────┬─────┘  └────┬────┘ └────┬─────┘  └────┬─────┘ └───┬────┘│
+│     └────────────┴─────────────┴───────────┴─────────────┴───────────┘     │
+│                                  │ 共享数据访问                            │
+└──────────────────────────────────┼─────────────────────────────────────────┘
+                                    ▼
+        ┌───────────────┬───────────────┬──────────────┬───────────────┐
+        │ PostgreSQL    │ Redis         │ 对象存储      │ 向量检索       │
+        │ (+pgvector)   │ 缓存/队列/限流│ (原文/音频)   │ (pgvector/Qdrant)│
+        └───────────────┴───────────────┴──────────────┴───────────────┘
+                                    ▲
+                         ┌──────────┴──────────┐
+                         │ 共享内容中台 (采集+  │
+                         │ 基础分析 pipeline)   │
+                         └─────────────────────┘</span></pre>
+      <p class="note">早期可单体部署（Web/BFF/Worker 同进程或同 compose）；规模化后将 Worker、早报 Job 拆为独立进程。</p>
+    </section>
+
+    <section id="modules">
+      <h2>④ 核心模块 (C4 Level 3)</h2>
+      <table>
+        <thead><tr><th>模块</th><th>职责</th><th>关键点</th><th>归属</th></tr></thead>
+        <tbody>
+          <tr><td><strong>垂直评分 Worker</strong></td><td>订阅 <code>content.analyzed</code>，对匹配垂直算相关性+六维分+垂直标签</td><td>输入用 BaseAnalysis（不重读全文），轻量便宜；写 VerticalScore</td><td><span class="badge b-own">本产品</span></td></tr>
+          <tr><td><strong>精审队列</strong></td><td>低置信/高曝光内容进人工/半自动复审</td><td>阈值由 ConfigKey 控；通过→COMPLETED</td><td><span class="badge b-own">本产品</span></td></tr>
+          <tr><td><strong>个性化召回重排</strong></td><td>为你推荐 / 我的早报候选集</td><td>多路召回(标签+向量)→重排：qualityScore×标签权重+新鲜度−多样性惩罚</td><td><span class="badge b-own">本产品</span></td></tr>
+          <tr><td><strong>AI 伴读 Service</strong></td><td>详情页总结/问答/章节跳转，SSE 流式</td><td>注入内容上下文；配额按 Free/Pro；用量计数</td><td><span class="badge b-own">本产品</span></td></tr>
+          <tr><td><strong>早报生成 Job</strong></td><td>公共早报(底稿) + 我的早报(逐用户)</td><td>Cron；3 天窗口+历史去重+质量检查；产文字/音频/邮件</td><td><span class="badge b-own">本产品</span></td></tr>
+          <tr><td><strong>行为采集</strong></td><td>点击/深读/收藏/划线/不感兴趣</td><td>异步写入；喂回兴趣权重与来源偏好</td><td><span class="badge b-own">本产品</span></td></tr>
+          <tr><td><strong>账户/订阅</strong></td><td>登录、Free/Pro 门禁、计费</td><td>门禁集中治理；Stripe/国内支付 webhook</td><td><span class="badge b-own">本产品</span></td></tr>
+          <tr><td><strong>BFF</strong></td><td>面向 Web 的聚合接口、鉴权、SSE</td><td>唯一前端调用入口；不泄漏内部规则</td><td><span class="badge b-own">本产品</span></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="data">
+      <h2>⑤ 数据模型</h2>
+      <h3>共享层（中台 + 垂直评分）</h3>
+      <pre><span class="k">table</span> sources            <span class="c">-- 订阅源（含垂直私有源）</span>
+  id, name, feed_url, type<span class="c">[article|podcast|video|tweet]</span>,
+  crawl_config jsonb, is_public bool, owner_user_id<span class="c">?</span>, vertical_codes <span class="k">text[]</span>
+
+<span class="k">table</span> content_items       <span class="c">-- ★ 全局唯一、去重</span>
+  id, canonical_url, url_hash <span class="k">unique</span>, simhash, title, lang,
+  source_id, raw_ref<span class="c">(对象存储)</span>, clean_text_ref, published_at, fetched_at,
+  status<span class="c">[WAIT_FILTER|WAIT_ANALYSIS|WAIT_REVIEW|COMPLETED|CANCELLED]</span>
+
+<span class="k">table</span> content_base_analysis  <span class="c">-- 共享，算一次</span>
+  content_id <span class="k">pk fk</span>, one_liner, summary, key_points jsonb, quotes jsonb,
+  entities jsonb, base_tags jsonb, embedding <span class="k">vector(1536)</span>, model, created_at
+
+<span class="k">table</span> content_vertical_scores <span class="c">-- ★ content × vertical，每垂直一份（判断层）</span>
+  content_id <span class="k">fk</span>, vertical_code <span class="k">fk</span>, relevance <span class="k">int</span>,
+  dim_scores jsonb<span class="c">{选题,内容,深度,实用,创新,表达}</span>, vertical_tags jsonb,
+  reviewed bool, review_note, quality_score <span class="k">int</span>,
+  <span class="k">primary key</span> (content_id, vertical_code)
+
+<span class="k">table</span> verticals             <span class="c">-- lens 配置（一行 = 一个垂直）</span>
+  code <span class="k">pk</span>, name, rubric_prompt, tag_taxonomy jsonb,
+  source_filter jsonb, brief_template, enabled bool</pre>
+      <h3>本产品独有（账户 / 个性化 / 分发）</h3>
+      <pre><span class="k">table</span> users               id, email, nickname, created_at, plan<span class="c">[free|pro]</span>
+<span class="k">table</span> subscriptions       user_id, plan, status, period_end, provider, provider_ref
+<span class="k">table</span> user_interests      user_id, tag_code, weight <span class="c">-- 可跨垂直</span>
+<span class="k">table</span> user_follows        user_id, target_type<span class="c">[source|vertical]</span>, target_id
+<span class="k">table</span> reading_events      user_id, content_id, type, ts <span class="c">-- 行为，喂回权重</span>
+<span class="k">table</span> briefs              id, user_id<span class="c">?(null=公共)</span>, vertical_code, brief_date,
+                       items jsonb, audio_ref<span class="c">?</span>, channels jsonb, status
+<span class="k">table</span> bookmarks           user_id, content_id, note, highlights jsonb
+<span class="k">table</span> companion_usage     user_id, day, count <span class="c">-- AI 伴读配额计数</span></pre>
+    </section>
+
+    <section id="flows">
+      <h2>⑥ 关键流程时序</h2>
+      <h3>A. 内容生产管线（共享中台 + 本产品垂直评分）</h3>
+      <div class="pipe">
+        <div class="step"><div class="n">中台</div><div class="t">抓取+清洗</div><div class="d">Playwright 全文</div></div>
+        <div class="step"><div class="n">中台</div><div class="t">去重+建实体</div><div class="d">url_hash/simhash</div></div>
+        <div class="step"><div class="n">中台</div><div class="t">初评过滤</div><div class="d">小模型剔低质</div></div>
+        <div class="step"><div class="n">中台</div><div class="t">基础分析</div><div class="d">摘要/观点/embedding</div></div>
+        <div class="step"><div class="n">本品</div><div class="t">垂直评分</div><div class="d">六维分+标签</div></div>
+        <div class="step"><div class="n">本品</div><div class="t">精审</div><div class="d">人工/半自动</div></div>
+        <div class="step"><div class="n">本品</div><div class="t">COMPLETED</div><div class="d">可消费</div></div>
+      </div>
+      <div class="callout amber"><b>降本关键：</b>① 小模型初评砍掉 60-70% 低质再进大模型；② 垂直评分只吃 BaseAnalysis（不重读全文），新增垂直边际成本极低；③ 命中缓存复用。</div>
+
+      <h3>B. 我的早报生成（Cron 07:00）</h3>
+      <div class="seq">
+        <div class="r"><div>遍历活跃用户，取其关注垂直/兴趣标签</div></div>
+        <div class="r"><div>从 <b>COMPLETED</b> 内容召回候选（近 3 天，标签通道 + 向量通道并行）</div></div>
+        <div class="r"><div>对照该用户历史早报<b>去重</b>，避免重复推荐</div></div>
+        <div class="r"><div>重排：<b>qualityScore × 标签权重 + 新鲜度 − 多样性惩罚</b>，取 Top N</div></div>
+        <div class="r"><div>渲染早报（文字）→ 可选生成音频 → 写 <code>briefs</code> → 邮件投递</div></div>
+      </div>
+
+      <h3>C. AI 伴读（详情页，SSE 流式）</h3>
+      <div class="seq">
+        <div class="r"><div>用户打开 <code>/read/{id}</code>，BFF 立即返回 <b>BaseAnalysis</b>（秒开，无需调用 LLM）</div></div>
+        <div class="r"><div>用户提问 → BFF 检查配额（Free/Pro）→ 注入内容上下文，<b>SSE 流式</b>调用 LLM</div></div>
+        <div class="r"><div>回写 <code>companion_usage</code> 计数；记录 reading_event(type=deepread)</div></div>
+      </div>
+    </section>
+
+    <section id="stack">
+      <h2>⑦ 技术选型</h2>
+      <table>
+        <thead><tr><th>层</th><th>选型</th><th>理由 / 备选</th></tr></thead>
+        <tbody>
+          <tr><td>前端 / SSR</td><td><strong>Next.js (App Router) + TypeScript + Tailwind</strong></td><td>SSR 利于 SEO（获客核心）；备选 Remix</td></tr>
+          <tr><td>BFF / API</td><td><strong>Next API Routes / Hono</strong></td><td>早期同仓即可；规模化拆 NestJS</td></tr>
+          <tr><td>Worker / Job</td><td><strong>Node + BullMQ（Redis 队列）</strong></td><td>定时与异步管线；备选 Temporal</td></tr>
+          <tr><td>主存储</td><td><strong>PostgreSQL + Prisma</strong></td><td>关系+jsonb 够用，运维简单；BestBlogs 用 Mongo 亦可</td></tr>
+          <tr><td>向量</td><td><strong>pgvector</strong>（起步）→ Qdrant</td><td>少一个组件，够用即止</td></tr>
+          <tr><td>缓存/队列/限流</td><td><strong>Redis</strong></td><td>三用合一</td></tr>
+          <tr><td>对象存储</td><td><strong>S3 兼容（R2/MinIO）</strong></td><td>存原文 HTML、早报音频</td></tr>
+          <tr><td>LLM 编排</td><td><strong>Dify 自部署</strong> 或 直连 SDK + 轻编排</td><td>Dify 可视化调 prompt（BestBlogs 同款）；追求轻量则直连</td></tr>
+          <tr><td>邮件 / 音频</td><td>Resend / SES · TTS（火山/Azure/OpenAI）</td><td>早报分发</td></tr>
+          <tr><td>支付</td><td>Stripe（海外）/ 微信支付·支付宝（国内）</td><td>订阅计费</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="routes">
+      <h2>⑧ 页面与接口</h2>
+      <h3>页面路由（Next.js）</h3>
+      <pre><span class="y">/</span>                公共精选首页（SEO 入口）
+<span class="y">/vertical/[code]</span>  某垂直内容广场（筛选/排序）
+<span class="y">/read/[id]</span>       内容详情 + AI 伴读
+<span class="y">/brief</span>           我的早报（Pro）/ 公共早报
+<span class="y">/following</span>       我的关注（源/垂直）
+<span class="y">/library</span>         阅读库 / 收藏 / 划线
+<span class="y">/settings</span>        兴趣标签、订阅、API（如开放）</pre>
+      <h3>BFF 接口（前端唯一入口）</h3>
+      <pre><span class="k">GET</span>  /api/feed?vertical=&sort=&cursor=     列表（统一筛选/分页）
+<span class="k">GET</span>  /api/brief?date=                      早报
+<span class="k">GET</span>  /api/read/:id                         详情 + BaseAnalysis
+<span class="k">POST</span> /api/companion   (SSE)                AI 伴读问答
+<span class="k">POST</span> /api/events                           行为上报
+<span class="k">POST</span> /api/follow / /api/interests          关注/兴趣调节
+<span class="k">POST</span> /api/billing/webhook                  支付回调</pre>
+    </section>
+
+    <section id="deploy">
+      <h2>⑨ 部署拓扑（分阶段）</h2>
+      <div class="grid3">
+        <div class="mini"><span class="ic">①</span><h4>MVP（单 VPS）</h4><p>docker-compose：web+bff+worker 同栈，postgres、redis、playwright。Dify 可选单容器。月成本 $60-300。</p></div>
+        <div class="mini"><span class="ic">②</span><h4>成长期</h4><p>拆 Worker/Job 独立进程；托管 Postgres；Web 上 CDN；对象存储独立。</p></div>
+        <div class="mini"><span class="ic">③</span><h4>规模化</h4><p>多实例 Web 水平扩展；任务锁去重；Redis 集群；ES 作搜索读模型。</p></div>
+      </div>
+    </section>
+
+    <section id="cross">
+      <h2>⑩ 横切机制</h2>
+      <div class="grid2">
+        <div class="card"><h3 style="margin-top:0">配置与门禁</h3><ul class="clean"><li><strong>ConfigKey 单一真相源</strong>：开关/阈值/配额禁止硬编码</li><li>Free/Pro <strong>门禁集中治理</strong>，不散落到各入口</li><li>新能力先 Feature Flag（默认关）→ 验证 → 放量</li></ul></div>
+        <div class="card"><h3 style="margin-top:0">缓存 / 可观测</h3><ul class="clean"><li>本地缓存 + Redis + 数据源三层</li><li>关键路径有日志/计数/告警（可回滚）</li><li>北极星埋点：<strong>深度阅读闭环率</strong>，非时长/DAU</li></ul></div>
+      </div>
+    </section>
+
+    <section id="build">
+      <h2>⑪ 开发里程碑（依赖顺序）</h2>
+      <div class="roadmap">
+        <div class="ms"><div class="wk">M1 · 中台地基</div><h4>采集 + 内容实体 + 基础分析</h4><p>跑通"抓取→去重→初评→基础分析→入库"。先单垂直、单语言。</p></div>
+        <div class="ms"><div class="wk">M2 · 判断层</div><h4>垂直评分 Worker + 精审</h4><p>把人工评分标准翻译成 rubric prompt；产出 COMPLETED 内容。</p></div>
+        <div class="ms"><div class="wk">M3 · 公共站 + 早报</div><h4>内容广场 + 自动早报</h4><p>Next.js 列表/详情 + Cron 公共早报（邮件/页面）。SEO 友好。</p></div>
+        <div class="ms"><div class="wk">M4 · 个性化 + 伴读</div><h4>我的早报 + AI 伴读 + 行为</h4><p>兴趣标签、召回重排、SSE 伴读、行为埋点；盯留存。</p></div>
+        <div class="ms"><div class="wk">M5 · 商业化</div><h4>账户 + Pro 订阅</h4><p>门禁、计费、配额；主推年费。验证单位经济。</p></div>
+      </div>
+    </section>
+
+    <div class="foot">产品一开发架构 · 与《产品二：Agent API / MCP》共用内容中台 · 配套《产品拆解》《市场分析与产品规划》阅读 · 2026-05</div>
+  </main>
+</div>
+</body>
+</html>
