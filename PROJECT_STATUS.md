@@ -1,6 +1,6 @@
 # CodePick 项目进度核验
 
-更新：2026-09-16，Ubuntu 24.04 Public API 服务端搜索与上游错误边界验收。
+更新：2026-09-16，Ubuntu 24.04 本机完整验收。
 M1、M2、版本消息闭环和本轮 M3 改动均基于五仓库远端 `main` 继续开发。
 
 ## 当前阶段
@@ -25,7 +25,7 @@ M1/M2 与版本消息闭环仍保持通过。L1/L2 仍使用 FakeLLM；真实 OI
 
 ## 五个仓库进度
 
-Ubuntu 工作区：`/home/ubuntu2401/project/codepick`。五仓库以远端 `main` 为共同基线；本轮开发分支为 `codex/public-api-search`，验收后快进合入相关仓库的 `main`。
+Ubuntu 工作区：`/home/ubuntu2401/project/codepick`。五仓库均以远端 `main` 为共同基线；本轮仅在文档仓库使用 `codex/ubuntu-acceptance-sync` 汇总复验结果，完成后快进合入 `main`。
 
 | 仓库 | 当前已完成 | 本轮新增/核对 | 主要下一步 |
 | --- | --- | --- | --- |
@@ -39,21 +39,23 @@ Ubuntu 工作区：`/home/ubuntu2401/project/codepick`。五仓库以远端 `mai
 
 | 范围 | 本轮结果 | 边界 |
 | --- | --- | --- |
+| L0 | 46 项测试通过；覆盖率 86.39%；Ruff、mypy 通过 | 含读取仓库内 `file://` fixture 的 Playwright 集成测试，不访问外部站点 |
 | L1 | 128 项测试通过；smoke/DoD、L0 → L1 smoke、版本 worker/relay 检查通过 | SQLite 真事务与真实 Redis 消息；模型为 FakeLLM |
 | L2 | 114 项测试通过；覆盖率 81.49%；Ruff、mypy、smoke/contracts 通过 | 含 completion relay 和分页前标题/摘要搜索；真实模型仍待验证 |
-| M1 综合检查 | 7 个独立进程阶段全部通过 | 三个 SQLite 库、实际 L0 文件采集和更新、持久 L1 与 L2；事件文件是验证载体，不是 Redis worker |
-| M2 L2 | 97 项测试通过；覆盖率 85.57%；Ruff、mypy、smoke/contracts 通过 | HTTP 服务读取真实 SQL 快照；模型仍为 FakeLLM |
-| M2/M3 L3 | 127 项后端测试通过；smoke/preflight/migration、typecheck/build、26 项浏览器测试通过 | 增加 Public/MCP 搜索、启动配置和上游错误分类；保留双用户与前端安全基线 |
+| L3 | 127 项后端测试通过；smoke/preflight/migration、typecheck/build、26 项浏览器测试通过 | 包含 Public/MCP 搜索、启动配置、账户隔离和上游错误分类 |
+| M1 综合检查 | 7 个独立进程阶段全部通过，输出 `CODEPICK M1: PASS` | 三个 SQLite 库、实际 L0 文件采集和更新、持久 L1 与 L2；事件文件是验证载体，不是 Redis worker |
+| L0 external DoD | PostgreSQL migration、L0 pipeline、Redis relay 幂等、MinIO/S3 和 quick soak 全部 PASS | PostgreSQL 16、Redis 7、MinIO 均为 loopback 一次性容器；已删除容器和卷 |
 | Public API 搜索跨进程 | SQLite 断链/恢复边界及 PostgreSQL API key/配额持久化均 PASS | L1/L2 为 SQLite/FakeLLM；L3 PostgreSQL 16；服务仅绑定 127.0.0.1 |
-| M2 跨进程 | 无 API mock 浏览器读取、L2 停止错误页、L2 恢复继续读取全部通过 | L1/L2 SQLite；三个服务仅绑定 127.0.0.1 |
-| 版本消息闭环 | L0 v1/v2、L1 worker/relay、L2 Redis bridge/Arq、迟到 v1 重放全部 PASS | SQLite + 真实 Redis/Arq；L1/L2 为 FakeLLM |
+| M2 跨进程 | 无 API mock 浏览器读取、L2 停止错误页、L2 恢复后再次读取共 2 项场景全部通过 | L1/L2 SQLite；三个服务仅绑定 127.0.0.1 |
+| 版本消息闭环 | 15 个独立进程阶段全部通过；L0 v1/v2、L1 worker/relay、L2 Redis bridge/Arq、迟到 v1 重放全部 PASS | SQLite + 真实 Redis/Arq；L1/L2 为 FakeLLM |
 | L2 completion relay | 严格集成输出 PostgreSQL outbox → Redis → ACK persisted PASS | PostgreSQL 16 + Redis 7，仅本机端口；ACK 由测试消费者模拟 |
 | M3 PostgreSQL | 独立 PostgreSQL 16 Alembic 升降级与双用户 API 验收 PASS | 2 用户、10 兴趣、2 书签、2 事件、2 API key；仅绑定 127.0.0.1:55439，容器已删除 |
 | M3 前端安全 | `npm ci`、`npm audit --audit-level=low`、typecheck、Next 16 build、26 项 Playwright PASS | 临时 Chrome for Testing；未部署生产 |
 
-最新不重复自动化基线为 L0 45、L1 128、L2 114、L3 后端 127、原浏览器
-26 和 M2 浏览器 2 项，共 **442 项**。版本闭环另执行 15 个独立进程阶段，
-最终输出 `CODEPICK VERSION LOOP: PASS`；M1 七阶段回归仍为 PASS。
+最新不重复自动化基线为 L0 46、L1 128、L2 114、L3 后端 127、原浏览器
+26 和 M2 浏览器 2 项，共 **443 项**。版本闭环另执行 15 个独立进程阶段，
+最终输出 `CODEPICK VERSION LOOP: PASS`；M1 七阶段回归输出
+`CODEPICK M1: PASS`。截至本次复验，本机不需要外部凭据且可安全执行的门禁均已完成。
 
 ## 当前跨层边界
 
@@ -75,7 +77,7 @@ M3 的用户记录、账户隔离、JWT 失败边界、开发登录生产门禁�
 事件的真实下游消费者并完成 PostgreSQL 上的四层版本闭环。正式 Paddle、邮件与 MCP
 协议仍按 M4 推进，未获得凭据前只做本地协议和失败边界。
 
-本轮开发详情见 [版本消息闭环](VERSIONED_EVENT_LOOP.md)、[M1 交接](M1_INTEGRATION.md)、
+本轮完整结果见 [Ubuntu 验收记录](UBUNTU_ACCEPTANCE_2026-09-16.md)，开发详情见 [版本消息闭环](VERSIONED_EVENT_LOOP.md)、[M1 交接](M1_INTEGRATION.md)、
 [M2 联调记录](M2_INTEGRATION.md)、[M3 账户隔离](M3_ACCOUNT_ISOLATION.md) 与
 [L2 completion relay](L2_COMPLETION_RELAY.md)、[Public API 搜索验收](PUBLIC_API_SEARCH.md)，字段与数据所有权见
 [L1 → L2 v1 契约](contracts/L1-L2-v1.md)。

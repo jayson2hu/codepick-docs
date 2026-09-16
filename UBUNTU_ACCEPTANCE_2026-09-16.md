@@ -84,3 +84,50 @@ FakeLLM、SQLite、模拟账号/邮件/计费仍在使用。PostgreSQL、Redis �
 已分别通过 M1 严格基础集成，但 M2 HTTP 浏览器链路尚未用 PostgreSQL 端到端
 复验；真实模型、真实认证、支付、邮件和 MCP 仍未验证。完整过程见
 [M2 联调记录](M2_INTEGRATION.md)。
+
+## 当前 main 汇总复验
+
+在后续 M2/M3、版本消息闭环和 Public API 改动全部合入后，2026-09-16 又从五仓库当前 `main` 基线完整重跑了本机可安全执行的验收。
+
+| 范围 | 当前结果 |
+|---|---|
+| L0 | 46 passed，coverage 86.39%；Ruff、mypy PASS。包含只读取仓库内 `file://` fixture 的 Playwright 集成测试，不访问外部站点 |
+| L1 | 128 passed；pipeline smoke、DoD、L0 → L1 contract PASS |
+| L2 | 114 passed，coverage 81.49%；Ruff、mypy、smoke、contracts PASS |
+| L3 后端 | 127 passed；smoke、preflight、migration PASS |
+| Reader Web | typecheck、production build、原有 26 项 Playwright PASS |
+| M2 无 mock 浏览器 | 正常读取、L2 断链错误页、L2 恢复后再次读取共 2 项场景 PASS |
+
+不重复自动化基线为 **443 项**（46 + 128 + 114 + 127 + 26 + 2）。此外：
+
+- M1 七阶段从全新临时数据重跑，输出 `CODEPICK M1: PASS (L0 -> durable L1 -> L2; restart and version checks)`；报告为 `/tmp/codepick-m1-current.json`。
+- 版本消息闭环 15 个独立进程阶段重跑，覆盖 L0 v1/v2、L1 worker/relay、L2 Redis bridge/Arq 与迟到 v1，输出 `CODEPICK VERSION LOOP: PASS`；报告为 `/tmp/codepick-version-loop-current.json`。
+- L0 external DoD 使用一次性 PostgreSQL `127.0.0.1:55432`、Redis `127.0.0.1:56379`、MinIO `127.0.0.1:59000/59001`，migration、pipeline、relay 幂等、S3 和 quick soak 全部 PASS。quick soak 为 1 iteration、new raw=2、new content=1、errors=[]；报告为 `/tmp/codepick-l0-external-dod.json`。
+- L2 strict integration 使用一次性 PostgreSQL `127.0.0.1:54329` 和 Redis `127.0.0.1:6389`，Alembic 升降级、Redis ping、Arq worker contract，以及 PostgreSQL completion outbox → Redis → ACK persisted 全部 PASS。
+- M2 使用 `/tmp/codepick-m2-live-20260916/l1.db` 和 `l2.db`，依次在 `127.0.0.1:18230`、`:18100`、`:13200` 启动 L2 HTTP、Reader API 和 Next.js。正常读取通过，停止 L2 后可重试错误页通过，恢复 L2 后再次正常读取通过，最终记录为 `CODEPICK M2 BROWSER RECOVERY: PASS`。
+
+所有 Docker 服务、卷、Redis 测试数据和本地 HTTP 进程均在验收后清理；端口只绑定 loopback。`/tmp` 报告和 M2 SQLite 是本机临时证据，不是仓库或生产数据。
+
+### L0 浏览器说明
+
+Playwright 官方 CDN 在本机下载停滞，因此没有把网络下载失败误判为源码失败。验收复用了已完整下载的 Chrome Headless Shell，并按 Playwright 期望目录布局建立临时链接，配合从 Ubuntu 官方包解压的共享库运行；46 项全量测试均通过。临时目录随后删除。
+
+### 模拟组件与未验证服务
+
+本轮仍使用：
+
+- L1/L2 FakeLLM；没有调用付费模型。
+- M1、版本闭环和 M2 HTTP 浏览器链路中的临时 SQLite。
+- 开发认证、mock 邮件和支付沙箱/协议级实现。
+- L2 completion ACK 的测试消费者。
+
+本轮没有声称完成：
+
+- 真实模型及其成本/失败边界。
+- 真实 OIDC 或 magic-link 身份提供商、正式 Paddle、真实邮件投递。
+- 真正持续运行的 MCP transport 和真实 MCP 客户端验收。
+- 生产数据库、生产对象存储或任何真实业务数据。
+- PostgreSQL 上 L0 → L1 → L2 → L3 四层完整链路与 M2 浏览器整链。
+- 真实 completion 下游消费者、长期 worker 监控和 24 小时 soak。
+
+截至该次复验，本机不需要外部凭据且可安全执行的验收均已完成，没有需要用户提供凭据或立即决策的阻塞项。

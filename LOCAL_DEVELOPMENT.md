@@ -8,6 +8,74 @@
 工作区为 `/home/ubuntu2401/project/codepick`，五仓库同级；Python 仓库使用各自
 `.venv/bin/python`，Reader Web 要求 Node.js 20.9 或更高版本。
 
+## 完整本机验收
+
+2026-09-16 当前 `main` 基线实际通过 443 项不重复自动化，以及 M1 七阶段、版本闭环 15 阶段、L0 external DoD、L2 strict integration 和 M2 无 mock 断链/恢复。完整证据与模拟边界见 [Ubuntu 验收记录](UBUNTU_ACCEPTANCE_2026-09-16.md)。核心离线入口如下：
+
+```bash
+cd /home/ubuntu2401/project/codepick/codepick-docs
+../seek_data/.venv/bin/python scripts/verify_m1.py \
+  --report /tmp/codepick-m1-current.json
+
+cd ../deepdata
+.venv/bin/python -m pytest
+.venv/bin/python -m ruff check .
+.venv/bin/python -m mypy --config-file pyproject.toml src
+
+cd ../seek_data
+.venv/bin/python -m pytest
+.venv/bin/python -m l1_data_processing.smoke
+.venv/bin/python -m l1_data_processing.dod
+.venv/bin/python -m l1_data_processing.l0_smoke
+
+cd ../agentic
+.venv/bin/python -m pytest --cov=judgment_graph \
+  --cov-report=term-missing --cov-fail-under=80
+.venv/bin/python -m ruff check packages/judgment_graph
+.venv/bin/python -m mypy packages/judgment_graph/judgment_graph
+.venv/bin/python -m judgment_graph.scripts.smoke
+.venv/bin/python -m judgment_graph.scripts.verify_contracts
+
+cd ../pickblog
+unset DATABASE_URL L3_MIGRATION_SMOKE_DATABASE_URL
+.venv/bin/python -m pytest -c pytest.ini
+.venv/bin/python scripts/l3_smoke.py
+.venv/bin/python scripts/l3_preflight.py
+.venv/bin/python scripts/l3_migration_smoke.py
+```
+
+L0 的 Playwright 集成测试只读取仓库内 fixture。标准环境直接安装 Playwright Chromium 后运行全量 pytest。若受限 Ubuntu 已有完整的 Chrome Headless Shell，可建立 Playwright 期望的临时目录布局并注入本地共享库：
+
+```bash
+browser_root=$(mktemp -d /tmp/codepick-l0-playwright.XXXXXX)
+mkdir -p "$browser_root/chromium_headless_shell-1243"
+ln -s /path/to/chrome-headless-shell-linux64 \
+  "$browser_root/chromium_headless_shell-1243/chrome-headless-shell-linux64"
+
+PLAYWRIGHT_BROWSERS_PATH="$browser_root" \
+LD_LIBRARY_PATH=/path/to/local/ubuntu-libs \
+.venv/bin/python -m pytest
+```
+
+版本 `1243` 必须与当前 Python Playwright 期望的 revision 一致；不要用不完整下载目录冒充浏览器安装。本机复验用此方式得到 46 passed、coverage 86.39%，随后删除临时链接目录。
+
+L0 external DoD 使用 `deepdata/deploy/docker-compose.yml`，所有端口已绑定 `127.0.0.1`。`minio-init` 是成功后退出 0 的 one-shot 容器；某些 Compose 版本会因此让整体 `up -d --wait` 返回非零。应使用 `up -d`，分别等待 PostgreSQL、Redis、MinIO healthy，并确认 `minio-init` 为 `exited (0)`，再执行：
+
+```bash
+export DATABASE_URL=postgresql+psycopg://codepick:dev@127.0.0.1:55432/codepick
+export REDIS_URL=redis://127.0.0.1:56379/0
+export OBJECT_STORE_BACKEND=s3
+export S3_ENDPOINT=http://127.0.0.1:59000
+export S3_ACCESS_KEY=minio
+export S3_SECRET_KEY=minio123
+export S3_BUCKET=codepick-raw
+.venv/bin/python -m alembic -c alembic.ini upgrade head
+.venv/bin/python -m core_data.scripts.external_dod --skip-soak
+.venv/bin/python -m core_data.scripts.external_dod \
+  --soak-hours 0 --interval-sec 0 --report /tmp/codepick-l0-external-dod.json
+```
+
+L2 strict integration 使用 `agentic/docker-compose.integration.yml` 的 loopback PostgreSQL/Redis。服务 healthy 后以 `L2_INTEGRATION_STRICT=1` 运行 `judgment_graph.scripts.integration_check`，完成后执行 `docker compose down -v`。不要连接 5432 上的现有数据库，也不要加载真实业务 `.env`。
 L3 M3 快速验收：
 
 ```bash

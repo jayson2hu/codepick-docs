@@ -38,9 +38,21 @@ npm run test:e2e
 
 Playwright 默认使用 `127.0.0.1:3100`，可用 `PLAYWRIGHT_PORT` 覆盖。当前最小 Ubuntu 镜像可能缺少浏览器共享库；优先安装 Playwright 建议的系统依赖，不能 sudo 时可将 Ubuntu 官方 deb 解压到用户目录并仅对测试设置 `LD_LIBRARY_PATH`。
 
+L0 的 Python Playwright 集成测试只访问仓库内 `file://` fixture。若官方浏览器下载不可用，可复用完整 Chrome Headless Shell：为当前 Playwright revision 建立临时 `PLAYWRIGHT_BROWSERS_PATH/chromium_headless_shell-<revision>/chrome-headless-shell-linux64` 布局，并用 `LD_LIBRARY_PATH` 指向本地解压的 Ubuntu 共享库。本机以 revision 1243 运行全量 L0，结果为 46 passed、coverage 86.39%；临时目录已清理。
+
 ## 安全边界
 
 Compose 端口必须绑定 `127.0.0.1`。测试只使用独立 Compose project、测试数据库和测试对象存储；不要加载真实业务 `.env`，不要调用真实模型、真实邮件、支付或生产服务。
+
+## 当前完整复验结果
+
+2026-09-16 当前五仓库 `main` 基线已完成本机全部无需外部凭据的安全验收：L0 46、L1 128、L2 114、L3 后端 127、Reader Web 26、M2 无 mock 浏览器 2，共 443 项不重复自动化。M1 七阶段、版本闭环 15 阶段、L0 external DoD 和 L2 strict integration 也全部 PASS。完整报告、端口、模拟组件和未验证真实服务见 [Ubuntu 验收记录](UBUNTU_ACCEPTANCE_2026-09-16.md)。
+
+## 外部基础服务验收
+
+L0 使用 `deepdata/deploy/docker-compose.yml` 的 PostgreSQL、Redis 和 MinIO。`minio-init` 是成功后退出 0 的 one-shot 容器；当前 Compose 可能让整体 `up -d --wait` 因它正常退出而返回非零。使用 `up -d` 后分别等待三个服务 healthy，并确认 `minio-init` 为 `exited (0)`，再运行 migration、`core_data.scripts.external_dod --skip-soak` 和 quick soak。完成后 `docker compose down -v`。
+
+L2 使用 `agentic/docker-compose.integration.yml`，服务 healthy 后设置 `L2_INTEGRATION_STRICT=1` 并运行 `judgment_graph.scripts.integration_check`。当前检查还覆盖 PostgreSQL completion outbox → Redis → 测试 ACK 持久化。两套 Compose 只绑定 loopback，且本轮容器和卷均已清理。
 
 ## M1 总体验收
 

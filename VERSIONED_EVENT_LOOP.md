@@ -46,7 +46,7 @@ cd codepick-docs
   --report /tmp/codepick-version-loop.json
 ```
 
-2026-09-16 实测：
+2026-09-16 在当前 `main` 再次实测，15 个独立进程阶段全部通过；报告写入 `/tmp/codepick-version-loop-current.json`：
 
 1. L0 v1 经 Redis、L1、Redis、Arq 完成 L2 revision 1。
 2. 同 URL 正文更新自动创建 L0 v2 事件。
@@ -60,6 +60,6 @@ cd codepick-docs
 ## 尚未完成
 
 - PostgreSQL 上的相同版本闭环复验。
-- L2 `judgment_outbox` 面向后续异步消费者的 sent/ack/dead-letter。
+- L2 completion outbox 已具备 sent/ack/dead-letter；仍缺真实下游消费者。
 - 真实模型、长期 worker 监控、积压告警和生产进程编排。
 - 评分、翻译、完成仍为多个受 revision 保护的事务，不是全图单事务。

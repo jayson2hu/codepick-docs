@@ -31,9 +31,9 @@ L3，并在浏览器中关闭 API mock 和演示数据回退完成读取与故�
 
 ```text
 M1 L1/L2 SQLite
-  -> L2 HTTP 127.0.0.1:8200
-  -> L3 Reader API 127.0.0.1:8100 (stub=false)
-  -> Next.js 127.0.0.1:3200 (demo fallback=false)
+  -> L2 HTTP 127.0.0.1:18230
+  -> L3 Reader API 127.0.0.1:18100 (stub=false)
+  -> Next.js 127.0.0.1:13200 (demo fallback=false)
   -> Chromium
 ```
 
@@ -49,12 +49,12 @@ M1 L1/L2 SQLite
    `Content temporarily unavailable` 和 `Retry`。
 5. 恢复 L2：无需重启 Reader API 或 Next.js，页面重新读取成功。
 
-仓库检查：
+当前 `main` 汇总复验的仓库检查：
 
-- agentic：97 passed，coverage 85.57%，Ruff/mypy/smoke/contracts PASS。
-- pickblog：114 项后端测试、smoke/preflight/migration PASS。
+- agentic：114 passed，coverage 81.49%，Ruff/mypy/smoke/contracts PASS。
+- pickblog：127 项后端测试、smoke/preflight/migration PASS。
 - reader-web：typecheck、production build、原 26 项 Playwright PASS。
-- M2 无 mock 浏览器正常、断链和恢复场景 PASS。
+- M2 无 mock 浏览器先正常读取、停止 L2 后显示可重试错误、恢复 L2 后再次正常读取，2 项场景 PASS；最终记录为 `CODEPICK M2 BROWSER RECOVERY: PASS`。
 
 ## 已知边界
 
@@ -63,5 +63,5 @@ M1 L1/L2 SQLite
   但尚未用于 M2 HTTP → 浏览器整链复验。
 - M1 本地文章 URL 为 `file://tmp/...`，来自 L1 测试快照；生产 HTTP URL
   不受该 fixture 现象影响。
-- 真实认证/账户隔离、Paddle、真实邮件、MCP transport 不在本轮范围。
-- L0 更新自动通知、L2 按版本重评分和 outbox 持续投递仍待完成。
+- 真实身份提供商、Paddle、真实邮件、MCP transport 不在本轮范围。
+- L0 更新自动通知、L2 按版本重评分和 completion outbox relay 已在后续版本闭环中完成；仍缺真实 completion 下游消费者与长期运行验收。
