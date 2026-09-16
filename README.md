@@ -18,6 +18,13 @@ CodePick 将内容采集、通用分析、垂直判断与阅读分发拆成 L0�
 | [首轮验证记录](verification/2026-09-12.json) | 环境恢复后的各仓库基线与验证范围 |
 | [多仓库工作区](codepick.code-workspace) | 在 VS Code 等兼容编辑器中同时打开五个仓库 |
 
+## 当前交接入口
+
+- [项目状态](PROJECT_STATUS.md)
+- [开发计划](DEVELOPMENT_PLAN.md)
+- [Ubuntu 本地开发](LOCAL_DEVELOPMENT.md)
+- [2026-09-16 Ubuntu 验收记录](UBUNTU_ACCEPTANCE_2026-09-16.md)
+
 ## 代码仓库
 
 | 层级 | 仓库 | 职责 | 开发记录 |
