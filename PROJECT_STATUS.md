@@ -20,7 +20,7 @@ M1/M2 与版本消息闭环仍保持通过。L1/L2 仍使用 FakeLLM；真实 OI
 
 ## 五个仓库进度
 
-Ubuntu 工作区：`/home/ubuntu2401/project/codepick`。五仓库以远端 `main` 为共同基线；本轮 L2 completion relay 改动位于 `agentic` 和 `codepick-docs` 的 `codex/l2-completion-relay`。
+Ubuntu 工作区：`/home/ubuntu2401/project/codepick`。五仓库以远端 `main` 为共同基线；本轮 L2 completion relay 已从 `codex/l2-completion-relay` 快进合入 `agentic` 和 `codepick-docs` 的远端 `main`。
 
 | 仓库 | 当前已完成 | 本轮新增/核对 | 主要下一步 |
 | --- | --- | --- | --- |
