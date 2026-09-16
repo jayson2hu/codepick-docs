@@ -99,3 +99,38 @@ PLAYWRIGHT_PORT=3200 npm run test:e2e:m2
 正常链路应显示 M1 文章、详情、评分和翻译。停止 L2 后页面应显示
 `Content temporarily unavailable` 与 `Retry`；恢复 L2 后再次访问应成功。
 完整记录见 [M2 联调记录](M2_INTEGRATION.md)。
+
+## 版本消息闭环验收
+
+启动仅绑定 localhost 的 Redis：
+
+```bash
+cd agentic
+docker compose -p codepick-version-loop \
+  -f docker-compose.integration.yml up -d --wait redis
+```
+
+执行跨进程验收：
+
+```bash
+cd ../codepick-docs
+../seek_data/.venv/bin/python scripts/verify_version_loop.py \
+  --report /tmp/codepick-version-loop.json
+```
+
+预期输出：
+
+```text
+CODEPICK VERSION LOOP: PASS (L0 v2 -> L1 run -> L2 revision; stale v1 ignored)
+```
+
+脚本使用 Redis DB 15、临时 SQLite 和文件对象存储、L1/L2 FakeLLM，不调用
+外部模型。完成后停止测试 Redis：
+
+```bash
+cd ../agentic
+docker compose -p codepick-version-loop \
+  -f docker-compose.integration.yml down
+```
+
+实现和边界见 [版本消息闭环](VERSIONED_EVENT_LOOP.md)。

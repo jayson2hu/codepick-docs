@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-09-16T11:19:09+00:00",
+  "status": "PASS",
+  "redis_url": "redis://127.0.0.1:6389/15",
+  "storage": "temporary SQLite databases and file object storage",
+  "checks": [
+    "L0 v1 event delivered and scored",
+    "L0 update emitted v2 automatically",
+    "L1 durable outbox relayed both runs",
+    "L2 accepted revision 2 and emitted a second completion",
+    "late revision 1 redelivery did not replace revision 2"
+  ],
+  "models": "L1 and L2 FakeLLM",
+  "result": "CODEPICK VERSION LOOP: PASS"
+}

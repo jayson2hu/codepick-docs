@@ -42,11 +42,17 @@ HTTP、关闭 stub 的 L3 Reader API 和关闭 demo fallback 的 Next.js；Chrom
 读取到 M1 文章、六维评分与中文翻译。停止 L2 后页面显示 Retry，恢复服务后
 继续读取。PostgreSQL 上的同链路验收、真实模型和持续进程编排仍属于后续。
 
-## 版本与消息闭环（与 M2 并行）
+## 版本与消息闭环（首版已验收）
 
-- L0 同 URL 更新正文后发新版事件，避免只按内容 ID 的永久去重吞更新。
-- L2 按事件 run_id 读取对应快照，建立显式版本重评分和旧事件处理策略。
-- L1/L2 持久 outbox 接入持续投递/消费、幂等确认与失败恢复；当前本地文件验证不代替 Redis worker。
+- L0 同 URL 更新正文后发新版事件，幂等键包含内容版本。
+- L1 Redis worker 校验版本并持久分析；outbox relay 保持稳定 run event ID。
+- L2 按 run_id 读取对应历史快照，只有更大 revision 能重评分。
+- Redis processing 队列支持进程重启恢复，坏信封进入 dead-letter。
+- 实际 Redis/Arq 跨进程验证覆盖 v1、v2 和迟到 v1，详见
+  [版本消息闭环](VERSIONED_EVENT_LOOP.md)。
+
+剩余：L2 completion outbox 的 sent/ack/dead-letter、PostgreSQL 上同链路、
+真实模型成本与长期运行监控。
 
 ## M3：公开多用户使用前的门槛
 
