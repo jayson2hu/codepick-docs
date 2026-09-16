@@ -17,7 +17,7 @@
 
 ```text
 L2: 114 passed, coverage 81.49%; Ruff, mypy, smoke, contracts PASS
-L3: 126 backend passed; migration/smoke/preflight/typecheck/build PASS
+L3: 127 backend passed; migration/smoke/preflight/typecheck/build PASS
 Reader Web: 26 Playwright passed
 L3 VERIFY: PASS
 ```
@@ -56,8 +56,22 @@ CODEPICK PUBLIC SEARCH OUTAGE: PASS {'code': 'l2_unavailable', 'message': 'L2 pr
 非法游标另验证为 400 `invalid_request`。所有进程只绑定 `127.0.0.1`，验收结束
 后已停止。
 
+## PostgreSQL API key 与配额复验
+
+随后使用一次性 PostgreSQL 16 保存 L3 用户、API key 和每日用量，并通过修复后的
+`scripts/run_public_api.py` 启动真实 Public API：
+
+- PostgreSQL：`127.0.0.1:55440`
+- L2 HTTP：`127.0.0.1:18221`
+- Public API：`127.0.0.1:18002`
+- `L3_REPOSITORY_BACKEND=sqlalchemy`、`L3_QUOTA_BACKEND=sqlalchemy`
+
+连续两次带真实数据库 API key 的搜索均返回内容 `2` 和 `next_cursor=null`，数据库
+记录 `api_usage_daily.count=2`，最终输出 `CODEPICK PUBLIC SEARCH POSTGRES: PASS`。
+三个端口均只绑定 loopback；验收结束后容器和服务已删除或停止。
+
 ## 验收边界
 
-该检查使用真实跨进程 HTTP 和持久查询代码，但数据位于临时 SQLite，评分来自
-FakeLLM。未连接生产 PostgreSQL、真实模型、真实身份、邮件、Paddle 或 MCP
+该检查使用真实跨进程 HTTP、临时 SQLite L1/L2 和一次性 PostgreSQL L3；评分仍
+来自 FakeLLM。未连接生产 PostgreSQL、真实模型、真实身份、邮件、Paddle 或 MCP
 protocol transport；这些仍需独立凭据和目标环境验收。

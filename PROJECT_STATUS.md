@@ -43,16 +43,16 @@ Ubuntu 工作区：`/home/ubuntu2401/project/codepick`。五仓库以远端 `mai
 | L2 | 114 项测试通过；覆盖率 81.49%；Ruff、mypy、smoke/contracts 通过 | 含 completion relay 和分页前标题/摘要搜索；真实模型仍待验证 |
 | M1 综合检查 | 7 个独立进程阶段全部通过 | 三个 SQLite 库、实际 L0 文件采集和更新、持久 L1 与 L2；事件文件是验证载体，不是 Redis worker |
 | M2 L2 | 97 项测试通过；覆盖率 85.57%；Ruff、mypy、smoke/contracts 通过 | HTTP 服务读取真实 SQL 快照；模型仍为 FakeLLM |
-| M2/M3 L3 | 126 项后端测试通过；smoke/preflight/migration、typecheck/build、26 项浏览器测试通过 | 增加 Public/MCP 搜索一致性、分页和上游错误分类；保留双用户与前端安全基线 |
-| Public API 搜索跨进程 | 真实 L2 HTTP + 关闭 stub 的 Public API 搜索 PASS；停 L2 后可重试 503 PASS | 临时 SQLite、FakeLLM 产物；服务仅绑定 127.0.0.1 |
+| M2/M3 L3 | 127 项后端测试通过；smoke/preflight/migration、typecheck/build、26 项浏览器测试通过 | 增加 Public/MCP 搜索、启动配置和上游错误分类；保留双用户与前端安全基线 |
+| Public API 搜索跨进程 | SQLite 断链/恢复边界及 PostgreSQL API key/配额持久化均 PASS | L1/L2 为 SQLite/FakeLLM；L3 PostgreSQL 16；服务仅绑定 127.0.0.1 |
 | M2 跨进程 | 无 API mock 浏览器读取、L2 停止错误页、L2 恢复继续读取全部通过 | L1/L2 SQLite；三个服务仅绑定 127.0.0.1 |
 | 版本消息闭环 | L0 v1/v2、L1 worker/relay、L2 Redis bridge/Arq、迟到 v1 重放全部 PASS | SQLite + 真实 Redis/Arq；L1/L2 为 FakeLLM |
 | L2 completion relay | 严格集成输出 PostgreSQL outbox → Redis → ACK persisted PASS | PostgreSQL 16 + Redis 7，仅本机端口；ACK 由测试消费者模拟 |
 | M3 PostgreSQL | 独立 PostgreSQL 16 Alembic 升降级与双用户 API 验收 PASS | 2 用户、10 兴趣、2 书签、2 事件、2 API key；仅绑定 127.0.0.1:55439，容器已删除 |
 | M3 前端安全 | `npm ci`、`npm audit --audit-level=low`、typecheck、Next 16 build、26 项 Playwright PASS | 临时 Chrome for Testing；未部署生产 |
 
-最新不重复自动化基线为 L0 45、L1 128、L2 114、L3 后端 126、原浏览器
-26 和 M2 浏览器 2 项，共 **441 项**。版本闭环另执行 15 个独立进程阶段，
+最新不重复自动化基线为 L0 45、L1 128、L2 114、L3 后端 127、原浏览器
+26 和 M2 浏览器 2 项，共 **442 项**。版本闭环另执行 15 个独立进程阶段，
 最终输出 `CODEPICK VERSION LOOP: PASS`；M1 七阶段回归仍为 PASS。
 
 ## 当前跨层边界

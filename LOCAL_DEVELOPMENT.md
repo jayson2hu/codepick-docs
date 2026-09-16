@@ -53,6 +53,12 @@ cd /home/ubuntu2401/project/codepick/pickblog
 `Retry-After: 2` 的可重试 503，不能回退 stub。完整命令与本轮证据见
 [Public API 搜索验收](PUBLIC_API_SEARCH.md)。
 
+`scripts/run_public_api.py` 支持 `PUBLIC_API_HOST`、`PUBLIC_API_PORT` 和
+`PUBLIC_API_RELOAD`，reload 默认关闭。2026-09-16 另用仅绑定
+`127.0.0.1:55440` 的一次性 PostgreSQL 16 验证 SQLAlchemy 用户/API key/配额，
+两次真实搜索后 `api_usage_daily.count=2`；容器和服务均已停止。
+
+
 ## Windows 历史恢复记录
 
 
