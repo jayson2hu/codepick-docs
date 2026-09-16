@@ -1,5 +1,48 @@
 # CodePick 本机开发指南
 
+更新：2026-09-16。以下先记录当前 Ubuntu 24.04 验收环境；后半部分保留 Windows
+历史恢复说明供异地开发参考。
+
+## Ubuntu 24.04 当前基线
+
+工作区为 `/home/ubuntu2401/project/codepick`，五仓库同级；Python 仓库使用各自
+`.venv/bin/python`，Reader Web 要求 Node.js 20.9 或更高版本。
+
+L3 M3 快速验收：
+
+```bash
+cd /home/ubuntu2401/project/codepick/pickblog
+unset DATABASE_URL L3_MIGRATION_SMOKE_DATABASE_URL L3_AUTH_LOGIN_MODE
+.venv/bin/python scripts/l3_smoke.py
+.venv/bin/python scripts/l3_preflight.py
+.venv/bin/python scripts/l3_migration_smoke.py
+
+cd apps/reader-web
+npm ci
+npm audit --audit-level=low
+NEXT_TELEMETRY_DISABLED=1 npm run typecheck
+NEXT_TELEMETRY_DISABLED=1 npm run build
+npm run test:e2e
+```
+
+默认 `L3_AUTH_LOGIN_MODE=development` 提供开发邮箱登录，但不同邮箱对应独立用户。
+生产型预检必须设置 `L3_AUTH_LOGIN_MODE=external`，此时开发登录端点关闭；真实
+身份提供商尚未接入。
+
+标准 Ubuntu 建议运行 `npx playwright install --with-deps chromium`。无 sudo 的
+受限环境可使用已有 Chrome/Chromium，并设置：
+
+```bash
+LD_LIBRARY_PATH=/path/to/local/libs PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/path/to/chrome-headless-shell npm run test:e2e
+```
+
+本轮临时 PostgreSQL 16 只绑定 `127.0.0.1:55439`，使用独立测试数据库；完成
+Alembic 升降级和双用户验收后容器已删除。不要复用 5432 上的现有业务或其他项目
+数据库。
+
+## Windows 历史恢复记录
+
+
 更新：2026-09-12。当前根目录为 `D:\fayun\code\codepick`，五个仓库同级放置。以下命令为 Windows PowerShell；使用仓库自身 Python，避免系统 PATH 的旧 Python 3.7。
 
 ## 当前已准备好
