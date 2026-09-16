@@ -1,0 +1,599 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-09-12T08:09:21+00:00",
+  "round": "M1 durable L1 / L2 integration",
+  "executed_this_round": {
+    "seek_data": {
+      "passed": 112,
+      "skipped": 0,
+      "checks": [
+        "pytest",
+        "standalone smoke/DoD",
+        "L0-L1 smoke",
+        "transaction rollback and restart/versions",
+        "migration round-trip/isolation",
+        "wheel SQL resource inclusion"
+      ]
+    },
+    "agentic": {
+      "passed": 94,
+      "skipped": 0,
+      "coverage_percent": 85.68,
+      "checks": [
+        "pytest",
+        "ruff",
+        "mypy",
+        "smoke/contracts",
+        "snapshot validation",
+        "SQLite concurrency/restart",
+        "incremental migration"
+      ]
+    },
+    "pipeline": {
+      "record": "2026-09-12-m1-pipeline.json",
+      "stages": 7,
+      "status": "PASS"
+    }
+  },
+  "prior_evidence_reused_after_read_only_review": {
+    "record": "2026-09-12.json",
+    "deepdata": {
+      "passed": 45,
+      "deselected": 1
+    },
+    "pickblog": {
+      "backend_passed": 112,
+      "browser_passed": 26,
+      "frontend_build": "PASS",
+      "typecheck": "PASS"
+    }
+  },
+  "production_integration_complete": false,
+  "remaining": [
+    "L0 update notifications",
+    "L2 version rescoring",
+    "persistent queue runtime and delivery acknowledgements",
+    "PostgreSQL/Redis/S3 live validation",
+    "real model providers",
+    "L2 HTTP/L3 integration",
+    "authentication/payments/MCP"
+  ],
+  "uncommitted_working_tree": true,
+  "repositories": [
+    {
+      "name": "codepick-docs",
+      "baseline_commit": "a3c2f9bbd102a1f7c3235671e885049c7eef0e18"
+    },
+    {
+      "name": "deepdata",
+      "baseline_commit": "ab0cd79176fa865ffac4868f78b882dfcd49b9a6"
+    },
+    {
+      "name": "seek_data",
+      "baseline_commit": "dcbb21572a84ae5c9943bda638774116d3fffef3",
+      "installed_packages": [
+        {
+          "name": "alembic",
+          "version": "1.20.0"
+        },
+        {
+          "name": "annotated-types",
+          "version": "0.8.0"
+        },
+        {
+          "name": "anyio",
+          "version": "4.15.1"
+        },
+        {
+          "name": "arq",
+          "version": "0.28.0"
+        },
+        {
+          "name": "babel",
+          "version": "2.18.0"
+        },
+        {
+          "name": "boto3",
+          "version": "1.43.93"
+        },
+        {
+          "name": "botocore",
+          "version": "1.43.93"
+        },
+        {
+          "name": "certifi",
+          "version": "2026.7.22"
+        },
+        {
+          "name": "charset-normalizer",
+          "version": "3.5.1"
+        },
+        {
+          "name": "click",
+          "version": "8.5.0"
+        },
+        {
+          "name": "codepick-l0",
+          "version": "0.1.0",
+          "editable_project_location": "D:\\fayun\\code\\codepick\\deepdata"
+        },
+        {
+          "name": "colorama",
+          "version": "0.4.6"
+        },
+        {
+          "name": "courlan",
+          "version": "1.4.0"
+        },
+        {
+          "name": "cssselect",
+          "version": "1.5.0"
+        },
+        {
+          "name": "dateparser",
+          "version": "1.4.3"
+        },
+        {
+          "name": "feedparser",
+          "version": "6.0.14"
+        },
+        {
+          "name": "feedparser-sgmllib",
+          "version": "2.1.0"
+        },
+        {
+          "name": "greenlet",
+          "version": "3.5.5"
+        },
+        {
+          "name": "h11",
+          "version": "0.16.0"
+        },
+        {
+          "name": "hiredis",
+          "version": "3.4.1"
+        },
+        {
+          "name": "htmldate",
+          "version": "1.10.0"
+        },
+        {
+          "name": "httpcore",
+          "version": "1.0.9"
+        },
+        {
+          "name": "httpx",
+          "version": "0.28.1"
+        },
+        {
+          "name": "idna",
+          "version": "3.19"
+        },
+        {
+          "name": "iniconfig",
+          "version": "2.3.0"
+        },
+        {
+          "name": "jmespath",
+          "version": "1.1.0"
+        },
+        {
+          "name": "jusText",
+          "version": "3.0.2"
+        },
+        {
+          "name": "l1-data-processing",
+          "version": "0.1.0",
+          "editable_project_location": "D:\\fayun\\code\\codepick\\seek_data"
+        },
+        {
+          "name": "lxml",
+          "version": "6.1.3"
+        },
+        {
+          "name": "lxml_html_clean",
+          "version": "0.4.5"
+        },
+        {
+          "name": "Mako",
+          "version": "1.4.1"
+        },
+        {
+          "name": "MarkupSafe",
+          "version": "3.0.3"
+        },
+        {
+          "name": "packaging",
+          "version": "26.3"
+        },
+        {
+          "name": "pip",
+          "version": "25.0.1"
+        },
+        {
+          "name": "playwright",
+          "version": "1.62.0"
+        },
+        {
+          "name": "pluggy",
+          "version": "1.6.0"
+        },
+        {
+          "name": "psycopg",
+          "version": "3.3.5"
+        },
+        {
+          "name": "psycopg-binary",
+          "version": "3.3.5"
+        },
+        {
+          "name": "pydantic",
+          "version": "2.13.5"
+        },
+        {
+          "name": "pydantic_core",
+          "version": "2.46.5"
+        },
+        {
+          "name": "pydantic-settings",
+          "version": "2.15.0"
+        },
+        {
+          "name": "pyee",
+          "version": "13.0.1"
+        },
+        {
+          "name": "Pygments",
+          "version": "2.21.0"
+        },
+        {
+          "name": "PyJWT",
+          "version": "2.14.0"
+        },
+        {
+          "name": "pytest",
+          "version": "9.1.1"
+        },
+        {
+          "name": "python-dateutil",
+          "version": "2.9.0.post0"
+        },
+        {
+          "name": "python-dotenv",
+          "version": "1.2.3"
+        },
+        {
+          "name": "pytz",
+          "version": "2026.3.post1"
+        },
+        {
+          "name": "redis",
+          "version": "5.3.1"
+        },
+        {
+          "name": "regex",
+          "version": "2026.9.10"
+        },
+        {
+          "name": "s3transfer",
+          "version": "0.19.2"
+        },
+        {
+          "name": "six",
+          "version": "1.17.0"
+        },
+        {
+          "name": "SQLAlchemy",
+          "version": "2.0.52"
+        },
+        {
+          "name": "tld",
+          "version": "0.13.2"
+        },
+        {
+          "name": "trafilatura",
+          "version": "2.2.0"
+        },
+        {
+          "name": "typing_extensions",
+          "version": "4.16.0"
+        },
+        {
+          "name": "typing-inspection",
+          "version": "0.4.4"
+        },
+        {
+          "name": "tzdata",
+          "version": "2026.3"
+        },
+        {
+          "name": "tzlocal",
+          "version": "5.4.4"
+        },
+        {
+          "name": "urllib3",
+          "version": "2.7.0"
+        }
+      ]
+    },
+    {
+      "name": "agentic",
+      "baseline_commit": "c05be050228872a429c9fda0be77dda1fa613327",
+      "installed_packages": [
+        {
+          "name": "alembic",
+          "version": "1.20.0"
+        },
+        {
+          "name": "annotated-types",
+          "version": "0.8.0"
+        },
+        {
+          "name": "anyio",
+          "version": "4.15.1"
+        },
+        {
+          "name": "arq",
+          "version": "0.28.0"
+        },
+        {
+          "name": "ast_serialize",
+          "version": "0.11.1"
+        },
+        {
+          "name": "certifi",
+          "version": "2026.7.22"
+        },
+        {
+          "name": "charset-normalizer",
+          "version": "3.5.1"
+        },
+        {
+          "name": "click",
+          "version": "8.5.0"
+        },
+        {
+          "name": "codepick-l2",
+          "version": "0.1.0",
+          "editable_project_location": "D:\\fayun\\code\\codepick\\agentic"
+        },
+        {
+          "name": "colorama",
+          "version": "0.4.6"
+        },
+        {
+          "name": "coverage",
+          "version": "7.16.0"
+        },
+        {
+          "name": "distro",
+          "version": "1.9.0"
+        },
+        {
+          "name": "greenlet",
+          "version": "3.5.5"
+        },
+        {
+          "name": "h11",
+          "version": "0.16.0"
+        },
+        {
+          "name": "hiredis",
+          "version": "3.4.1"
+        },
+        {
+          "name": "httpcore",
+          "version": "1.0.9"
+        },
+        {
+          "name": "httpcore2",
+          "version": "2.12.0"
+        },
+        {
+          "name": "httpx",
+          "version": "0.28.1"
+        },
+        {
+          "name": "httpx2",
+          "version": "2.12.0"
+        },
+        {
+          "name": "idna",
+          "version": "3.19"
+        },
+        {
+          "name": "iniconfig",
+          "version": "2.3.0"
+        },
+        {
+          "name": "jsonpatch",
+          "version": "1.33"
+        },
+        {
+          "name": "jsonpointer",
+          "version": "3.1.1"
+        },
+        {
+          "name": "langchain-core",
+          "version": "1.6.3"
+        },
+        {
+          "name": "langchain-protocol",
+          "version": "0.0.19"
+        },
+        {
+          "name": "langgraph",
+          "version": "1.2.11"
+        },
+        {
+          "name": "langgraph-checkpoint",
+          "version": "4.2.0"
+        },
+        {
+          "name": "langgraph-prebuilt",
+          "version": "1.1.0"
+        },
+        {
+          "name": "langgraph-sdk",
+          "version": "0.4.4"
+        },
+        {
+          "name": "langsmith",
+          "version": "0.12.4"
+        },
+        {
+          "name": "librt",
+          "version": "0.15.0"
+        },
+        {
+          "name": "Mako",
+          "version": "1.4.1"
+        },
+        {
+          "name": "MarkupSafe",
+          "version": "3.0.3"
+        },
+        {
+          "name": "mypy",
+          "version": "2.3.1"
+        },
+        {
+          "name": "mypy_extensions",
+          "version": "1.1.0"
+        },
+        {
+          "name": "orjson",
+          "version": "3.12.0"
+        },
+        {
+          "name": "ormsgpack",
+          "version": "1.12.2"
+        },
+        {
+          "name": "packaging",
+          "version": "26.3"
+        },
+        {
+          "name": "pathspec",
+          "version": "1.1.1"
+        },
+        {
+          "name": "pip",
+          "version": "25.0.1"
+        },
+        {
+          "name": "pluggy",
+          "version": "1.6.0"
+        },
+        {
+          "name": "psycopg",
+          "version": "3.3.5"
+        },
+        {
+          "name": "psycopg-binary",
+          "version": "3.3.5"
+        },
+        {
+          "name": "pydantic",
+          "version": "2.13.5"
+        },
+        {
+          "name": "pydantic_core",
+          "version": "2.46.5"
+        },
+        {
+          "name": "Pygments",
+          "version": "2.21.0"
+        },
+        {
+          "name": "PyJWT",
+          "version": "2.14.0"
+        },
+        {
+          "name": "pytest",
+          "version": "9.1.1"
+        },
+        {
+          "name": "pytest-asyncio",
+          "version": "1.4.0"
+        },
+        {
+          "name": "pytest-cov",
+          "version": "7.1.0"
+        },
+        {
+          "name": "PyYAML",
+          "version": "6.0.3"
+        },
+        {
+          "name": "redis",
+          "version": "5.3.1"
+        },
+        {
+          "name": "requests",
+          "version": "2.34.2"
+        },
+        {
+          "name": "requests-toolbelt",
+          "version": "1.0.0"
+        },
+        {
+          "name": "ruff",
+          "version": "0.16.7"
+        },
+        {
+          "name": "sniffio",
+          "version": "1.3.1"
+        },
+        {
+          "name": "SQLAlchemy",
+          "version": "2.0.52"
+        },
+        {
+          "name": "tenacity",
+          "version": "9.1.4"
+        },
+        {
+          "name": "truststore",
+          "version": "0.10.4"
+        },
+        {
+          "name": "typing_extensions",
+          "version": "4.16.0"
+        },
+        {
+          "name": "typing-inspection",
+          "version": "0.4.4"
+        },
+        {
+          "name": "tzdata",
+          "version": "2026.3"
+        },
+        {
+          "name": "urllib3",
+          "version": "2.7.0"
+        },
+        {
+          "name": "uuid_utils",
+          "version": "0.17.1"
+        },
+        {
+          "name": "websockets",
+          "version": "16.1.1"
+        },
+        {
+          "name": "xxhash",
+          "version": "4.0.1"
+        },
+        {
+          "name": "zstandard",
+          "version": "0.25.0"
+        }
+      ]
+    },
+    {
+      "name": "pickblog",
+      "baseline_commit": "5554ba89e2b428d47aa12257f803dca5b5ebc940"
+    }
+  ]
+}

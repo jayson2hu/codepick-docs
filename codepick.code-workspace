@@ -1,0 +1,24 @@
+{
+  "folders": [
+    {
+      "name": "CodePick 文档",
+      "path": "."
+    },
+    {
+      "name": "L0 deepdata",
+      "path": "../deepdata"
+    },
+    {
+      "name": "L1 seek_data",
+      "path": "../seek_data"
+    },
+    {
+      "name": "L2 agentic",
+      "path": "../agentic"
+    },
+    {
+      "name": "L3 pickblog",
+      "path": "../pickblog"
+    }
+  ]
+}
