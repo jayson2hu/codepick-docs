@@ -1,6 +1,6 @@
 # CodePick 项目进度核验
 
-更新：2026-09-12，第二轮（M1）。已复核全部五个仓库，并在保留上一轮未提交改动的基础上完成 **L1 数据持久化、L2 实际输入适配及评分结果重启读取**。
+更新：2026-09-16，Ubuntu 24.04 合并复验。已复核全部五个仓库，并在保留上一轮未提交改动的基础上完成 **L1 数据持久化、L2 实际输入适配及评分结果重启读取**。
 
 ## 当前阶段
 
@@ -10,7 +10,7 @@
 
 ## 五个仓库进度
 
-统一位置：`D:\fayun\code\codepick`。五仓库均保留独立 Git 历史，HEAD 与上一轮相同，所有本轮改动仍在工作区，尚未提交或推送。
+Ubuntu 工作区：`/home/ubuntu2401/project/codepick`。五仓库的 `codex/m1-ubuntu-handoff` 已与 Ubuntu 可移植性修复合入本地 `main`，验收通过后推送远端 `main`。
 
 | 仓库 | 当前已完成 | 本轮新增/核对 | 主要下一步 |
 | --- | --- | --- | --- |
@@ -25,10 +25,10 @@
 | 范围 | 本轮结果 | 边界 |
 | --- | --- | --- |
 | L1 | 112 项测试通过；独立 smoke/DoD、原 L0 → L1 smoke、迁移/资源打包检查通过 | SQLite 真事务与失败注入；模型为 FakeLLM；PG 未在线验证 |
-| L2 | 94 项测试通过；覆盖率 85.68%；Ruff、mypy、smoke/contracts 等检查通过 | 含实际 SQLite 重启/并发与增量迁移回归；PG/Redis 仍待实测 |
+| L2 | 94 项测试通过；覆盖率 85.63%；Ruff、mypy、smoke/contracts 等检查通过 | 含实际 SQLite 重启/并发与增量迁移回归；PostgreSQL 迁移和 Redis 已通过本机严格集成，真实模型仍待验证 |
 | M1 综合检查 | 7 个独立进程阶段全部通过 | 三个 SQLite 库、实际 L0 文件采集和更新、持久 L1 与 L2；事件文件是验证载体，不是 Redis worker |
 
-本轮 L1/L2 共 **206 项测试通过**。L0 的 45 passed/1 deselected、L3 后端 112 passed 与浏览器 26 passed 为本日上一轮证据，本轮只读复核后沿用，未混算为新执行结果。完整记录：[M1 验证](verification/2026-09-12-m1.json)、[跨进程实测输出](verification/2026-09-12-m1-pipeline.json)、[上一轮基线](verification/2026-09-12.json)。
+本轮重新执行 L0 45、L1 112、L2 94、L3 后端 112 和浏览器 26 项，共 **389 项测试通过**；L0 有 1 项专用浏览器 integration 测试按既定标记排除。L0 external DoD/quick soak 与 L2 strict integration 也已使用仅绑定 localhost 的独立 Docker 测试服务通过。完整记录：[M1 验证](verification/2026-09-12-m1.json)、[跨进程实测输出](verification/2026-09-12-m1-pipeline.json)、[上一轮基线](verification/2026-09-12.json)。
 
 ## 当前跨层边界
 

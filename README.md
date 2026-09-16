@@ -22,7 +22,7 @@ CodePick 将内容采集、通用分析、垂直判断与阅读分发拆成 L0�
 
 - [项目状态](PROJECT_STATUS.md)
 - [开发计划](DEVELOPMENT_PLAN.md)
-- [Ubuntu 本地开发](LOCAL_DEVELOPMENT.md)
+- [Ubuntu 本地开发](UBUNTU_LOCAL_DEVELOPMENT.md)
 - [2026-09-16 Ubuntu 验收记录](UBUNTU_ACCEPTANCE_2026-09-16.md)
 
 ## 代码仓库
