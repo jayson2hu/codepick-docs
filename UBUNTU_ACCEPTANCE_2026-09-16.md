@@ -64,4 +64,23 @@
 
 ## 当前边界
 
-M1 已在 Ubuntu 通过。FakeLLM、L3 stub、浏览器 API mock、模拟账号/邮件/计费仍在使用；真实模型和 M2 的 L2 HTTP → L3 真实读取 → 无 API mock 浏览器链路尚未实现。
+M1 已在 Ubuntu 通过。
+
+## M2 复验
+
+| 范围 | Ubuntu 24.04 结果 |
+|---|---|
+| L2 | 97 passed，coverage 85.57%；ruff/mypy/smoke/contracts PASS |
+| L3 后端 | 114 passed；smoke/preflight/migration PASS |
+| reader-web 回归 | typecheck/build PASS；原有 26 passed |
+| M2 正常链路 | Chromium 无 API mock 读取 M1 文章、详情、六维评分和中文翻译 PASS |
+| M2 故障链路 | 停止 L2 后可重试错误页 PASS；恢复 L2 后继续读取 PASS |
+
+M2 实际链路为保留的 M1 L1/L2 SQLite → L2 HTTP `:8200` → 关闭
+stub 的 L3 Reader API `:8100` → 关闭 demo fallback 的 Next.js `:3200`
+→ Chromium，所有端口只绑定 `127.0.0.1`。
+
+FakeLLM、SQLite、模拟账号/邮件/计费仍在使用。PostgreSQL、Redis 和 MinIO
+已分别通过 M1 严格基础集成，但 M2 HTTP 浏览器链路尚未用 PostgreSQL 端到端
+复验；真实模型、真实认证、支付、邮件和 MCP 仍未验证。完整过程见
+[M2 联调记录](M2_INTEGRATION.md)。

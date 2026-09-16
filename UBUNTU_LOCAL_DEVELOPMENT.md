@@ -52,3 +52,50 @@ cd codepick-docs
 ```
 
 预期输出：`CODEPICK M1: PASS (L0 -> durable L1 -> L2; restart and version checks)`。完整的 2026-09-16 Ubuntu 结果见 [Ubuntu 验收记录](UBUNTU_ACCEPTANCE_2026-09-16.md)。
+
+## M2 本地联调
+
+先用 M1 验收保留的 `l1.db` 和 `l2.db`，或自行准备等价的独立测试库。
+三个服务均只绑定 `127.0.0.1`。
+
+终端一，启动 L2：
+
+```bash
+cd agentic
+L2_DATABASE_URL=sqlite:////tmp/codepick-m2/l2.db \
+L2_L1_DATABASE_URL=sqlite:////tmp/codepick-m2/l1.db \
+L2_HTTP_HOST=127.0.0.1 L2_HTTP_PORT=8200 \
+.venv/bin/python -m judgment_graph.scripts.run_http
+```
+
+终端二，关闭 L3 stub：
+
+```bash
+cd pickblog
+L3_USE_STUB_L2=false \
+L2_BASE_URL=http://127.0.0.1:8200 \
+READER_API_HOST=127.0.0.1 READER_API_PORT=8100 \
+.venv/bin/python scripts/run_reader_api.py
+```
+
+终端三，关闭前端演示回退并启用同源代理：
+
+```bash
+cd pickblog/apps/reader-web
+READER_API_BASE=http://127.0.0.1:8100 \
+READER_API_PROXY_TARGET=http://127.0.0.1:8100 \
+READER_USE_DEMO_FALLBACK=false \
+NEXT_TELEMETRY_DISABLED=1 \
+npm run dev -- --hostname 127.0.0.1 --port 3200
+```
+
+浏览器验收：
+
+```bash
+cd pickblog/apps/reader-web
+PLAYWRIGHT_PORT=3200 npm run test:e2e:m2
+```
+
+正常链路应显示 M1 文章、详情、评分和翻译。停止 L2 后页面应显示
+`Content temporarily unavailable` 与 `Retry`；恢复 L2 后再次访问应成功。
+完整记录见 [M2 联调记录](M2_INTEGRATION.md)。
