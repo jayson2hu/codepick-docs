@@ -40,6 +40,19 @@ LD_LIBRARY_PATH=/path/to/local/libs PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/path/to
 Alembic 升降级和双用户验收后容器已删除。不要复用 5432 上的现有业务或其他项目
 数据库。
 
+Public API 搜索专项验收：
+
+```bash
+cd /home/ubuntu2401/project/codepick/pickblog
+.venv/bin/python -m pytest -c pytest.ini tests/test_public_api_search.py
+```
+
+无 mock 跨进程检查应让 L2 HTTP 和 Public API 分别只绑定 loopback，设置
+`L3_USE_STUB_L2=false` 与 `L2_BASE_URL=http://127.0.0.1:<L2端口>`，再请求
+`/v1/search?q=...&limit=...`。搜索必须在 L2 分页前发生；停止 L2 后应返回带
+`Retry-After: 2` 的可重试 503，不能回退 stub。完整命令与本轮证据见
+[Public API 搜索验收](PUBLIC_API_SEARCH.md)。
+
 ## Windows 历史恢复记录
 
 
@@ -159,7 +172,9 @@ npm run dev -- --hostname 127.0.0.1 --port 3000
 
 界面：[英文](http://127.0.0.1:3000/en)、[中文](http://127.0.0.1:3000/zh)。Reader API：[开发接口文档](http://127.0.0.1:8000/docs)。按 Ctrl+C 结束各自服务。本轮没有留后台服务常驻。
 
-当前界面可查看演示数据；真实认证、账户隔离和浏览器到 API 的跨域连接仍在开发计划中。启动成功不表示这些功能已完成。Public API 可另运行 `scripts/run_public_api.py`，本地端口为 8001。`scripts/run_mcp_server.py` 当前只是 smoke，不是真正持续运行的 MCP 协议服务。
+当前界面可查看演示数据；开发账户隔离和浏览器同源 API 代理已经完成，真实身份
+提供商仍未接入。启动成功不表示生产认证已完成。Public API 可另运行
+`scripts/run_public_api.py`，本地端口为 8001。`scripts/run_mcp_server.py` 当前只是 smoke，不是真正持续运行的 MCP 协议服务。
 
 ## 在其他电脑重新安装
 

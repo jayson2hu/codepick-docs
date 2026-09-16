@@ -71,13 +71,17 @@ PostgreSQL outbox → Redis → ACK 持久化。
 - PostgreSQL 16 临时测试库完成 Alembic 升降级和双用户跨请求持久化验收。
 - Reader Web 升级至 Next.js 16.3.5、PostCSS 8.5.28、Playwright 1.63.0；
   `npm audit` 0 漏洞，类型、构建和 26 项浏览器回归通过。
+- Public API `/v1/search` 与 MCP `search` 把 `q` 下推 L2，在排序和游标分页前
+  搜索标题/摘要；无效请求、详情不存在、配置错误和可重试上游故障分别处理。
+- 临时 SQLite 上的真实 L2 HTTP → 关闭 stub 的 Public API 跨进程验收通过，
+  包含唯一命中、正确 `next_cursor`、断开 L2 的可重试 503 和非法游标 400。
 
 M3 尚未完成的真实服务切片：
 
 - 接入真实 OIDC、magic link 或等价身份提供商，验证邮箱所有权、登录回调、刷新、
   登出、撤销和密钥轮换；`external` 模式当前只关闭开发登录。
-- 继续校验 Public API 的完整搜索/分页/配额语义和上游异常，不把当前页面内过滤
-  当作服务端完整搜索。
+- 在 PostgreSQL 和正式 API key 存储上复验 Public API 搜索、分页与配额
+  组合语义。
 - 生产数据迁移前复核邮箱规范化、并发首次登录和现有用户去重策略。
 
 ## M4：分发、收费和真实运行
