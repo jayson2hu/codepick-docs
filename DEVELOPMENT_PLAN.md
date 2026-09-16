@@ -51,8 +51,12 @@ HTTP、关闭 stub 的 L3 Reader API 和关闭 demo fallback 的 Next.js；Chrom
 - 实际 Redis/Arq 跨进程验证覆盖 v1、v2 和迟到 v1，详见
   [版本消息闭环](VERSIONED_EVENT_LOOP.md)。
 
-剩余：L2 completion outbox 的 sent/ack/dead-letter、PostgreSQL 上同链路、
-真实模型成本与长期运行监控。
+L2 completion outbox 已补稳定事件 ID、数据库领取、Redis relay、ACK、超时重投和
+持久 dead-letter；`20260916_0004` 在 SQLite/PostgreSQL 升降级通过，严格检查已覆盖
+PostgreSQL outbox → Redis → ACK 持久化。
+
+剩余：接真实下游消费者、PostgreSQL 上完整四层版本链路、真实模型成本与长期运行
+监控/soak。
 
 ## M3：公开多用户使用前的门槛（基础切片已验收）
 

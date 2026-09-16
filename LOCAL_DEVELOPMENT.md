@@ -100,6 +100,23 @@ Set-Location D:\fayun\code\codepick\agentic
 
 该层默认仍使用 StubAnalysisProvider/FakeLLM。`release_check` 等真实集成门禁需要 PostgreSQL 和 Redis；当前不要将离线测试通过视为 release check 通过。
 
+Ubuntu 上 completion relay 与 worker/HTTP 共用同一 `L2_DATABASE_URL`：
+
+```bash
+cd /home/ubuntu2401/project/codepick/agentic
+L2_DATABASE_URL=sqlite:////tmp/codepick/l2.db \
+L2_REDIS_URL=redis://127.0.0.1:6379/0 \
+L2_COMPLETION_QUEUE=codepick:l2:events \
+L2_COMPLETION_ACK_QUEUE=codepick:l2:events:acks \
+.venv/bin/python -m judgment_graph.scripts.relay_completed --once
+```
+
+下游持久接收后将信封 `idempotency_key` 写入 ACK 队列。无 ACK 会按相同 ID
+超时重投，达到 `L2_COMPLETION_MAX_ATTEMPTS` 后进入数据库 dead-letter。严格本机
+检查可运行 `docker compose -f docker-compose.integration.yml up -d --wait` 后设置
+`L2_INTEGRATION_STRICT=1` 执行 `judgment_graph.scripts.integration_check`；服务仅绑定
+`127.0.0.1:54329/6389`，完成后执行 Compose down。
+
 ### L3
 
 ```powershell
