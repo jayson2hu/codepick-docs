@@ -4,3 +4,9 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+
+.runtime/
+
+__pycache__/
+
+*.py[cod]
