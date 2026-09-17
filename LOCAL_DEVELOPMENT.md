@@ -10,6 +10,8 @@
 
 ## 完整本机验收
 
+2026-09-17 的真实公开源、用户界面与只读运营看板见 [本轮验收记录](PRODUCT_ACCEPTANCE_2026-09-17.md) 和 [四服务私有预览](REAL_CONTENT_PREVIEW.md)。本轮与下文历史基线分开计数。
+
 2026-09-16 当前 `main` 基线实际通过 443 项不重复自动化，以及 M1 七阶段、版本闭环 15 阶段、L0 external DoD、L2 strict integration 和 M2 无 mock 断链/恢复。完整证据与模拟边界见 [Ubuntu 验收记录](UBUNTU_ACCEPTANCE_2026-09-16.md)。核心离线入口如下：
 
 ```bash

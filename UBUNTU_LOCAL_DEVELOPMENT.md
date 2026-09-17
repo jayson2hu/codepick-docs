@@ -1,5 +1,13 @@
 # Ubuntu 24.04 本地开发
 
+## 2026-09-17 真实来源预览
+
+本轮推荐入口：[真实内容预览与远程访问](REAL_CONTENT_PREVIEW.md)，验收见 [日期化记录](PRODUCT_ACCEPTANCE_2026-09-17.md)。五仓库当前工作目录是 `/home/ubuntu2401/project/codepick`。四个服务只监听 loopback，由 SSH 转发到访问者电脑；不开放数据库、缓存或对象存储的公网端口。
+
+下文 2026-09-16 的 443 项和 46 项 L0 数据保留为历史，不代表本轮测试数量。最新 L0 60、L1 131、L2 201、L3 后端 166 已通过；前端与交付最终结果以本轮记录为准。
+
+最小 Ubuntu 的中文截图需要 CJK 字体。本机已将官方 `fonts-noto-cjk` deb 隔离解压到 `/tmp/codepick-fonts.2vIbAN`；浏览器测试设置 `FONTCONFIG_FILE=/tmp/codepick-fonts.2vIbAN/fonts.conf` 后中文字形正常。未修改系统/用户字体配置；重建方法见 [L0 看板记录](../deepdata/docs/2026-09-17-readonly-dashboard.md)。远程浏览器使用访问者本机字体。
+
 ## 目录与版本
 
 推荐五仓库并列放在 `/srv/codepick`。若没有 `/srv` 写权限，可放在任意可写并列目录；仓库间相对路径不变。

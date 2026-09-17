@@ -1,9 +1,29 @@
 # CodePick 项目进度核验
 
-更新：2026-09-16，Ubuntu 24.04 本机完整验收。
-M1、M2、版本消息闭环和本轮 M3 改动均基于五仓库远端 `main` 继续开发。
+更新：2026-09-17，产品评审、公开真实数据与阅读体验第一切片已完成本机验收。
+上一轮完整验收日期为 2026-09-16；M1、M2、版本消息闭环和 M3 基础能力是本轮继续开发的工程基线。
 
 ## 当前阶段
+
+用户已要求修复 API 访问入口、重新审视定位和用户价值、按业务场景调整五仓库，
+获取公开真实数据并重做阅读体验。本轮第一切片为：**真实来源 → 可追溯内容 →
+阅读详情与原文 → 收藏与再访问**。产品评审、五仓库增量重构及该切片本机
+集成验收已完成；后续 R2/R3 与真实生产能力不在本次通过范围。
+
+| 本轮工作 | 状态 | 文档 / 退出条件 |
+| --- | --- | --- |
+| 定位、用户、运营、竞争替代与商业假设 | 评审文档已形成；无真实用户调研结论 | [产品评审](PRODUCT_REVIEW_2026-09-17.md) |
+| 五仓库业务边界与实施计划 | 文档已形成 | [产品改造计划](PRODUCT_REBUILD_PLAN.md) |
+| API 根路径 Not Found、真实来源导入 | 已实测通过 | 10 篇实际采集，5 篇完成态可读；来源/版本/分页/404/只读403通过 |
+| 阅读/收藏重构与最终故障恢复 | 已验收 | 双语移动页面、真实开发账户持久收藏、伴读 SQL 额度和同页故障恢复通过 |
+| 本轮测试、进度同步与上传代码 | 已完成 | 具体测试数、五仓库 main 提交及模拟边界见本轮验收记录 |
+
+本轮 L0 60、L1 131、L2 201、L3 166 全量通过；前端和 docs 检查及交付详情见 [本轮验收记录](PRODUCT_ACCEPTANCE_2026-09-17.md) 为准。查看环境请用 [真实内容预览](REAL_CONTENT_PREVIEW.md)，不要把 API 当作五个独立网站。
+
+当前 north_star 仍是累计事件占比，不是去重周活阅读闭环率；真实内容不代表真实
+模型分析。新页面须区分来源摘录、模拟/规则分析、真实翻译及不可用功能。
+
+## 已验收工程基线（2026-09-16）
 
 **M3 的 Public API 搜索/分页与上游失败边界已完成：`/v1/search` 和 MCP
 `search` 将查询下推 L2，在排序与游标分页前过滤标题/摘要。** Public API 明确区分
@@ -25,9 +45,9 @@ M1/M2 与版本消息闭环仍保持通过。L1/L2 仍使用 FakeLLM；真实 OI
 
 ## 五个仓库进度
 
-Ubuntu 工作区：`/home/ubuntu2401/project/codepick`。五仓库均以远端 `main` 为共同基线；本轮仅在文档仓库使用 `codex/ubuntu-acceptance-sync` 汇总复验结果，完成后快进合入 `main`。
+Ubuntu 工作区：`/home/ubuntu2401/project/codepick`。本轮从五仓库 `main` 基线继续；2026-09-16 的文档同步已在 `5aaede1` 合入 `main`。本轮工作区与最终提交以新的验收记录为准。
 
-| 仓库 | 当前已完成 | 本轮新增/核对 | 主要下一步 |
+| 仓库 | 已有能力 | 2026-09-16 基线新增/核对 | 历史待验收项 |
 | --- | --- | --- | --- |
 | codepick-docs | 产品架构资料、项目进度、开发计划、本机指南 | 新增版本化数据契约、M1 跨进程脚本与验证记录，更新总索引 | 随真实服务接入补端到端证据 |
 | deepdata（L0） | 采集、raw/对象存储、正文、去重/版本、查询与 outbox | 更新自动发带 content_version/hash 的独立事件；查询暴露版本身份 | TREND 版本语义；生产 PG/S3 持续运行 |
@@ -35,9 +55,9 @@ Ubuntu 工作区：`/home/ubuntu2401/project/codepick`。五仓库均以远端 `
 | agentic（L2） | 评分、翻译、HTTP、SQL 状态成本和完成事件 | completion relay；`/content?q=` 在分页前搜索标题/摘要 | 接真实下游消费者；真实模型和 PostgreSQL 四层链路 |
 | pickblog（L3） | 双语阅读应用、Reader/Public API、早报/配额、M2 真实读取 | Public/MCP 搜索下推；上游请求、配置、404、可重试故障分流 | 接真实身份提供商；随后支付、邮件与 MCP transport |
 
-## 本轮验证
+## 上一轮验证（2026-09-16，保留历史证据）
 
-| 范围 | 本轮结果 | 边界 |
+| 范围 | 2026-09-16 结果 | 边界 |
 | --- | --- | --- |
 | L0 | 46 项测试通过；覆盖率 86.39%；Ruff、mypy 通过 | 含读取仓库内 `file://` fixture 的 Playwright 集成测试，不访问外部站点 |
 | L1 | 128 项测试通过；smoke/DoD、L0 → L1 smoke、版本 worker/relay 检查通过 | SQLite 真事务与真实 Redis 消息；模型为 FakeLLM |
@@ -52,10 +72,11 @@ Ubuntu 工作区：`/home/ubuntu2401/project/codepick`。五仓库均以远端 `
 | M3 PostgreSQL | 独立 PostgreSQL 16 Alembic 升降级与双用户 API 验收 PASS | 2 用户、10 兴趣、2 书签、2 事件、2 API key；仅绑定 127.0.0.1:55439，容器已删除 |
 | M3 前端安全 | `npm ci`、`npm audit --audit-level=low`、typecheck、Next 16 build、26 项 Playwright PASS | 临时 Chrome for Testing；未部署生产 |
 
-最新不重复自动化基线为 L0 46、L1 128、L2 114、L3 后端 127、原浏览器
+2026-09-16 不重复自动化基线为 L0 46、L1 128、L2 114、L3 后端 127、原浏览器
 26 和 M2 浏览器 2 项，共 **443 项**。版本闭环另执行 15 个独立进程阶段，
 最终输出 `CODEPICK VERSION LOOP: PASS`；M1 七阶段回归输出
-`CODEPICK M1: PASS`。截至本次复验，本机不需要外部凭据且可安全执行的门禁均已完成。
+`CODEPICK M1: PASS`。该日已完成当时既定的本机验收范围；不表示新提出的真实数据、
+产品体验或后续 PostgreSQL 四层同链路、长期 soak 已经完成。
 
 ## 当前跨层边界
 
@@ -71,13 +92,12 @@ L2 当前仍要求同一内容串行处理。已完成/取消/待审产物具有
 
 ## 下一步
 
-M3 的用户记录、账户隔离、JWT 失败边界、开发登录生产门禁、前端依赖升级，
-以及 Public API 搜索/分页/上游错误边界已完成。
-下一优先级是接入真实身份提供商并做会话生命周期验证，同时接入 L2 completion
-事件的真实下游消费者并完成 PostgreSQL 上的四层版本闭环。正式 Paddle、邮件与 MCP
-协议仍按 M4 推进，未获得凭据前只做本地协议和失败边界。
+真实来源与可信阅读第一切片已完成，访问、收藏和错误反馈已修复并保存实测结果。
+下一步按 [产品改造计划](PRODUCT_REBUILD_PLAN.md) 的 R2 完善来源运营与指标口径。
+真实身份提供商、L2 completion 真实下游消费者、PostgreSQL 四层版本闭环仍是后续
+工程门槛；正式 Paddle、邮件与 MCP transport 沿用 M4 范围，不能用本轮页面改造替代。
 
-本轮完整结果见 [Ubuntu 验收记录](UBUNTU_ACCEPTANCE_2026-09-16.md)，开发详情见 [版本消息闭环](VERSIONED_EVENT_LOOP.md)、[M1 交接](M1_INTEGRATION.md)、
+上一轮完整结果见 [Ubuntu 验收记录](UBUNTU_ACCEPTANCE_2026-09-16.md)，开发详情见 [版本消息闭环](VERSIONED_EVENT_LOOP.md)、[M1 交接](M1_INTEGRATION.md)、
 [M2 联调记录](M2_INTEGRATION.md)、[M3 账户隔离](M3_ACCOUNT_ISOLATION.md) 与
 [L2 completion relay](L2_COMPLETION_RELAY.md)、[Public API 搜索验收](PUBLIC_API_SEARCH.md)，字段与数据所有权见
 [L1 → L2 v1 契约](contracts/L1-L2-v1.md)。
